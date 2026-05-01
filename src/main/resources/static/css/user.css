@@ -1,0 +1,637 @@
+/* ============================================================
+   user.css — Premium Plans | Payment Success | Payment Failed
+   Color Palette: #F2D8E1 (blush pink) + White
+   Location: static/css/user.css
+   ============================================================ */
+
+/* ── CSS Variables ───────────────────────────────────────── */
+:root {
+    --pink:           #F2D8E1;
+    --pink-dark:      #e8c2d0;
+    --pink-light:     #faeef3;
+    --pink-mid:       #edcbdb;
+    --accent:         #c9718f;
+    --accent-dark:    #a85570;
+    --white:          #ffffff;
+    --text-dark:      #2c1a2e;
+    --text-mid:       #5a3a4a;
+    --text-soft:      #a07080;
+    --bronze:         #cd7f32;
+    --bronze-light:   #f5e6d3;
+    --silver:         #8a9bb0;
+    --silver-light:   #e8eef5;
+    --gold:           #d4a017;
+    --gold-light:     #fdf3d0;
+    --platinum:       #7e8fa6;
+    --platinum-light: #e4eaf2;
+    --ruby:           #9b2335;
+    --ruby-light:     #fde8ea;
+    --success-green:  #2e7d52;
+    --success-bg:     #eaf7f0;
+    --warning-amber:  #856404;
+    --warning-bg:     #fff8e1;
+    --danger-red:     #b71c1c;
+    --danger-bg:      #fdeaea;
+    --shadow-sm:      0 2px 10px rgba(193, 100, 135, 0.10);
+    --shadow-md:      0 6px 24px rgba(193, 100, 135, 0.16);
+    --shadow-lg:      0 16px 48px rgba(193, 100, 135, 0.22);
+    --radius:         16px;
+    --radius-sm:      10px;
+    --transition:     all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Global Page Base ────────────────────────────────────── */
+body {
+    background: linear-gradient(160deg, #fdf4f7 0%, #f5e8ef 50%, #faeef3 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+    color: var(--text-dark);
+}
+
+/* ============================================================
+   PREMIUM PLANS PAGE
+   ============================================================ */
+
+/* ── Page Header ─────────────────────────────────────────── */
+.premium-header {
+    text-align: center;
+    padding: 56px 20px 36px;
+    animation: fadeInDown 0.6s ease both;
+}
+
+.premium-header h1 {
+    font-size: 2.4rem;
+    font-weight: 900;
+    color: var(--text-dark);
+    letter-spacing: -0.5px;
+    margin-bottom: 12px;
+    position: relative;
+    display: inline-block;
+}
+
+.premium-header h1::after {
+    content: '';
+    display: block;
+    margin: 10px auto 0;
+    width: 70px;
+    height: 4px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--pink-dark), var(--accent));
+    animation: expandLine 0.8s 0.4s ease both;
+    transform-origin: center;
+}
+
+@keyframes expandLine {
+    from { width: 0; opacity: 0; }
+    to   { width: 70px; opacity: 1; }
+}
+
+.premium-header p {
+    font-size: 1.08rem;
+    color: var(--text-soft);
+    margin-top: 6px;
+}
+
+/* ── Subscription Alerts ─────────────────────────────────── */
+.alert {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 720px;
+    margin: 0 auto 28px;
+    padding: 16px 22px;
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    font-weight: 500;
+    animation: slideDown 0.5s ease both;
+    border-left: 4px solid transparent;
+}
+
+.alert i { font-size: 1.2rem; flex-shrink: 0; }
+
+.alert-success {
+    background: var(--success-bg);
+    color: var(--success-green);
+    border-left-color: var(--success-green);
+    border: 1px solid #b7dfcc;
+    border-left: 4px solid var(--success-green);
+}
+
+.alert-warning {
+    background: var(--warning-bg);
+    color: var(--warning-amber);
+    border-left-color: #f0ad00;
+    border: 1px solid #f5e0a0;
+    border-left: 4px solid #f0ad00;
+}
+
+/* ── Pricing Cards Container ─────────────────────────────── */
+.pricing-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+    padding: 8px 20px 64px;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+/* ── Individual Pricing Card ─────────────────────────────── */
+.pricing-card {
+    background: var(--white);
+    border: 1.5px solid var(--pink-dark);
+    border-radius: var(--radius);
+    width: 220px;
+    flex-shrink: 0;
+    position: relative;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.pricing-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, var(--pink-light), var(--white));
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    z-index: 0;
+    border-radius: var(--radius);
+}
+
+.pricing-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--accent);
+}
+
+.pricing-card:hover::before { opacity: 1; }
+
+.pricing-card > * { position: relative; z-index: 1; }
+
+/* ── Popular Card ────────────────────────────────────────── */
+.pricing-card.popular {
+    border: 2px solid var(--gold);
+    box-shadow: 0 8px 32px rgba(212, 160, 23, 0.20);
+    transform: scale(1.03);
+}
+
+.pricing-card.popular:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 16px 48px rgba(212, 160, 23, 0.28);
+}
+
+.popular-badge {
+    background: linear-gradient(90deg, var(--gold), #f5c518);
+    color: var(--white);
+    text-align: center;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    padding: 6px 12px;
+    text-transform: uppercase;
+    animation: shimmer 2.5s linear infinite;
+    background-size: 200% 100%;
+}
+
+@keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* ── Plan Header Colours ─────────────────────────────────── */
+.plan-header {
+    text-align: center;
+    padding: 22px 16px 16px;
+    border-bottom: 1px solid var(--pink);
+}
+
+.plan-header h3 {
+    font-size: 1.3rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+}
+
+.plan-header .validity {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    opacity: 0.85;
+}
+
+.plan-header.bronze { background: var(--bronze-light); }
+.plan-header.bronze h3 { color: var(--bronze); }
+.plan-header.bronze .validity { color: var(--bronze); }
+
+.plan-header.silver { background: var(--silver-light); }
+.plan-header.silver h3 { color: var(--silver); }
+.plan-header.silver .validity { color: var(--silver); }
+
+.plan-header.gold { background: var(--gold-light); }
+.plan-header.gold h3 { color: var(--gold); }
+.plan-header.gold .validity { color: var(--gold); }
+
+.plan-header.platinum { background: var(--platinum-light); }
+.plan-header.platinum h3 { color: var(--platinum); }
+.plan-header.platinum .validity { color: var(--platinum); }
+
+.plan-header.ruby { background: var(--ruby-light); }
+.plan-header.ruby h3 { color: var(--ruby); }
+.plan-header.ruby .validity { color: var(--ruby); }
+
+/* ── Plan Pricing ────────────────────────────────────────── */
+.plan-pricing {
+    text-align: center;
+    padding: 18px 16px 10px;
+}
+
+.original-price {
+    font-size: 0.82rem;
+    color: var(--text-soft);
+    text-decoration: line-through;
+    margin-bottom: 4px;
+    min-height: 20px;
+}
+
+.current-price {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 2px;
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.current-price .rupee {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent-dark);
+    margin-top: 6px;
+}
+
+.current-price .amount {
+    font-size: 2.4rem;
+    font-weight: 900;
+    color: var(--text-dark);
+    line-height: 1;
+}
+
+.savings {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+}
+
+.discount-badge {
+    display: inline-block;
+    background: var(--pink);
+    color: var(--accent-dark);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--pink-dark);
+}
+
+.save-amount {
+    font-size: 0.75rem;
+    color: var(--success-green);
+    font-weight: 600;
+}
+
+/* ── Plan Features ───────────────────────────────────────── */
+.plan-features {
+    padding: 14px 20px;
+    flex: 1;
+}
+
+.plan-features ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.plan-features ul li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.84rem;
+    color: var(--text-mid);
+    font-weight: 500;
+}
+
+.plan-features ul li i {
+    color: var(--accent);
+    font-size: 0.78rem;
+    flex-shrink: 0;
+    width: 14px;
+}
+
+/* ── Subscribe Button ────────────────────────────────────── */
+.subscribe-btn,
+.btn.btn-primary.subscribe-btn {
+    display: block;
+    width: calc(100% - 32px);
+    margin: 0 16px 20px;
+    padding: 12px 16px;
+    background: #F2D8E1 !important;
+    color: var(--text-dark) !important;
+    border: 1.5px solid rgba(180, 110, 140, 0.30) !important;
+    border-radius: var(--radius-sm) !important;
+    font-size: 0.92rem !important;
+    font-weight: 700 !important;
+    cursor: pointer;
+    text-align: center;
+    letter-spacing: 0.3px;
+    transition: var(--transition) !important;
+    box-shadow: none !important;
+}
+
+.subscribe-btn:hover,
+.btn.btn-primary.subscribe-btn:hover {
+    background: #ffffff !important;
+    color: var(--accent-dark) !important;
+    border-color: rgba(180, 110, 140, 0.55) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 14px rgba(193, 100, 135, 0.20) !important;
+}
+
+.subscribe-btn:disabled {
+    opacity: 0.65 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+}
+
+/* ============================================================
+   PAYMENT SUCCESS PAGE
+   ============================================================ */
+.success-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 70vh;
+    padding: 60px 20px;
+    animation: fadeInUp 0.6s ease both;
+}
+
+.success-icon {
+    font-size: 5rem;
+    color: var(--success-green);
+    margin-bottom: 24px;
+    animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.success-container h1 {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+}
+
+.success-container > p {
+    font-size: 1.05rem;
+    color: var(--text-soft);
+    margin-bottom: 32px;
+}
+
+/* ── Subscription Details Box ────────────────────────────── */
+.subscription-details {
+    background: var(--white);
+    border: 1.5px solid var(--pink-dark);
+    border-radius: var(--radius);
+    padding: 28px 36px;
+    margin-bottom: 36px;
+    min-width: 320px;
+    max-width: 440px;
+    box-shadow: var(--shadow-md);
+    text-align: left;
+    animation: slideDown 0.5s 0.2s ease both;
+}
+
+.subscription-details p {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    padding: 10px 0;
+    font-size: 0.93rem;
+    color: var(--text-mid);
+    border-bottom: 1px solid var(--pink-light);
+}
+
+.subscription-details p:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.subscription-details p strong {
+    color: var(--text-dark);
+    font-weight: 700;
+    min-width: 110px;
+}
+
+.subscription-details p span {
+    color: var(--accent-dark);
+    font-weight: 600;
+    text-align: right;
+}
+
+/* ============================================================
+   PAYMENT FAILED PAGE
+   ============================================================ */
+.failed-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 70vh;
+    padding: 60px 20px;
+    animation: fadeInUp 0.6s ease both;
+}
+
+.failed-icon {
+    font-size: 5rem;
+    color: var(--danger-red);
+    margin-bottom: 24px;
+    animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.failed-container h1 {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+}
+
+.failed-container p {
+    font-size: 1.05rem;
+    color: var(--text-soft);
+    margin-bottom: 36px;
+}
+
+/* ============================================================
+   SHARED BUTTON GROUP (Success + Failed pages)
+   ============================================================ */
+.btn-group {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Primary button — F2D8E1, hover white */
+.btn-group .btn.btn-primary,
+.btn.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 28px;
+    background: #F2D8E1;
+    color: var(--text-dark);
+    border: 1.5px solid rgba(180, 110, 140, 0.30);
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: var(--transition);
+    letter-spacing: 0.2px;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-group .btn.btn-primary:hover,
+.btn.btn-primary:hover {
+    background: #ffffff;
+    color: var(--accent-dark);
+    border-color: rgba(180, 110, 140, 0.55);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(193, 100, 135, 0.20);
+}
+
+/* Secondary button — white, hover F2D8E1 */
+.btn-group .btn.btn-secondary,
+.btn.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 28px;
+    background: #ffffff;
+    color: var(--text-dark);
+    border: 1.5px solid rgba(180, 110, 140, 0.35);
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: var(--transition);
+    letter-spacing: 0.2px;
+}
+
+.btn-group .btn.btn-secondary:hover,
+.btn.btn-secondary:hover {
+    background: #F2D8E1;
+    color: var(--accent-dark);
+    border-color: rgba(180, 110, 140, 0.50);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(193, 100, 135, 0.16);
+}
+
+/* ============================================================
+   SHARED KEYFRAMES
+   ============================================================ */
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-24px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes popIn {
+    0%   { transform: scale(0); opacity: 0; }
+    70%  { transform: scale(1.15); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 900px) {
+    .pricing-cards-container {
+        gap: 16px;
+        padding: 8px 12px 48px;
+    }
+
+    .pricing-card {
+        width: 180px;
+    }
+
+    .premium-header h1 {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .pricing-cards-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .pricing-card {
+        width: 100%;
+        max-width: 340px;
+    }
+
+    .pricing-card.popular {
+        transform: none;
+    }
+
+    .pricing-card.popular:hover {
+        transform: translateY(-8px) scale(1.02);
+    }
+
+    .premium-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .success-container h1,
+    .failed-container h1 {
+        font-size: 1.7rem;
+    }
+
+    .subscription-details {
+        min-width: unset;
+        width: 100%;
+        padding: 20px;
+    }
+
+    .btn-group {
+        flex-direction: column;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .btn-group .btn {
+        width: 100%;
+    }
+}

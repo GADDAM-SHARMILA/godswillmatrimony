@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
+    <title>Premium Plans - Godswill Matrimony</title>
+    <link rel="stylesheet" th:href="@{/css/user.css}">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+
+<body>
+
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<div class="container">
+    <div class="premium-header">
+        <h1>Choose Your Premium Plan</h1>
+        <p>Unlock full profile access and connect with your perfect match</p>
+    </div>
+
+    <!-- Active Subscription Alert -->
+    <div th:if="${activeSubscription != null and activeSubscription.active and !activeSubscription.expired}"
+         class="alert alert-success">
+        <i class="fas fa-check-circle"></i>
+        You have an active <strong th:text="${activeSubscription.plan}">GOLD</strong> subscription
+        valid until <strong th:text="${#temporals.format(activeSubscription.endDate, 'dd MMM yyyy')}">31 Dec 2026</strong>
+    </div>
+
+    <!-- Expired Subscription Alert -->
+    <div th:if="${activeSubscription != null and activeSubscription.expired}"
+         class="alert alert-warning">
+        <i class="fas fa-exclamation-triangle"></i>
+        Your <strong th:text="${activeSubscription.plan}">GOLD</strong> subscription expired on
+        <strong th:text="${#temporals.format(activeSubscription.endDate, 'dd MMM yyyy')}">31 Dec 2025</strong>.
+        Please renew to continue enjoying premium features.
+    </div>
+
+    <div class="pricing-cards-container">
+
+        <!-- BRONZE Plan -->
+        <div class="pricing-card">
+            <div class="plan-header bronze">
+                <h3>BRONZE</h3>
+                <p class="validity">1 Month Trial</p>
+            </div>
+
+            <div class="plan-pricing">
+                <div class="original-price">
+                    <span class="bronze-equivalent">₹299</span>
+                </div>
+                <div class="current-price">
+                    <span class="rupee">₹</span>
+                    <span class="amount">299</span>
+                </div>
+                <div class="savings">
+                    <span class="discount-badge">0% OFF</span>
+                </div>
+            </div>
+
+            <div class="plan-features">
+                <ul>
+                    <li><i class="fas fa-check"></i> View all profile details</li>
+                    <li><i class="fas fa-check"></i> Full photo access</li>
+                    <li><i class="fas fa-check"></i> Upload 2 extra photos</li>
+                    <li><i class="fas fa-check"></i> Contact information visible</li>
+                    <li><i class="fas fa-check"></i> Unlimited profile views</li>
+                </ul>
+            </div>
+
+            <button class="btn btn-primary subscribe-btn"
+                    onclick="initiatePayment('BRONZE', 299)"
+                    id="btn-bronze">
+                Choose Bronze
+            </button>
+        </div>
+
+        <!-- SILVER Plan -->
+        <div class="pricing-card">
+            <div class="plan-header silver">
+                <h3>SILVER</h3>
+                <p class="validity">3 Months</p>
+            </div>
+
+            <div class="plan-pricing">
+                <div class="original-price">
+                    <span class="bronze-equivalent">₹897</span>
+                    <span class="strikethrough"></span>
+                </div>
+                <div class="current-price">
+                    <span class="rupee">₹</span>
+                    <span class="amount">599</span>
+                </div>
+                <div class="savings">
+                    <span class="discount-badge">33.22% OFF</span>
+                    <span class="save-amount">Save ₹298</span>
+                </div>
+            </div>
+
+            <div class="plan-features">
+                <ul>
+                    <li><i class="fas fa-check"></i> All Bronze features</li>
+                    <li><i class="fas fa-check"></i> 3 months validity</li>
+                    <li><i class="fas fa-check"></i> Priority support</li>
+                    <li><i class="fas fa-check"></i> Profile highlighted</li>
+                </ul>
+            </div>
+
+            <button class="btn btn-primary subscribe-btn"
+                    onclick="initiatePayment('SILVER', 599)"
+                    id="btn-silver">
+                Choose Silver
+            </button>
+        </div>
+
+        <!-- GOLD Plan (POPULAR) -->
+        <div class="pricing-card popular">
+            <div class="popular-badge">MOST POPULAR</div>
+            <div class="plan-header gold">
+                <h3>GOLD</h3>
+                <p class="validity">6 Months</p>
+            </div>
+
+            <div class="plan-pricing">
+                <div class="original-price">
+                    <span class="bronze-equivalent">₹1,794</span>
+                    <span class="strikethrough"></span>
+                </div>
+                <div class="current-price">
+                    <span class="rupee">₹</span>
+                    <span class="amount">999</span>
+                </div>
+                <div class="savings">
+                    <span class="discount-badge">44.31% OFF</span>
+                    <span class="save-amount">Save ₹795</span>
+                </div>
+            </div>
+
+            <div class="plan-features">
+                <ul>
+                    <li><i class="fas fa-check"></i> All Silver features</li>
+                    <li><i class="fas fa-check"></i> 6 months validity</li>
+                    <li><i class="fas fa-check"></i> Featured profile</li>
+                    <li><i class="fas fa-check"></i> Premium badge</li>
+                </ul>
+            </div>
+
+            <button class="btn btn-primary subscribe-btn"
+                    onclick="initiatePayment('GOLD', 999)"
+                    id="btn-gold">
+                Choose Gold
+            </button>
+        </div>
+
+        <!-- PLATINUM Plan -->
+        <div class="pricing-card">
+            <div class="plan-header platinum">
+                <h3>PLATINUM</h3>
+                <p class="validity">1 Year</p>
+            </div>
+
+            <div class="plan-pricing">
+                <div class="original-price">
+                    <span class="bronze-equivalent">₹3,588</span>
+                    <span class="strikethrough"></span>
+                </div>
+                <div class="current-price">
+                    <span class="rupee">₹</span>
+                    <span class="amount">1,499</span>
+                </div>
+                <div class="savings">
+                    <span class="discount-badge">58.22% OFF</span>
+                    <span class="save-amount">Save ₹2,089</span>
+                </div>
+            </div>
+
+            <div class="plan-features">
+                <ul>
+                    <li><i class="fas fa-check"></i> All Gold features</li>
+                    <li><i class="fas fa-check"></i> 1 year validity</li>
+                    <li><i class="fas fa-check"></i> VIP support</li>
+                    <li><i class="fas fa-check"></i> Top profile placement</li>
+                </ul>
+            </div>
+
+            <button class="btn btn-primary subscribe-btn"
+                    onclick="initiatePayment('PLATINUM', 1499)"
+                    id="btn-platinum">
+                Choose Platinum
+            </button>
+        </div>
+
+        <!-- RUBY Plan -->
+        <div class="pricing-card">
+            <div class="plan-header ruby">
+                <h3>RUBY</h3>
+                <p class="validity">3 Years</p>
+            </div>
+
+            <div class="plan-pricing">
+                <div class="original-price">
+                    <span class="bronze-equivalent">₹10,764</span>
+                    <span class="strikethrough"></span>
+                </div>
+                <div class="current-price">
+                    <span class="rupee">₹</span>
+                    <span class="amount">2,999</span>
+                </div>
+                <div class="savings">
+                    <span class="discount-badge">72.14% OFF</span>
+                    <span class="save-amount">Save ₹7,765</span>
+                </div>
+            </div>
+
+            <div class="plan-features">
+                <ul>
+                    <li><i class="fas fa-check"></i> All Platinum features</li>
+                    <li><i class="fas fa-check"></i> 3 years validity</li>
+                    <li><i class="fas fa-check"></i> Lifetime support</li>
+                    <li><i class="fas fa-check"></i> Exclusive benefits</li>
+                </ul>
+            </div>
+
+            <button class="btn btn-primary subscribe-btn"
+                    onclick="initiatePayment('RUBY', 2999)"
+                    id="btn-ruby">
+                Choose Ruby
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    // ✅ Store user info from Thymeleaf
+    const userData = {
+        firstName: /*[[${session.user != null ? session.user.firstName : ''}]]*/ '',
+        email: /*[[${session.user != null ? session.user.email : ''}]]*/ '',
+        phone: /*[[${session.user != null ? session.user.phone : ''}]]*/ ''
+    };
+
+    function initiatePayment(plan, amount) {
+        // Get button element
+        const btnId = 'btn-' + plan.toLowerCase();
+        const btn = document.getElementById(btnId);
+
+        // Disable button and show loading
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+        }
+
+        // Create order first
+        fetch('/subscription/create-order?plan=' + plan, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            }
+        })
+        .then(response => {
+            // ✅ Check if user is logged in
+            if (response.status === 401) {
+                showAlert('Please login to purchase a subscription plan', 'error');
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 1500);
+                return Promise.reject('Not logged in');
+            }
+
+            if (!response.ok) {
+                return response.json().then(err => Promise.reject(err));
+            }
+
+            return response.json();
+        })
+        .then(data => {
+            // Re-enable button
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = 'Choose ' + capitalizeFirstLetter(plan);
+            }
+
+            // Open Razorpay payment modal
+            const options = {
+                key: data.keyId,
+                amount: data.amount,
+                currency: data.currency,
+                order_id: data.orderId,
+                name: 'Godswill Matrimony',
+                description: plan + ' Plan Subscription',
+                image: '/images/logo.png',
+                handler: function(response) {
+                    // Payment successful - verify on server
+                    showAlert('Payment successful! Verifying...', 'success');
+
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '/subscription/verify-payment';
+
+                    const fields = {
+                        'razorpay_order_id': response.razorpay_order_id,
+                        'razorpay_payment_id': response.razorpay_payment_id,
+                        'razorpay_signature': response.razorpay_signature
+                    };
+
+                    for (const key in fields) {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = key;
+                        input.value = fields[key];
+                        form.appendChild(input);
+                    }
+
+                    document.body.appendChild(form);
+                    form.submit();
+                },
+                prefill: {
+                    name: userData.firstName || 'User',
+                    email: userData.email || '',
+                    contact: userData.phone || ''
+                },
+                theme: {
+                    color: '#e91e63'
+                },
+                modal: {
+                    ondismiss: function() {
+                        // User closed the payment modal
+                        if (btn) {
+                            btn.disabled = false;
+                            btn.innerHTML = 'Choose ' + capitalizeFirstLetter(plan);
+                        }
+                        showAlert('Payment cancelled', 'warning');
+                    }
+                }
+            };
+
+            const rzp = new Razorpay(options);
+            rzp.open();
+
+            rzp.on('payment.failed', function(response) {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = 'Choose ' + capitalizeFirstLetter(plan);
+                }
+
+                const errorMsg = response.error.description || 'Payment failed';
+                showAlert('Payment failed: ' + errorMsg, 'error');
+
+                setTimeout(() => {
+                    window.location.href = '/subscription/failed';
+                }, 2000);
+            });
+        })
+        .catch(error => {
+            // Re-enable button on error
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = 'Choose ' + capitalizeFirstLetter(plan);
+            }
+
+            if (error !== 'Not logged in') {
+                console.error('Error:', error);
+                const errorMsg = error.error || 'Failed to initiate payment. Please try again.';
+                showAlert(errorMsg, 'error');
+            }
+        });
+    }
+
+    // ✅ Helper function to show alerts
+    function showAlert(message, type) {
+        const alertClass = type === 'success' ? 'alert-success' :
+                          type === 'error' ? 'alert-danger' :
+                          type === 'warning' ? 'alert-warning' : 'alert-info';
+
+        const icon = type === 'success' ? 'fa-check-circle' :
+                     type === 'error' ? 'fa-times-circle' :
+                     type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle';
+
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert ${alertClass} floating-alert`;
+        alertDiv.innerHTML = `
+            <i class="fas ${icon}"></i>
+            ${message}
+        `;
+
+        document.body.appendChild(alertDiv);
+
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            alertDiv.style.opacity = '0';
+            setTimeout(() => alertDiv.remove(), 300);
+        }, 3000);
+    }
+
+    // ✅ Helper function to capitalize first letter
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+    }
+
+    // ✅ Check for flash messages on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add smooth scroll animation to cards
+        const cards = document.querySelectorAll('.pricing-card');
+        cards.forEach((card, index) => {
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    });
+
+    /*]]>*/
+</script>
+
+<style>
+    /* Initial state for cards */
+    .pricing-card {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    /* Floating alert styling */
+    .floating-alert {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        animation: slideInRight 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1rem;
+        transition: opacity 0.3s ease;
+    }
+
+    .floating-alert i {
+        font-size: 1.2rem;
+    }
+
+    @keyframes slideInRight {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    /* Alert colors */
+    .alert-success {
+        background-color: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+    }
+
+    .alert-warning {
+        background-color: #fff3cd;
+        border: 1px solid #ffeaa7;
+        color: #856404;
+    }
+
+    .alert-info {
+        background-color: #d1ecf1;
+        border: 1px solid #bee5eb;
+        color: #0c5460;
+    }
+
+    /* Button loading state */
+    .subscribe-btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+        .floating-alert {
+            right: 10px;
+            left: 10px;
+            min-width: auto;
+        }
+    }
+</style>
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/69b14b6bbe53e11c396ec50f/1jje8t7rf';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+</script>
+<!--End of Tawk.to Script-->
+</body>
+</html>

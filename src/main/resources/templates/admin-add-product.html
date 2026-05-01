@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
+    <title>Admin - Add / Edit Product</title>
+    <link rel="stylesheet" th:href="@{/css/admin_pp.css}">
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ── Page wrapper ── */
+        .product-form-container {
+            max-width: 780px;
+            margin: 2rem auto;
+            padding: 0 1rem 4rem;
+        }
+
+        /* ── Back link ── */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            color: #7a2a40;
+            text-decoration: none;
+            margin-bottom: 1.2rem;
+            font-weight: 600;
+            transition: opacity .2s;
+        }
+        .back-link:hover { opacity: .7; }
+
+        /* ── Card ── */
+        .form-card {
+            background: #fff;
+            border: 1px solid #e8d5dc;
+            border-radius: 14px;
+            padding: 2rem 2.2rem;
+            box-shadow: 0 4px 20px rgba(122,42,64,.07);
+        }
+        .form-card h2 {
+            font-size: 1.35rem;
+            color: #5a1a2e;
+            font-weight: 700;
+            margin: 0 0 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .form-card h2 .icon-box {
+            width: 38px; height: 38px;
+            background: linear-gradient(135deg, #f2d8e1, #e8b4c4);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; color: #7a2a40;
+        }
+
+        /* ── Section divider ── */
+        .section-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: #a0405a;
+            margin: 1.6rem 0 .8rem;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed #e0b8c6;
+        }
+
+        /* ── Grid ── */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem 1.4rem;
+        }
+        .form-grid.full { grid-template-columns: 1fr; }
+        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+
+        /* ── Fields ── */
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-group label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #5a1a2e;
+        }
+        .form-group label .req { color: #c0304a; margin-left: 2px; }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            border: 1.5px solid #dbbfc9;
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-size: 0.88rem;
+            color: #2d0a14;
+            background: #fdf7f9;
+            transition: border-color .2s, box-shadow .2s;
+            outline: none;
+            font-family: inherit;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #a0405a;
+            box-shadow: 0 0 0 3px rgba(160,64,90,.12);
+            background: #fff;
+        }
+        .form-group textarea { resize: vertical; min-height: 90px; }
+
+        /* ── Image upload area ── */
+        .img-upload-area {
+            border: 2px dashed #dbbfc9;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color .2s, background .2s;
+            background: #fdf7f9;
+            position: relative;
+        }
+        .img-upload-area:hover {
+            border-color: #a0405a;
+            background: #fdf0f4;
+        }
+        .img-upload-area input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            border: none;
+            padding: 0;
+        }
+        .img-upload-area .upload-placeholder {
+            pointer-events: none;
+        }
+        .img-upload-area .upload-placeholder i {
+            font-size: 1.6rem;
+            color: #c0708a;
+            margin-bottom: 6px;
+        }
+        .img-upload-area .upload-placeholder p {
+            font-size: 0.78rem;
+            color: #a0607a;
+            margin: 0;
+        }
+
+        /* ── Image preview ── */
+        .img-preview-wrap {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .img-thumb {
+            width: 90px; height: 90px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #e0b8c6;
+        }
+        .img-thumb.hidden { display: none; }
+
+        .remove-img-btn {
+            background: #fdecea;
+            color: #b71c1c;
+            border: 1px solid #f5b5b5;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            gap: 4px;
+        }
+        .remove-img-btn.visible { display: inline-flex; }
+
+        /* ── Toggle switch (active) ── */
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: .4rem;
+        }
+        .toggle-row label { font-size: .85rem; font-weight: 600; color: #5a1a2e; margin: 0; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; inset: 0;
+            background: #d4a0b0; border-radius: 34px; cursor: pointer;
+            transition: .3s;
+        }
+        .slider:before {
+            content: "";
+            position: absolute;
+            width: 18px; height: 18px;
+            left: 3px; bottom: 3px;
+            background: white; border-radius: 50%;
+            transition: .3s;
+        }
+        .switch input:checked + .slider { background: #7a2a40; }
+        .switch input:checked + .slider:before { transform: translateX(20px); }
+
+        /* ── Alerts ── */
+        .alert { border-radius: 8px; padding: 10px 14px; font-size: .85rem; margin-bottom: 1rem; }
+        .alert-error   { background: #fdecea; color: #b71c1c; border: 1px solid #f5b5b5; }
+        .alert-success { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; }
+
+        /* ── Buttons ── */
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 1.8rem;
+            flex-wrap: wrap;
+        }
+        .btn-save {
+            background: linear-gradient(135deg, #7a2a40, #a0405a);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 11px 28px;
+            font-size: .9rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 8px;
+            transition: opacity .2s, transform .15s;
+        }
+        .btn-save:hover { opacity: .88; transform: translateY(-1px); }
+        .btn-cancel {
+            background: #f7edf0;
+            color: #7a2a40;
+            border: 1.5px solid #dbbfc9;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: .9rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex; align-items: center; gap: 6px;
+            transition: background .2s;
+        }
+        .btn-cancel:hover { background: #f2d8e1; }
+
+        /* ── Category pill selector ── */
+        .pill-group { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 2px; }
+        .pill-opt { display: none; }
+        .pill-label {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 6px 16px;
+            border: 1.5px solid #dbbfc9;
+            border-radius: 20px;
+            font-size: .82rem;
+            font-weight: 600;
+            color: #7a2a40;
+            cursor: pointer;
+            transition: all .2s;
+            background: #fdf7f9;
+        }
+        .pill-opt:checked + .pill-label {
+            background: #7a2a40;
+            color: #fff;
+            border-color: #7a2a40;
+        }
+        .pill-label:hover { border-color: #a0405a; }
+    </style>
+</head>
+
+<body th:attr="data-logged-in=${session.user != null}">
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<div class="product-form-container">
+
+    <!-- Back -->
+    <a class="back-link" th:href="@{/admin/products/list}">
+        <i class="fas fa-arrow-left"></i> Back to Products
+    </a>
+
+    <!-- Alerts -->
+    <div class="alert alert-error"   th:if="${error}"   th:text="${error}"></div>
+    <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+
+    <div class="form-card">
+        <h2>
+            <span class="icon-box"><i class="fas fa-box-open"></i></span>
+            <span th:text="${product != null and product.id != null} ? 'Edit Product' : 'Add New Product'">Add New Product</span>
+        </h2>
+
+        <!-- ═══════════════════════════════════════════ FORM (standard POST) -->
+        <form id="productForm"
+              th:action="@{/admin/products/save}"
+              method="post"
+              enctype="multipart/form-data">
+
+            <!-- Hidden: product id for edit -->
+            <input type="hidden" name="id"
+                   th:value="${product != null} ? ${product.id} : ''">
+
+            <!-- Hidden: base64 image data (filled by JS) -->
+            <input type="hidden" id="imageData"  name="imageData">
+            <input type="hidden" id="imageData2" name="imageData2">
+
+            <!-- Hidden: existing image URLs (preserved on edit if no new file chosen) -->
+            <input type="hidden" id="existingImageUrl"  name="existingImageUrl"
+                   th:value="${product?.imageUrl}">
+            <input type="hidden" id="existingImageUrl2" name="existingImageUrl2"
+                   th:value="${product?.imageUrl2}">
+
+            <!-- BASIC INFO -->
+            <div class="section-label"><i class="fas fa-tag"></i> &nbsp;Basic Information</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Product Name <span class="req">*</span></label>
+                    <input type="text" name="name" placeholder="e.g. Bridal Lehenga Set"
+                           th:value="${product?.name}" required>
+                </div>
+                <div class="form-group">
+                    <label>Brand / Seller</label>
+                    <input type="text" name="brand" placeholder="e.g. Manyavar"
+                           th:value="${product?.brand}">
+                </div>
+            </div>
+
+            <div class="form-grid full" style="margin-top:.6rem">
+                <div class="form-group">
+                    <label>Short Description <span class="req">*</span></label>
+                    <textarea name="description" rows="3"
+                              placeholder="Describe the product briefly…"
+                              th:text="${product?.description}" required></textarea>
+                </div>
+            </div>
+
+            <!-- CATEGORY -->
+            <div class="section-label"><i class="fas fa-layer-group"></i> &nbsp;Category</div>
+            <div class="pill-group">
+                <input class="pill-opt" type="radio" name="category" id="cat-bride" value="bride"
+                       th:checked="${product?.category == 'bride'}">
+                <label class="pill-label" for="cat-bride">
+                    <i class="fas fa-venus"></i> Women (Bride)
+                </label>
+
+                <input class="pill-opt" type="radio" name="category" id="cat-groom" value="groom"
+                       th:checked="${product?.category == 'groom'}">
+                <label class="pill-label" for="cat-groom">
+                    <i class="fas fa-mars"></i> Men (Groom)
+                </label>
+
+                <input class="pill-opt" type="radio" name="category" id="cat-both" value="both"
+                       th:checked="${product?.category == 'both' or product?.category == null}">
+                <label class="pill-label" for="cat-both">
+                    <i class="fas fa-venus-mars"></i> Both
+                </label>
+            </div>
+
+            <!-- PRICING -->
+            <div class="section-label"><i class="fas fa-rupee-sign"></i> &nbsp;Pricing</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Original Price (₹) <span class="req">*</span></label>
+                    <input type="number" name="originalPrice" placeholder="e.g. 5000" min="0" step="0.01"
+                           th:value="${product?.originalPrice}" required>
+                </div>
+                <div class="form-group">
+                    <label>Discounted Price (₹)
+                        <span style="font-weight:400;color:#888;font-size:.76rem;">(leave blank if no discount)</span>
+                    </label>
+                    <input type="number" name="discountedPrice" placeholder="e.g. 3999" min="0" step="0.01"
+                           th:value="${product?.discountedPrice}">
+                </div>
+                <div class="form-group">
+                    <label>Premium Discount (%) <span style="font-weight:400;color:#888;font-size:.76rem;">for premium users</span></label>
+                    <input type="number" name="premiumDiscountPercent" placeholder="e.g. 15" min="0" max="100"
+                           th:value="${product?.premiumDiscountPercent}">
+                </div>
+                <div class="form-group">
+                    <label>Stock Quantity</label>
+                    <input type="number" name="stock" placeholder="e.g. 50" min="0"
+                           th:value="${product?.stock}">
+                </div>
+            </div>
+
+            <!-- IMAGES -->
+            <div class="section-label"><i class="fas fa-images"></i> &nbsp;Product Images</div>
+            <div class="form-grid">
+
+                <!-- Image 1 -->
+                <div class="form-group">
+                    <label>Main Image <span class="req">*</span></label>
+                    <div class="img-upload-area" id="uploadArea1">
+                        <input type="file" accept="image/*" id="imageFile1"
+                               onchange="handleImageSelect(this, 'imageData', 'prev1', 'removeBtn1', 'uploadArea1')">
+                        <div class="upload-placeholder" id="placeholder1">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload image<br><span style="color:#c0a0b0;font-size:.72rem;">JPG, PNG, WEBP</span></p>
+                        </div>
+                    </div>
+                    <div class="img-preview-wrap">
+                        <!-- Show existing image when editing -->
+                        <img id="prev1"
+                             th:src="${product?.imageUrl}"
+                             th:class="${product?.imageUrl != null and !#strings.isEmpty(product?.imageUrl)} ? 'img-thumb' : 'img-thumb hidden'"
+                             alt="Image 1 preview">
+                        <button type="button" id="removeBtn1"
+                                th:class="${product?.imageUrl != null and !#strings.isEmpty(product?.imageUrl)} ? 'remove-img-btn visible' : 'remove-img-btn'"
+                                onclick="removeImage('imageData', 'prev1', 'removeBtn1', 'existingImageUrl')">
+                            <i class="fas fa-times"></i> Remove
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Image 2 -->
+                <div class="form-group">
+                    <label>Image 2 <span style="font-weight:400;color:#888;font-size:.76rem;">(optional)</span></label>
+                    <div class="img-upload-area" id="uploadArea2">
+                        <input type="file" accept="image/*" id="imageFile2"
+                               onchange="handleImageSelect(this, 'imageData2', 'prev2', 'removeBtn2', 'uploadArea2')">
+                        <div class="upload-placeholder" id="placeholder2">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload image<br><span style="color:#c0a0b0;font-size:.72rem;">JPG, PNG, WEBP</span></p>
+                        </div>
+                    </div>
+                    <div class="img-preview-wrap">
+                        <img id="prev2"
+                             th:src="${product?.imageUrl2}"
+                             th:class="${product?.imageUrl2 != null and !#strings.isEmpty(product?.imageUrl2)} ? 'img-thumb' : 'img-thumb hidden'"
+                             alt="Image 2 preview">
+                        <button type="button" id="removeBtn2"
+                                th:class="${product?.imageUrl2 != null and !#strings.isEmpty(product?.imageUrl2)} ? 'remove-img-btn visible' : 'remove-img-btn'"
+                                onclick="removeImage('imageData2', 'prev2', 'removeBtn2', 'existingImageUrl2')">
+                            <i class="fas fa-times"></i> Remove
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- DETAILS -->
+            <div class="section-label"><i class="fas fa-info-circle"></i> &nbsp;Additional Details</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Sub-category / Type</label>
+                    <input type="text" name="subCategory" placeholder="e.g. Lehenga, Sherwani, Jewellery"
+                           th:value="${product?.subCategory}">
+                </div>
+                <div class="form-group">
+                    <label>Material / Fabric</label>
+                    <input type="text" name="material" placeholder="e.g. Silk, Cotton"
+                           th:value="${product?.material}">
+                </div>
+                <div class="form-group">
+                    <label>Available Sizes
+                        <span style="font-weight:400;color:#888;font-size:.76rem;">(comma separated)</span>
+                    </label>
+                    <input type="text" name="sizes" placeholder="S, M, L, XL, XXL"
+                           th:value="${product?.sizes}">
+                </div>
+                <div class="form-group">
+                    <label>Available Colors
+                        <span style="font-weight:400;color:#888;font-size:.76rem;">(comma separated)</span>
+                    </label>
+                    <input type="text" name="colors" placeholder="Red, Gold, Ivory"
+                           th:value="${product?.colors}">
+                </div>
+                <div class="form-group">
+                    <label>Delivery Days</label>
+                    <input type="number" name="deliveryDays" placeholder="e.g. 5" min="0"
+                           th:value="${product?.deliveryDays}">
+                </div>
+                <div class="form-group">
+                    <label>Tags
+                        <span style="font-weight:400;color:#888;font-size:.76rem;">(comma separated)</span>
+                    </label>
+                    <input type="text" name="tags" placeholder="wedding, bridal, traditional"
+                           th:value="${product?.tags}">
+                </div>
+            </div>
+
+            <!-- STATUS -->
+            <div class="section-label"><i class="fas fa-toggle-on"></i> &nbsp;Status</div>
+            <div class="toggle-row">
+                <label class="switch">
+                    <input type="checkbox" name="active" id="active"
+                           th:checked="${product == null or product.active == null or product.active}">
+                    <span class="slider"></span>
+                </label>
+                <label>Active (visible to users)</label>
+            </div>
+            <div class="toggle-row" style="margin-top:.7rem">
+                <label class="switch">
+                    <input type="checkbox" name="featured" id="featured"
+                           th:checked="${product?.featured}">
+                    <span class="slider"></span>
+                </label>
+                <label>Featured Product</label>
+            </div>
+
+            <!-- BUTTONS -->
+            <div class="btn-row">
+                <button type="submit" class="btn-save" id="saveBtn">
+                    <i class="fas fa-save"></i>
+                    <span th:text="${product != null and product.id != null} ? 'Update Product' : 'Save Product'">Save Product</span>
+                </button>
+                <a class="btn-cancel" th:href="@{/admin/products/list}">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<script>
+
+    function handleImageSelect(input, hiddenId, previewId, removeBtnId, uploadAreaId) {
+        const file = input.files[0];
+        if (!file) return;
+        if (file.size > 15 * 1024 * 1024) {
+            alert("Image too large (max 15MB). Please choose a smaller file.");
+            input.value = "";
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement("canvas");
+                const MAX_W = 800, MAX_H = 800;
+                let w = img.width, h = img.height;
+                if (w > MAX_W || h > MAX_H) {
+                    if (w / h > MAX_W / MAX_H) { h = Math.round(h * MAX_W / w); w = MAX_W; }
+                    else { w = Math.round(w * MAX_H / h); h = MAX_H; }
+                }
+                canvas.width = w; canvas.height = h;
+                canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+                const compressed = canvas.toDataURL("image/jpeg", 0.8);
+                document.getElementById(hiddenId).value = compressed;
+                const preview = document.getElementById(previewId);
+                preview.src = compressed;
+                preview.classList.remove("hidden");
+                document.getElementById(removeBtnId).classList.add("visible");
+                const area = document.getElementById(uploadAreaId);
+                area.style.borderColor = "#7a2a40";
+                area.style.background = "#fdf0f4";
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    /**
+     * Clears image selection (new file data + existing URL).
+     */
+    function removeImage(hiddenId, previewId, removeBtnId, existingHiddenId) {
+        // Clear base64 hidden field
+        document.getElementById(hiddenId).value = '';
+
+        // Clear existing URL hidden field
+        document.getElementById(existingHiddenId).value = '';
+
+        // Hide preview
+        const preview = document.getElementById(previewId);
+        preview.src = '';
+        preview.classList.add('hidden');
+
+        // Hide remove button
+        document.getElementById(removeBtnId).classList.remove('visible');
+
+        // Reset the file inputs so a new file can be picked
+        const fileInputs = document.querySelectorAll('input[type="file"]');
+        fileInputs.forEach(f => { if (f.id === (hiddenId === 'imageData' ? 'imageFile1' : 'imageFile2')) f.value = ''; });
+    }
+
+    /**
+     * Show loading state on submit.
+     */
+    document.getElementById('productForm').addEventListener('submit', function () {
+        const btn = document.getElementById('saveBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
+    });
+</script>
+</body>
+</html>

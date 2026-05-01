@@ -1,0 +1,690 @@
+/* ============================================================
+   stories.css — Success Stories | Submit Story
+   Color Palette: #F2D8E1 (blush pink) + White
+   Location: static/css/stories.css
+   ============================================================ */
+
+/* ── CSS Variables ───────────────────────────────────────── */
+:root {
+    --pink:           #F2D8E1;
+    --pink-dark:      #e8c2d0;
+    --pink-light:     #faeef3;
+    --accent:         #c9718f;
+    --accent-dark:    #a85570;
+    --white:          #ffffff;
+    --text-dark:      #2c1a2e;
+    --text-mid:       #5a3a4a;
+    --text-soft:      #a07080;
+    --border:         rgba(180, 110, 140, 0.28);
+    --border-focus:   rgba(180, 110, 140, 0.60);
+    --shadow-sm:      0 2px 10px rgba(193, 100, 135, 0.10);
+    --shadow-md:      0 6px 24px rgba(193, 100, 135, 0.16);
+    --shadow-lg:      0 16px 48px rgba(193, 100, 135, 0.22);
+    --radius:         16px;
+    --radius-sm:      10px;
+    --transition:     all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Body ────────────────────────────────────────────────── */
+body {
+    background: linear-gradient(160deg, #fdf4f7 0%, #f5e8ef 50%, #faeef3 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+    color: var(--text-dark);
+}
+
+/* ── Container ───────────────────────────────────────────── */
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* ============================================================
+   SUCCESS STORIES PAGE
+   ============================================================ */
+
+/* ── Page Header ─────────────────────────────────────────── */
+.profile-listing-header {
+    background: linear-gradient(135deg, var(--pink) 0%, var(--pink-light) 100%);
+    border-bottom: 1.5px solid var(--pink-dark);
+    padding: 48px 0 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-listing-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 10% 50%, rgba(210, 150, 185, 0.35) 0%, transparent 40%),
+        radial-gradient(ellipse at 90% 50%, rgba(210, 150, 185, 0.28) 0%, transparent 40%);
+    pointer-events: none;
+}
+
+.profile-listing-header .container { position: relative; z-index: 1; }
+
+.profile-listing-header h1 {
+    font-size: 2.3rem;
+    font-weight: 900;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+    letter-spacing: -0.3px;
+    animation: fadeInDown 0.6s ease both;
+}
+
+.profile-listing-header p {
+    font-size: 1rem;
+    color: var(--text-soft);
+    margin-bottom: 16px;
+    animation: fadeInDown 0.6s 0.1s ease both;
+}
+
+.stories-count {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.70);
+    border: 1.5px solid var(--pink-dark);
+    border-radius: 20px;
+    padding: 6px 20px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--accent-dark);
+    animation: fadeInDown 0.6s 0.2s ease both;
+}
+
+/* ── Stories Section ─────────────────────────────────────── */
+.success-stories-section {
+    padding: 40px 0 64px;
+}
+
+/* ── Stories Grid ────────────────────────────────────────── */
+.success-stories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 28px;
+    margin-bottom: 16px;
+}
+
+/* ── Individual Story Card ───────────────────────────────── */
+.success-story-card {
+    background: var(--white);
+    border: 1.5px solid var(--pink-dark);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    animation: fadeInUp 0.5s ease both;
+    position: relative;
+}
+
+/* Staggered animations */
+.success-story-card:nth-child(1) { animation-delay: 0.05s; }
+.success-story-card:nth-child(2) { animation-delay: 0.10s; }
+.success-story-card:nth-child(3) { animation-delay: 0.15s; }
+.success-story-card:nth-child(4) { animation-delay: 0.20s; }
+.success-story-card:nth-child(5) { animation-delay: 0.25s; }
+.success-story-card:nth-child(6) { animation-delay: 0.30s; }
+
+.success-story-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, var(--pink-light), var(--white));
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    z-index: 0;
+    border-radius: var(--radius);
+}
+
+.success-story-card:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--accent);
+}
+
+.success-story-card:hover::before { opacity: 1; }
+.success-story-card > * { position: relative; z-index: 1; }
+
+/* ── Story Image ─────────────────────────────────────────── */
+.success-story-image {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: var(--pink-light);
+    flex-shrink: 0;
+}
+
+.success-story-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.success-story-card:hover .success-story-image img {
+    transform: scale(1.07);
+}
+
+/* ── Story Content ───────────────────────────────────────── */
+.success-story-content {
+    padding: 22px 22px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+}
+
+.success-story-content h3 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin: 0;
+    line-height: 1.3;
+}
+
+.success-story-content p {
+    font-size: 0.90rem;
+    color: var(--text-mid);
+    line-height: 1.65;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ── Story Meta ──────────────────────────────────────────── */
+.success-story-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 4px;
+    padding-top: 12px;
+    border-top: 1px solid var(--pink-light);
+}
+
+.success-story-date {
+    font-size: 0.80rem;
+    font-weight: 600;
+    color: var(--accent-dark);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.success-story-date::before {
+    content: '💍';
+    font-size: 0.85rem;
+}
+
+.success-story-location {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.80rem;
+    color: var(--text-soft);
+    font-weight: 500;
+}
+
+.success-story-location i {
+    color: var(--accent);
+    font-size: 0.78rem;
+}
+
+/* ── No Results / Empty State ────────────────────────────── */
+.no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 64px 24px;
+    background: var(--white);
+    border: 1.5px dashed var(--pink-dark);
+    border-radius: var(--radius);
+    animation: fadeInUp 0.5s ease both;
+}
+
+.no-results-icon {
+    font-size: 3.5rem;
+    margin-bottom: 14px;
+    display: block;
+}
+
+.no-results h3 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--text-mid);
+    margin-bottom: 8px;
+}
+
+.no-results p {
+    font-size: 0.95rem;
+    color: var(--text-soft);
+    margin-bottom: 24px;
+}
+
+/* ── CTA Card ────────────────────────────────────────────── */
+.success-story-cta {
+    background: var(--white);
+    border: 1.5px solid var(--pink-dark);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.6s 0.2s ease both;
+}
+
+.success-story-cta::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--pink-dark), var(--accent), var(--pink-dark));
+    background-size: 200% 100%;
+    animation: barSlide 3s linear infinite;
+}
+
+.success-story-cta h2 {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--text-dark) !important;
+    margin-bottom: 12px !important;
+}
+
+.success-story-cta p {
+    font-size: 0.95rem;
+    color: var(--text-soft) !important;
+    margin-bottom: 24px !important;
+}
+
+/* ── Shared Buttons ──────────────────────────────────────── */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 11px 24px;
+    border-radius: var(--radius-sm);
+    font-size: 0.93rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1.5px solid var(--border);
+    transition: var(--transition);
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.btn-primary {
+    background: #F2D8E1;
+    color: var(--text-dark);
+    border-color: var(--border);
+}
+
+.btn-primary:hover {
+    background: #ffffff;
+    color: var(--accent-dark);
+    border-color: var(--border-focus);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(193, 100, 135, 0.22);
+}
+
+.btn-secondary {
+    background: #ffffff;
+    color: var(--text-dark);
+    border-color: var(--border);
+}
+
+.btn-secondary:hover {
+    background: #F2D8E1;
+    color: var(--accent-dark);
+    border-color: var(--border-focus);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 14px rgba(193, 100, 135, 0.16);
+}
+
+/* ============================================================
+   SUBMIT STORY PAGE
+   ============================================================ */
+
+/* ── Submit Page Card ────────────────────────────────────── */
+.card {
+    background: var(--white);
+    border: 1.5px solid var(--pink-dark);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    animation: fadeInUp 0.55s ease both;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Animated top bar */
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--pink-dark), var(--accent), var(--pink-dark), var(--accent));
+    background-size: 300% 100%;
+    animation: barSlide 3s linear infinite;
+}
+
+.card h1 {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+    letter-spacing: -0.3px;
+}
+
+.card > p {
+    font-size: 0.95rem;
+    color: var(--text-soft);
+    margin-bottom: 0;
+}
+
+/* ── Submit Form Layout ──────────────────────────────────── */
+.card form {
+    margin-top: 28px !important;
+}
+
+/* ── Form Groups ─────────────────────────────────────────── */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 18px !important;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-mid);
+    letter-spacing: 0.2px;
+}
+
+/* ── Form Inputs ─────────────────────────────────────────── */
+.form-control {
+    width: 100%;
+    padding: 11px 14px;
+    background: var(--pink-light);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.92rem;
+    color: var(--text-dark);
+    transition: var(--transition);
+    outline: none;
+    box-sizing: border-box;
+    font-family: inherit;
+    appearance: none;
+}
+
+.form-control:focus {
+    background: var(--white);
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(201, 113, 143, 0.12);
+}
+
+.form-control::placeholder {
+    color: var(--text-soft);
+    font-size: 0.87rem;
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 140px;
+    line-height: 1.65;
+}
+
+input[type="date"].form-control {
+    cursor: pointer;
+}
+
+input[type="file"].form-control {
+    padding: 9px 12px;
+    cursor: pointer;
+    background: var(--pink-light);
+}
+
+input[type="file"].form-control::-webkit-file-upload-button {
+    background: #F2D8E1;
+    color: var(--text-dark);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: var(--transition);
+    margin-right: 10px;
+}
+
+input[type="file"].form-control::-webkit-file-upload-button:hover {
+    background: var(--white);
+    border-color: var(--border-focus);
+}
+
+/* ── Form Row ────────────────────────────────────────────── */
+.form-row {
+    display: flex;
+    gap: 16px !important;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+/* ── Image Preview ───────────────────────────────────────── */
+.img-preview {
+    width: 100%;
+    max-height: 240px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--pink-dark);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    display: none;
+    margin-top: 12px;
+}
+
+.img-preview:hover {
+    border-color: var(--accent);
+    box-shadow: var(--shadow-md);
+}
+
+/* ── Submit Button Row ───────────────────────────────────── */
+.card form > div:last-of-type {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px !important;
+    flex-wrap: wrap;
+}
+
+/* ============================================================
+   KEYFRAMES
+   ============================================================ */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-18px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes barSlide {
+    0%   { background-position: -300% 0; }
+    100% { background-position: 300% 0; }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+    .success-stories-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .profile-listing-header h1 { font-size: 1.7rem; }
+
+    .form-row {
+        flex-direction: column !important;
+        gap: 0 !important;
+    }
+
+    .card {
+        padding: 20px !important;
+    }
+
+    .card h1 { font-size: 1.4rem; }
+
+    .success-story-cta {
+        padding: 28px 20px !important;
+    }
+
+    .success-story-cta h2 { font-size: 1.2rem !important; }
+
+    .card form > div:last-of-type {
+        flex-direction: column;
+    }
+
+    .card form > div:last-of-type .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-listing-header { padding: 32px 0 24px; }
+    .profile-listing-header h1 { font-size: 1.4rem; }
+    .success-story-image { height: 180px; }
+    .no-results { padding: 40px 16px; }
+}
+
+/* ============================================================
+   CIRCULAR STORY IMAGE + THEME SPARKLES (HOVER ONLY)
+   (Override only — added without changing existing styles)
+   ============================================================ */
+
+/* Center a circular image inside the existing rectangular image area */
+.success-story-image{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Make ONLY the image circular (not the card) */
+.success-story-image img{
+    width: 168px;
+    height: 168px;
+    border-radius: 50%;
+    object-fit: cover;
+
+    /* soft ring + depth */
+    border: 4px solid rgba(255, 255, 255, 0.95);
+    outline: 2px solid rgba(201, 113, 143, 0.22);
+    outline-offset: 6px;
+    box-shadow: 0 12px 28px rgba(193, 100, 135, 0.22);
+
+    transition: transform 0.55s ease, box-shadow 0.55s ease, outline-color 0.55s ease;
+}
+
+/* Keep your hover zoom vibe */
+.success-story-card:hover .success-story-image img{
+    transform: scale(1.08);
+    box-shadow: 0 18px 42px rgba(193, 100, 135, 0.28);
+    outline-color: rgba(201, 113, 143, 0.38);
+}
+
+/* Theme sparkles (monochrome chars so they can be colored) — hidden by default */
+.success-story-image::before,
+.success-story-image::after{
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+
+    /* THEME COLOR */
+    color: var(--accent);
+
+    /* glow that matches your palette */
+    text-shadow:
+        0 0 10px rgba(201, 113, 143, 0.35),
+        0 8px 16px rgba(193, 100, 135, 0.18);
+
+    opacity: 0;
+    transform: scale(0.85);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+/* Top-right sparkle */
+.success-story-image::after{
+    content: "✦";
+    top: 18px;
+    right: 18px;
+    font-size: 1.2rem;
+    color: var(--accent-dark); /* slightly deeper for contrast */
+}
+
+/* Bottom-left sparkle */
+.success-story-image::before{
+    content: "✧";
+    bottom: 18px;
+    left: 18px;
+    font-size: 1.1rem;
+    color: var(--accent);
+}
+
+/* Show sparkles ONLY on hover (and keyboard focus for accessibility) */
+.success-story-card:hover .success-story-image::before,
+.success-story-card:hover .success-story-image::after,
+.success-story-card:focus-within .success-story-image::before,
+.success-story-card:focus-within .success-story-image::after{
+    opacity: 0.98;
+    transform: scale(1);
+    animation-duration: 1.6s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+/* Different motions so it feels “sparkly” */
+.success-story-card:hover .success-story-image::after,
+.success-story-card:focus-within .success-story-image::after{
+    animation-name: sparkleTwinkle;
+}
+
+.success-story-card:hover .success-story-image::before,
+.success-story-card:focus-within .success-story-image::before{
+    animation-name: sparkleFloat;
+    animation-duration: 2.2s;
+}
+
+/* Animations */
+@keyframes sparkleTwinkle{
+    0%, 100% { transform: scale(0.92) rotate(-8deg); opacity: 0.55; }
+    50%      { transform: scale(1.25) rotate(10deg); opacity: 1; }
+}
+
+@keyframes sparkleFloat{
+    0%, 100% { transform: translateY(0) scale(0.95); opacity: 0.65; }
+    50%      { transform: translateY(-8px) scale(1.15); opacity: 1; }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+    .success-story-card:hover .success-story-image::before,
+    .success-story-card:hover .success-story-image::after,
+    .success-story-card:focus-within .success-story-image::before,
+    .success-story-card:focus-within .success-story-image::after{
+        animation: none !important;
+    }
+
+    .success-story-image img{
+        transition: none !important;
+    }
+}

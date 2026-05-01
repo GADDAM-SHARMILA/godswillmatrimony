@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
+    <title>Register - Matrimony</title>
+    <link rel="stylesheet" th:href="@{/css/login_register.css}">
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+    <style>
+        /* Franchise button row */
+        .franchise-btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+
+        .btn-franchise-register {
+            flex: 1;
+            background: linear-gradient(135deg, #e85d75, #c0392b);
+            color: #fff !important;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 22px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            animation: popInOut 1.4s ease-in-out infinite;
+        }
+
+        .btn-franchise-register:hover {
+            transform: scale(1.06);
+            box-shadow: 0 4px 14px rgba(232,93,117,0.45);
+            animation-play-state: paused;
+        }
+
+        @keyframes popInOut {
+            0%   { transform: scale(1);    box-shadow: 0 0 0 0 rgba(232,93,117,0.6); }
+            50%  { transform: scale(1.07); box-shadow: 0 0 0 8px rgba(232,93,117,0); }
+            100% { transform: scale(1);    box-shadow: 0 0 0 0 rgba(232,93,117,0); }
+        }
+
+        .btn-franchise-signin {
+            flex: 1;
+            background: transparent;
+            color: #c0697a !important;
+            border: 2px solid #c0697a;
+            padding: 9px 18px;
+            border-radius: 22px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .btn-franchise-signin:hover {
+            background: #c0697a;
+            color: #fff !important;
+        }
+
+        /* Hide old action-links inside franchise row */
+        .franchise-option .action-link {
+            display: none !important;
+        }
+
+        /* Back to Home */
+        .back-to-home-wrapper {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #f0e0e4;
+        }
+
+        .back-to-home-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 24px;
+            background: transparent;
+            color: #c0697a !important;
+            border: 2px solid #c0697a;
+            border-radius: 22px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            text-decoration: none !important;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .back-to-home-btn:hover {
+            background: #c0697a;
+            color: #fff !important;
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<!-- Registration Page -->
+<div class="auth-page">
+    <div class="auth-container">
+
+        <!-- REGISTER OPTIONS -->
+        <div id="registerOptions" class="register-box">
+            <div class="auth-header">
+                <div class="auth-logo">💑</div>
+                <h2>Create An Account</h2>
+            </div>
+
+            <div class="option-item">
+                <span>New to God's Will Matrimony</span>
+                <span class="action-text" onclick="showUserRegister()" style="cursor:pointer;">Register Now</span>
+            </div>
+
+            <div class="option-item">
+                <span>Already a Member?</span>
+                <a th:href="@{/login}" class="action-link">Sign In</a>
+            </div>
+
+            <!-- FRANCHISE ROW with two styled buttons -->
+            <div class="option-item franchise-option">
+                <span>Franchise</span>
+                <div class="franchise-btn-row">
+                    <button type="button" onclick="showFranchiseForm()" class="btn-franchise-register">🏢 Register</button>
+                    <a th:href="@{/login}" class="btn-franchise-signin">Sign In</a>
+                </div>
+            </div>
+
+            <!-- ✅ Back to Home — only under this section (the card shown in the screenshot) -->
+            <div class="back-to-home-wrapper">
+                <a th:href="@{/}" class="back-to-home-btn">🏠 Back to Home</a>
+            </div>
+
+        </div>
+
+        <!-- FRANCHISE SECTION -->
+        <div id="franchiseSection" style="display:none; max-width:600px; margin:40px auto;">
+            <h3 style="text-align:center; margin-bottom:20px;">Franchise Registration</h3>
+
+            <div id="franchiseSuccessMessage" style="display:none;" class="success-box">
+                ✅ Thank you for reaching out. Our Godswill Matrimony team will connect with you within 24 hrs.
+            </div>
+            <div id="franchiseContent">
+                <form id="franchiseForm">
+                    <div class="pastor-question">
+                        <span class="question-text">Are you a Pastor?</span>
+                        <label class="radio-card">
+                            <input type="radio" name="isPastor" value="yes" onclick="toggleFranchiseForm(true)">
+                            <span>Yes</span>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="isPastor" value="no" onclick="toggleFranchiseForm(false)">
+                            <span>No</span>
+                        </label>
+                    </div>
+
+                    <div id="pastorDropdown" style="margin-top:15px;">
+                        <div class="form-group">
+                            <label>Choose One *</label>
+                            <select name="pastorType" class="form-control">
+                                <option value="">-- Choose One --</option>
+                                <option value="Church Elder">Church Elder</option>
+                                <option value="Church Leader">Church Leader</option>
+                                <option value="Deacon">Deacon</option>
+                                <option value="Full-Time Pastor">Full-Time Pastor</option>
+                                <option value="God's Servant (Brethren)">God's Servant (Brethren)</option>
+                                <option value="God's Servant (Hebron)">God's Servant (Hebron)</option>
+                                <option value="God's Servant (Independent Church)">God's Servant (Independent Church)</option>
+                                <option value="Pastor(Independent Church)">Pastor (Independent Church)</option>
+                                <option value="Senior Pastor">Senior Pastor</option>
+                                <option value="Steward">Steward</option>
+                                <option value="Working Preacher">Working Preacher</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="franchiseFormFields" style="display:none; margin-top:20px;">
+                        <div class="form-group">
+                            <label>Name *</label>
+                            <input type="text" name="name" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Contact Number *</label>
+                            <div style="display:flex; gap:8px;">
+                                <select name="franchisePhoneCode" class="form-control" style="max-width:140px;">
+                                    <option value="+91">🇮🇳 +91 India</option>
+                                    <option value="+1">🇺🇸 +1 USA</option>
+                                    <option value="+1-CA">🇨🇦 +1 Canada</option>
+                                    <option value="+44">🇬🇧 +44 UK</option>
+                                    <option value="+61">🇦🇺 +61 Australia</option>
+                                    <option value="+971">🇦🇪 +971 UAE</option>
+                                    <option value="+966">🇸🇦 +966 Saudi Arabia</option>
+                                    <option value="+65">🇸🇬 +65 Singapore</option>
+                                    <option value="+60">🇲🇾 +60 Malaysia</option>
+                                    <option value="+94">🇱🇰 +94 Sri Lanka</option>
+                                    <option value="+977">🇳🇵 +977 Nepal</option>
+                                    <option value="+880">🇧🇩 +880 Bangladesh</option>
+                                    <option value="+27">🇿🇦 +27 South Africa</option>
+                                    <option value="+49">🇩🇪 +49 Germany</option>
+                                    <option value="+33">🇫🇷 +33 France</option>
+                                </select>
+                                <input type="tel" name="phone" class="form-control" required placeholder="Contact number">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>WhatsApp Number</label>
+                            <div style="display:flex; gap:8px;">
+                                <select name="franchiseWhatsappCode" class="form-control" style="max-width:140px;">
+                                    <option value="+91">🇮🇳 +91 India</option>
+                                    <option value="+1">🇺🇸 +1 USA</option>
+                                    <option value="+1-CA">🇨🇦 +1 Canada</option>
+                                    <option value="+44">🇬🇧 +44 UK</option>
+                                    <option value="+61">🇦🇺 +61 Australia</option>
+                                    <option value="+971">🇦🇪 +971 UAE</option>
+                                    <option value="+966">🇸🇦 +966 Saudi Arabia</option>
+                                    <option value="+65">🇸🇬 +65 Singapore</option>
+                                    <option value="+60">🇲🇾 +60 Malaysia</option>
+                                    <option value="+94">🇱🇰 +94 Sri Lanka</option>
+                                    <option value="+977">🇳🇵 +977 Nepal</option>
+                                    <option value="+880">🇧🇩 +880 Bangladesh</option>
+                                    <option value="+27">🇿🇦 +27 South Africa</option>
+                                    <option value="+49">🇩🇪 +49 Germany</option>
+                                    <option value="+33">🇫🇷 +33 France</option>
+                                </select>
+                                <input type="tel" name="franchiseWhatsapp" class="form-control" placeholder="WhatsApp number (if different)">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email *</label>
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Message *</label>
+                            <textarea name="message" class="form-control" required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- NORMAL REGISTER FORM -->
+        <div id="normalRegisterForm" style="display:none;">
+            <div class="auth-header">
+                <div class="auth-logo">💑</div>
+                <h2>Create An Account</h2>
+                <p>Complete all details to find your perfect life partner</p>
+            </div>
+
+            <!-- Registration Steps -->
+            <div class="registration-steps">
+                <div class="step active" id="step-1">
+                    <div class="step-number">1</div>
+                    <p>Basic Info</p>
+                </div>
+                <div class="step" id="step-2">
+                    <div class="step-number">2</div>
+                    <p>Personal</p>
+                </div>
+                <div class="step" id="step-3">
+                    <div class="step-number">3</div>
+                    <p>Religious</p>
+                </div>
+                <div class="step" id="step-4">
+                    <div class="step-number">4</div>
+                    <p>Professional</p>
+                </div>
+                <div class="step" id="step-5">
+                    <div class="step-number">5</div>
+                    <p>About You</p>
+                </div>
+            </div>
+
+            <!-- Alert Messages -->
+            <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+            <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+
+            <!-- Registration Form -->
+            <form class="auth-form registration-form" th:action="@{/register}" method="post" id="registrationForm">
+
+                <!-- STEP 1: BASIC INFORMATION -->
+                <div class="form-section active" id="section-1">
+                    <h3>Step 1: Basic Information</h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">First Name *</label>
+                            <input type="text" id="firstName" name="firstName" class="form-control"
+                                   required th:value="${user != null ? user.firstName : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name *</label>
+                            <input type="text" id="lastName" name="lastName" class="form-control"
+                                   required th:value="${user != null ? user.lastName : ''}">
+                        </div>
+                    </div>
+
+                    <div class="form-group form-group-full">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" class="form-control"
+                               required th:value="${user != null ? user.email : ''}">
+                    </div>
+
+                    <div class="form-group form-group-full">
+                        <label for="phone">Mobile Number *</label>
+                        <div style="display:flex; gap:8px;">
+                            <select name="phoneCode" id="phoneCode" class="form-control" style="max-width:140px;">
+                                <option value="+91">🇮🇳 +91 India</option>
+                                <option value="+1">🇺🇸 +1 USA</option>
+                                <option value="+1-CA">🇨🇦 +1 Canada</option>
+                                <option value="+44">🇬🇧 +44 UK</option>
+                                <option value="+61">🇦🇺 +61 Australia</option>
+                                <option value="+971">🇦🇪 +971 UAE</option>
+                                <option value="+966">🇸🇦 +966 Saudi Arabia</option>
+                                <option value="+65">🇸🇬 +65 Singapore</option>
+                                <option value="+60">🇲🇾 +60 Malaysia</option>
+                                <option value="+94">🇱🇰 +94 Sri Lanka</option>
+                                <option value="+977">🇳🇵 +977 Nepal</option>
+                                <option value="+880">🇧🇩 +880 Bangladesh</option>
+                                <option value="+27">🇿🇦 +27 South Africa</option>
+                                <option value="+49">🇩🇪 +49 Germany</option>
+                                <option value="+33">🇫🇷 +33 France</option>
+                            </select>
+                            <input type="tel" id="phone" name="phone" class="form-control"
+                                   placeholder="10-digit mobile number" required
+                                   th:value="${user != null ? user.phone : ''}">
+                        </div>
+                    </div>
+
+                    <div class="form-group form-group-full">
+                        <label for="whatsapp">WhatsApp Number</label>
+                        <div style="display:flex; gap:8px;">
+                            <select name="whatsappCode" id="whatsappCode" class="form-control" style="max-width:140px;">
+                                <option value="+91">🇮🇳 +91 India</option>
+                                <option value="+1">🇺🇸 +1 USA</option>
+                                <option value="+1-CA">🇨🇦 +1 Canada</option>
+                                <option value="+44">🇬🇧 +44 UK</option>
+                                <option value="+61">🇦🇺 +61 Australia</option>
+                                <option value="+971">🇦🇪 +971 UAE</option>
+                                <option value="+966">🇸🇦 +966 Saudi Arabia</option>
+                                <option value="+65">🇸🇬 +65 Singapore</option>
+                                <option value="+60">🇲🇾 +60 Malaysia</option>
+                                <option value="+94">🇱🇰 +94 Sri Lanka</option>
+                                <option value="+977">🇳🇵 +977 Nepal</option>
+                                <option value="+880">🇧🇩 +880 Bangladesh</option>
+                                <option value="+27">🇿🇦 +27 South Africa</option>
+                                <option value="+49">🇩🇪 +49 Germany</option>
+                                <option value="+33">🇫🇷 +33 France</option>
+                            </select>
+                            <input type="tel" id="whatsapp" name="whatsapp" class="form-control"
+                                   placeholder="WhatsApp number (if different)"
+                                   th:value="${user != null ? user.whatsapp : ''}">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="gender">Profile For *</label>
+                            <select id="gender" name="gender" class="form-control" required>
+                                <option value="">Select</option>
+                                <option value="Male" th:selected="${user != null and user.gender == 'Male'}">Groom</option>
+                                <option value="Female" th:selected="${user != null and user.gender == 'Female'}">Bride</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="dateOfBirth">Date of Birth *</label>
+                            <input type="date" id="dateOfBirth" name="dateOfBirth" class="form-control"
+                                   required
+                                   th:value="${user != null and user.dateOfBirth != null} ? ${#temporals.format(user.dateOfBirth,'yyyy-MM-dd')} : ''">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: PERSONAL DETAILS -->
+                <div class="form-section" id="section-2">
+                    <h3>Step 2: Personal Details</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="age">Age *</label>
+                            <input type="number" id="age" name="age" class="form-control"
+                                   min="18" max="80" required th:value="${profile != null ? profile.age : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label for="height">Height *</label>
+                            <input type="text" id="height" name="height" class="form-control"
+                                   placeholder="e.g., 5 feet 10 inches" required th:value="${profile != null ? profile.height : ''}">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 3: RELIGIOUS DETAILS -->
+                <div class="form-section" id="section-3">
+                    <h3>Step 3: Religious &amp; Community Details</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="religion">Religion *</label>
+                            <select id="religion" name="religion" class="form-control" required>
+                                <option value="">Select Religion</option>
+                                <option value="christian" th:selected="${profile != null and profile.religion == 'christian'}">Christian</option>
+                                <option value="converted_christian" th:selected="${profile != null and profile.religion == 'converted_christian'}">Converted-Christian</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="caste">Caste *</label>
+                            <input type="text" id="caste" name="caste" class="form-control"
+                                   placeholder="Your caste" required th:value="${profile != null ? profile.caste : ''}">
+                        </div>
+                    </div>
+
+                    <div class="form-row" id="denominationRow" style="display:none;">
+                        <div class="form-group">
+                            <label for="denomination">Denomination *</label>
+                            <select id="denomination" name="denomination" class="form-control">
+                                <option value="">Select Denomination</option>
+                                <option value="hebron" th:selected="${profile != null and profile.denomination == 'hebron'}">Hebron</option>
+                                <option value="lutheran" th:selected="${profile != null and profile.denomination == 'lutheran'}">Lutheran</option>
+                                <option value="roman" th:selected="${profile != null and profile.denomination == 'roman'}">Roman Catholic</option>
+                                <option value="baptist" th:selected="${profile != null and profile.denomination == 'baptist'}">Baptist</option>
+                                <option value="csi" th:selected="${profile != null and profile.denomination == 'csi'}">CSI</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bornAgainDate">Born Again Year *</label>
+                            <input type="number" id="bornAgainDate" name="bornAgainDate" class="form-control"
+                                   placeholder="e.g., 2005" min="1900" max="2026" required
+                                   th:value="${profile != null ? profile.bornAgainDate : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label for="baptizedDate">Baptized Year *</label>
+                            <input type="number" id="baptizedDate" name="baptizedDate" class="form-control"
+                                   placeholder="e.g., 2010" min="1900" max="2026" required
+                                   th:value="${profile != null ? profile.baptizedDate : ''}">
+                        </div>
+                    </div>
+
+                    <div class="form-group form-group-full">
+                        <label for="motherTongue">Mother Tongue *</label>
+                        <input type="text" id="motherTongue" name="motherTongue" class="form-control"
+                               placeholder="e.g., English, Tamil, Telugu" required
+                               th:value="${profile != null ? profile.motherTongue : ''}">
+                    </div>
+                </div>
+
+                <!-- STEP 4: PROFESSIONAL DETAILS -->
+                <div class="form-section" id="section-4">
+                    <h3>Step 4: Professional Details</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="education">Education *</label>
+                            <select id="education" name="education" class="form-control" required>
+                                <option value="">Select Education Level</option>
+                                <option value="High School" th:selected="${profile != null and profile.education == 'High School'}">High School</option>
+                                <option value="Bachelor" th:selected="${profile != null and profile.education == 'Bachelor'}">Bachelor</option>
+                                <option value="Master" th:selected="${profile != null and profile.education == 'Master'}">Master</option>
+                                <option value="PhD" th:selected="${profile != null and profile.education == 'PhD'}">PhD</option>
+                                <option value="Professional" th:selected="${profile != null and profile.education == 'Professional'}">Professional</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="occupation">Occupation *</label>
+                            <input type="text" id="occupation" name="occupation" class="form-control"
+                                   placeholder="Your profession" required th:value="${profile != null ? profile.occupation : ''}">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="city">City *</label>
+                            <input type="text" id="city" name="city" class="form-control"
+                                   placeholder="Where do you live?" required th:value="${profile != null ? profile.city : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label for="state">State *</label>
+                            <input type="text" id="state" name="state" class="form-control"
+                                   placeholder="State" required th:value="${profile != null ? profile.state : ''}">
+                        </div>
+                    </div>
+                    <div class="form-group form-group-full">
+                        <label for="employedIn">Employed In</label>
+                        <input type="text" id="employedIn" name="employedIn" class="form-control"
+                               placeholder="Company or Organization" th:value="${profile != null ? profile.employedIn : ''}">
+                    </div>
+                </div>
+
+                <!-- STEP 5: ABOUT YOU -->
+                <div class="form-section" id="section-5">
+                    <h3>Step 5: About You &amp; Password</h3>
+                    <div class="form-group form-group-full">
+                        <label for="bio">About Yourself *</label>
+                        <textarea id="bio" name="bio" class="form-control" rows="4"
+                                  placeholder="Tell us about yourself (Max 500 characters)"
+                                  required th:text="${profile != null ? profile.bio : ''}"></textarea>
+                    </div>
+                    <div class="form-group form-group-full">
+                        <label for="password">Password *</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="password" name="password" class="form-control"
+                                   placeholder="Min. 8 characters" required minlength="8">
+                            <button type="button" class="password-toggle" onclick="togglePassword(event,'password')">
+                                <i class="far fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-full">
+                        <label for="confirmPassword">Confirm Password *</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="confirmPassword" name="confirmPassword"
+                                   class="form-control" placeholder="Confirm password" required minlength="8">
+                            <button type="button" class="password-toggle" onclick="togglePassword(event,'confirmPassword')">
+                                <i class="far fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Image CAPTCHA -->
+                    <div class="form-group form-group-full">
+                        <label for="captcha">Enter CAPTCHA Code *</label>
+                        <div class="captcha-container">
+                            <img id="captchaImage"
+                                 th:src="@{/captcha-image}"
+                                 alt="CAPTCHA"
+                                 class="captcha-image"
+                                 onclick="refreshCaptcha()"
+                                 title="Click to refresh">
+                            <button type="button" class="captcha-refresh" onclick="refreshCaptcha()" title="Refresh CAPTCHA">🔄</button>
+                        </div>
+                        <input type="text" id="captcha" name="captcha" class="form-control captcha-input"
+                               placeholder="Enter the code shown above" required autocomplete="off"
+                               maxlength="5" style="text-transform: uppercase;">
+                    </div>
+
+                    <div class="auth-terms">
+                        <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                        <label for="agreeTerms" style="display: inline; margin-left: 5px;">
+                            I agree to the <a th:href="@{/terms-and-conditions}">Terms of Service</a> and
+                            <a th:href="@{/privacy-policy}">Privacy Policy</a> *
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="form-navigation" style="display: flex; gap: 10px; margin-top: 30px;">
+                    <button type="button" class="btn btn-secondary" id="prevBtn" onclick="previousStep()" style="display: none;">
+                        ← Previous
+                    </button>
+                    <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextStep()">
+                        Next →
+                    </button>
+                    <button type="submit" class="btn btn-success" id="submitBtn" style="display: none;">
+                        <i class="fas fa-check"></i> Create Account
+                    </button>
+                </div>
+            </form>
+
+            <div class="auth-footer" style="margin-top: 30px;">
+                Already have an account? <a th:href="@{/login}">Login here</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Footer -->
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<script>
+    let currentStep = 1;
+    const totalSteps = 5;
+
+    function showStep(step) {
+        for (let i = 1; i <= totalSteps; i++) {
+            document.getElementById(`section-${i}`).classList.remove('active');
+            document.getElementById(`step-${i}`).classList.remove('active');
+        }
+        document.getElementById(`section-${step}`).classList.add('active');
+        document.getElementById(`step-${step}`).classList.add('active');
+        document.getElementById('prevBtn').style.display = step === 1 ? 'none' : 'block';
+        document.getElementById('nextBtn').style.display = step === totalSteps ? 'none' : 'block';
+        document.getElementById('submitBtn').style.display = step === totalSteps ? 'block' : 'none';
+        for (let i = 1; i < step; i++) {
+            document.getElementById(`step-${i}`).classList.add('completed');
+        }
+    }
+
+    function nextStep() {
+        if (validateStep(currentStep)) {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
+                window.scrollTo(0, 0);
+            }
+        }
+    }
+
+    function previousStep() {
+        if (currentStep > 1) {
+            currentStep--;
+            showStep(currentStep);
+            window.scrollTo(0, 0);
+        }
+    }
+
+    function validateStep(step) {
+        const requiredFields = document.querySelectorAll(`#section-${step} [required]`);
+        let isValid = true;
+        requiredFields.forEach(field => {
+            const val = (field.value || '').trim();
+            if (!val) {
+                field.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                field.classList.remove('is-invalid');
+            }
+        });
+        if (!isValid) alert('Please fill in all required fields');
+        return isValid;
+    }
+
+    function togglePassword(evt, fieldId) {
+        const field = document.getElementById(fieldId);
+        const icon = evt.currentTarget.querySelector('i');
+        if (!field || !icon) return;
+        if (field.type === 'password') {
+            field.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            field.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+
+    function updateDenomination() {
+        const religion = document.getElementById('religion');
+        const row = document.getElementById('denominationRow');
+        const denom = document.getElementById('denomination');
+        if (!religion || !row || !denom) return;
+        const show = (religion.value === 'christian' || religion.value === 'converted_christian');
+        row.style.display = show ? '' : 'none';
+        denom.required = show;
+        if (!show) denom.value = '';
+    }
+
+    function refreshCaptcha() {
+        const captchaImage = document.getElementById('captchaImage');
+        captchaImage.src = '/captcha-image?' + new Date().getTime();
+        document.getElementById('captcha').value = '';
+    }
+
+    document.getElementById('registrationForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        for (let i = 1; i <= totalSteps; i++) {
+            if (!validateStep(i)) {
+                currentStep = i;
+                showStep(currentStep);
+                window.scrollTo(0, 0);
+                return;
+            }
+        }
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        if (password !== confirmPassword) {
+            alert('Passwords do not match!');
+            return;
+        }
+        if (!document.getElementById('agreeTerms').checked) {
+            alert('Please agree to the terms and conditions');
+            return;
+        }
+        const captchaValue = document.getElementById('captcha').value.trim();
+        if (!captchaValue) {
+            alert('Please enter the CAPTCHA code');
+            return;
+        }
+        this.submit();
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        showStep(1);
+        updateDenomination();
+        const religion = document.getElementById('religion');
+        if (religion) religion.addEventListener('change', updateDenomination);
+        refreshCaptcha();
+    });
+
+    document.getElementById('captcha').addEventListener('input', function(e) {
+        e.target.value = e.target.value.toUpperCase();
+    });
+
+    function showUserRegister() {
+        document.getElementById("registerOptions").style.display = "none";
+        document.getElementById("franchiseSection").style.display = "none";
+        document.getElementById("normalRegisterForm").style.display = "block";
+    }
+
+    function showFranchiseForm() {
+        document.getElementById("registerOptions").style.display = "none";
+        document.getElementById("normalRegisterForm").style.display = "none";
+        document.getElementById("franchiseSection").style.display = "block";
+    }
+
+    function toggleFranchiseForm(isPastor) {
+        const formFields = document.getElementById("franchiseFormFields");
+        if (isPastor) {
+            formFields.style.display = "block";
+        } else {
+            formFields.style.display = "none";
+            alert("Franchise registration is available only for Pastors.");
+        }
+    }
+
+    document.getElementById("franchiseForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        document.getElementById("franchiseContent").style.display = "none";
+        document.getElementById("franchiseSuccessMessage").style.display = "block";
+    });
+</script>
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/69b14b6bbe53e11c396ec50f/1jje8t7rf';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+</script>
+<!--End of Tawk.to Script-->
+</body>
+</html>

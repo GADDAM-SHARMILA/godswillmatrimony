@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms & Conditions - God's Will Matrimony</title>
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+    <link rel="stylesheet" th:href="@{/css/tc_pp.css}">
+</head>
+<body>
+
+<header class="header">
+    <div class="container navbar">
+        <div class="logo-text-container">
+            <span class="brand-name">GOD'S WILL MATRIMONY</span>
+            <span class="brand-tagline">God's Will | God's Way | God's Time</span>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="policy-content">
+        <h1>Terms & Conditions</h1>
+
+        <h2>1. Admin Rights & Conduct</h2>
+        <p>If any <strong>irrelevant activity or fraudulent behavior</strong> is found, the Admin reserves <strong>100% rights</strong> to immediately disable or permanently ban the account without prior notice.</p>
+
+        <h2>2. Eligibility</h2>
+        <p>Users must be at least 18 years of age to register and must genuinely be seeking a life partner according to the values of our community.</p>
+
+        <div class="safety-alert">
+            <h3>Safety Tips for Members</h3>
+            <ul>
+                <li>Do not share your bank or financial details with any member.</li>
+                <li>Report any suspicious behavior to the Admin immediately.</li>
+                <li>Always meet in a public place for the first time.</li>
+            </ul>
+        </div>
+
+        <h2>3. Account Security</h2>
+        <p>Users are responsible for maintaining the confidentiality of their login credentials. Any activity occurring under your account is your sole responsibility.</p>
+
+        <h2>4. Profile Authenticity</h2>
+        <p>All users must provide <strong>accurate and truthful information</strong> in their profiles. Fake profiles or impersonation of any individual will result in immediate account termination.</p>
+
+        <h2>5. Communication Guidelines</h2>
+        <p>Members must communicate respectfully at all times. Any form of harassment, abuse, or offensive language towards other members is strictly prohibited.</p>
+
+        <h2>6. Privacy of Members</h2>
+        <p>Members must respect the privacy of other users. Sharing another member's personal information without consent is a serious violation of these terms.</p>
+
+        <h2>7. No Commercial Use</h2>
+        <p>This platform is strictly for matrimonial purposes only. Using it for <strong>advertising, solicitation, or any commercial activity</strong> is strictly forbidden.</p>
+
+        <h2>8. Amendments</h2>
+        <p>God's Will Matrimony reserves the right to update or modify these Terms & Conditions at any time. Continued use of the platform after changes implies acceptance of the revised terms.</p>
+
+        <h2>9. Governing Law</h2>
+        <p>These terms shall be governed by and construed in accordance with the laws applicable in the jurisdiction where God's Will Matrimony operates.</p>
+
+        <h2>10. Contact</h2>
+        <p>For any queries or concerns regarding these Terms & Conditions, please contact our Admin directly through the platform's support channel.</p>
+    </div>
+</div>
+
+<!-- WATERMARK OVERLAY -->
+<div id="watermark-overlay"></div>
+
+<script>
+    const overlay = document.getElementById('watermark-overlay');
+    overlay.style.cssText = `
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        pointer-events: none;
+        overflow: hidden;
+    `;
+
+    const text = "GOD'S WILL MATRIMONY";
+    const itemW = 420, itemH = 120;
+    const cols = Math.ceil(window.innerWidth / itemW) + 2;
+    const rows = Math.ceil(window.innerHeight / itemH) + 2;
+
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+            const el = document.createElement('div');
+            el.textContent = text;
+            el.style.cssText = `
+                position: absolute;
+                left: ${c * itemW - 60}px;
+                top: ${r * itemH - 40}px;
+                font-size: 22px;
+                font-weight: 900;
+                font-family: 'Segoe UI', sans-serif;
+                color: rgba(168, 85, 112, 0.13);
+                letter-spacing: 5px;
+                text-transform: uppercase;
+                white-space: nowrap;
+                transform: rotate(-28deg);
+                user-select: none;
+            `;
+            overlay.appendChild(el);
+        }
+    }
+</script>
+
+</body>
+</html>

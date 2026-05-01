@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
+    <title>Wedding Shopping | God's Will Matrimony</title>
+    <link rel="stylesheet" th:href="@{/css/stories.css}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+    <style>
+        :root {
+          --color-accent-pink: #f4c2c2;
+          --color-accent-gold: #d4af37;
+          --shadow: 0 12px 40px rgba(0,0,0,0.12);
+          --border: 2px solid rgba(255,255,255,0.7);
+        }
+
+
+        .shopping-hero {
+          text-align: center;
+          padding: 3rem 1rem 1.5rem;
+        }
+
+        .shopping-hero h1 {
+          font-size: 2rem;
+          font-weight: 700;
+          color: #444;
+          margin: 0 0 0.5rem 0;
+        }
+
+        .shopping-hero p {
+          color: #999;
+          font-size: 1rem;
+          margin: 0;
+        }
+
+        .shopping-container {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 2.5rem;
+          max-width: 1200px;
+          margin: 2rem auto 4rem;
+          justify-content: center;
+          padding: 0 1rem;
+        }
+
+        .card {
+          position: relative;
+          width: 310px;
+          border-radius: 20px;
+          overflow: hidden;
+          box-shadow: 0 6px 25px rgba(0,0,0,0.1);
+          background: linear-gradient(to bottom, #ffffff, #fcfbf9);
+          border: var(--border);
+          transition: all 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+          cursor: pointer;
+          text-decoration: none;
+        }
+
+        .card:hover {
+          transform: translateY(-10px) scale(1.03);
+          box-shadow: var(--shadow);
+        }
+
+        .card-image {
+          width: 100%;
+          height: 230px;
+          object-fit: cover;
+          filter: contrast(1.05);
+        }
+
+        .card-body {
+          padding: 1.6rem 1.4rem;
+        }
+
+        .card-title {
+          margin: 0 0 0.4rem 0;
+          font-size: 1.6rem;
+          font-weight: 600;
+        }
+
+        .card-category {
+          font-size: 0.9rem;
+          font-weight: 500;
+          letter-spacing: 0.5px;
+        }
+
+        .card-description {
+          margin: 0.6rem 0;
+          font-size: 0.92rem;
+          color: #777;
+          line-height: 1.6;
+        }
+
+        .card-button {
+          display: inline-block;
+          padding: 0.7rem 1.4rem;
+          border-radius: 8px;
+          border: none;
+          font-weight: 600;
+          font-size: 0.95rem;
+          cursor: pointer;
+          transition: all 0.25s ease;
+          box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .card-button:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 5px 16px rgba(0,0,0,0.18);
+        }
+
+        .card--bride {
+          background: linear-gradient(135deg, #ffffff, #fdf5f8, #f9f5f0);
+        }
+        .card--bride .card-title    { color: var(--color-accent-pink); }
+        .card--bride .card-category { color: var(--color-accent-pink); }
+        .card--bride .card-button   { background-color: var(--color-accent-pink); color: white; }
+        .card--bride .card-button:hover { background-color: #e8a4a4; }
+
+        .card--groom {
+          background: linear-gradient(135deg, #ffffff, #fdfaf5, #f9f5f0);
+        }
+        .card--groom .card-title    { color: var(--color-accent-gold); }
+        .card--groom .card-category { color: var(--color-accent-gold); }
+        .card--groom .card-button   { background-color: var(--color-accent-gold); color: white; }
+        .card--groom .card-button:hover { background-color: #b8932d; }
+
+        @media (max-width: 768px) { .card { width: 290px; } }
+        @media (max-width: 576px) {
+          .card { width: 100%; max-width: 320px; }
+          .shopping-container { gap: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<div class="shopping-hero">
+    <h1>💍 Wedding Shopping</h1>
+    <p>Everything you need for the perfect wedding day</p>
+</div>
+
+<div class="shopping-container">
+
+    <!-- Bride Card -->
+    <a th:href="@{/bride-products}" class="card card--bride">
+        <img th:src="@{/images/bride.jpg}" src="bride.jpg" alt="Bride shopping" class="card-image" />
+        <div class="card-body">
+            <h2 class="card-title">Bride</h2>
+            <p class="card-category">For her perfect wedding look</p>
+            <p class="card-description">
+                Discover bridal wear, hand‑crafted jewelry, and wellness essentials for the bride.
+            </p>
+            <span class="card-button">Shop Bride Products</span>
+        </div>
+    </a>
+
+    <!-- Groom Card -->
+    <a th:href="@{/groom-products}" class="card card--groom">
+        <img th:src="@{/images/groom.jpg}" src="groom.jpg" alt="Groom shopping" class="card-image" />
+        <div class="card-body">
+            <h2 class="card-title">Groom</h2>
+            <p class="card-category">For his stylish wedding day</p>
+            <p class="card-description">
+                Explore tailored suits, accessories, and grooming products for the groom.
+            </p>
+            <span class="card-button">Shop Groom Products</span>
+        </div>
+    </a>
+
+</div>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+</body>
+</html>

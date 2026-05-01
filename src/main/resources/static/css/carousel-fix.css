@@ -1,0 +1,428 @@
+/* ============================================
+   IMAGE CAROUSEL - Premium UI
+   Color Palette: #F2D8E1 (blush pink) + White
+   ============================================ */
+
+/* ============================================
+   CSS CUSTOM PROPERTIES
+   ============================================ */
+:root {
+  --carousel-border-radius: 0px;
+  --carousel-height:        500px;
+  --carousel-height-tablet: 440px;
+  --carousel-height-mobile: 360px;
+  --carousel-height-small:  280px;
+
+  --carousel-transition-speed:  0.7s;
+  --carousel-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Overlay — soft pink-dark tones instead of pure black */
+  --carousel-overlay-start: rgba(44, 26, 46, 0.08);
+  --carousel-overlay-mid:   rgba(44, 26, 46, 0.42);
+  --carousel-overlay-end:   rgba(44, 26, 46, 0.65);
+
+  /* Caption — blush pink tinted glass */
+  --carousel-caption-bg:     rgba(242, 216, 225, 0.18);
+  --carousel-caption-border: rgba(232, 194, 208, 0.35);
+  --carousel-caption-blur:   10px;
+
+  --carousel-btn-size:        52px;
+  --carousel-btn-size-mobile: 46px;
+  --carousel-btn-bg:          rgba(242, 216, 225, 0.75);
+  --carousel-btn-bg-hover:    rgba(255, 255, 255, 0.95);
+  --carousel-btn-border:      rgba(232, 194, 208, 0.60);
+
+  --carousel-indicator-size:         10px;
+  --carousel-indicator-active-width: 26px;
+  --carousel-indicator-bg:           rgba(242, 216, 225, 0.60);
+  --carousel-indicator-bg-hover:     rgba(201, 113, 143, 0.75);
+  --carousel-indicator-bg-active:    #c9718f;
+
+  /* Pink palette (shared with other css files) */
+  --pink:        #F2D8E1;
+  --pink-dark:   #e8c2d0;
+  --pink-light:  #faeef3;
+  --accent:      #c9718f;
+  --accent-dark: #a85570;
+  --text-dark:   #2c1a2e;
+  --shadow-md:   0 6px 24px rgba(193, 100, 135, 0.16);
+  --shadow-lg:   0 16px 48px rgba(193, 100, 135, 0.22);
+  --transition:  all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   CONTAINER & LAYOUT
+   ============================================ */
+.image-carousel-section {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  isolation: isolate;
+}
+
+.carousel-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--carousel-border-radius);
+  box-shadow: var(--shadow-lg);
+  background: var(--pink-light);
+
+  /* Performance */
+  will-change: transform;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.carousel-wrapper,
+.carousel-track {
+  width: 100%;
+  height: var(--carousel-height);
+  position: relative;
+}
+
+/* ============================================
+   SLIDES
+   ============================================ */
+.carousel-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(1.02);
+  transition:
+    opacity   var(--carousel-transition-speed) var(--carousel-transition-easing),
+    transform var(--carousel-transition-speed) var(--carousel-transition-easing),
+    visibility var(--carousel-transition-speed);
+  z-index: 1;
+  will-change: opacity, transform, visibility;
+}
+
+.carousel-slide.active {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+  z-index: 2;
+}
+
+.carousel-slide img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+/* ============================================
+   OVERLAY — pink-tinted gradient
+   ============================================ */
+.carousel-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--carousel-overlay-start) 0%,
+    var(--carousel-overlay-mid)   55%,
+    var(--carousel-overlay-end)   100%
+  );
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* ============================================
+   CAPTION — blush glass card
+   ============================================ */
+.carousel-caption {
+  position: absolute;
+  left: 50%;
+  bottom: 70px;
+  transform: translateX(-50%);
+  z-index: 4;
+
+  width: min(920px, 92%);
+  text-align: center;
+
+  padding: clamp(14px, 2vw, 20px) clamp(18px, 3vw, 28px);
+  border-radius: 14px;
+  backdrop-filter: blur(var(--carousel-caption-blur));
+  background: var(--carousel-caption-bg);
+  border: 1.5px solid var(--carousel-caption-border);
+  box-shadow: 0 4px 24px rgba(193, 100, 135, 0.12);
+
+  pointer-events: none;
+}
+
+.carousel-caption h3 {
+  font-size: clamp(1.5rem, 2.3vw, 2.4rem);
+  font-weight: 900;
+  line-height: 1.15;
+  margin: 0 0 8px 0;
+  color: #fff;
+  text-shadow: 0 2px 12px rgba(44, 26, 46, 0.55);
+  letter-spacing: -0.3px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.carousel-caption p {
+  font-size: clamp(0.90rem, 1.2vw, 1.1rem);
+  line-height: 1.6;
+  opacity: 0.95;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 8px rgba(44, 26, 46, 0.45);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================
+   CONTROLS (Prev / Next) — pink style
+   ============================================ */
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 6;
+
+  width: var(--carousel-btn-size);
+  height: var(--carousel-btn-size);
+  border-radius: 50%;
+  border: 1.5px solid var(--carousel-btn-border);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--carousel-btn-bg);
+  color: var(--accent-dark);
+  cursor: pointer;
+  font-size: 1.1rem;
+
+  transition:
+    transform     0.25s ease,
+    background    0.25s ease,
+    box-shadow    0.25s ease,
+    border-color  0.25s ease;
+  backdrop-filter: blur(8px);
+  outline-offset: 4px;
+  will-change: transform;
+}
+
+.carousel-btn:hover {
+  background: var(--carousel-btn-bg-hover);
+  border-color: var(--accent);
+  color: var(--accent-dark);
+  transform: translateY(-50%) scale(1.10);
+  box-shadow: 0 8px 22px rgba(193, 100, 135, 0.28);
+}
+
+.carousel-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.carousel-btn:active {
+  transform: translateY(-50%) scale(0.97);
+  transition-duration: 0.1s;
+}
+
+.carousel-btn.prev { left: 18px; }
+.carousel-btn.next { right: 18px; }
+
+/* ============================================
+   INDICATORS (Dots) — pink pill style
+   ============================================ */
+.carousel-indicators {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  z-index: 6;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 9px 14px;
+  border-radius: 999px;
+  background: rgba(242, 216, 225, 0.55);
+  backdrop-filter: blur(var(--carousel-caption-blur));
+  border: 1.5px solid var(--carousel-caption-border);
+  box-shadow: 0 2px 12px rgba(193, 100, 135, 0.12);
+}
+
+.indicator {
+  width: var(--carousel-indicator-size);
+  height: var(--carousel-indicator-size);
+  border-radius: 999px;
+  background: var(--carousel-indicator-bg);
+  cursor: pointer;
+  transition:
+    transform    0.25s ease,
+    background   0.25s ease,
+    width        0.25s ease,
+    box-shadow   0.25s ease;
+  outline-offset: 2px;
+  will-change: transform, width;
+}
+
+.indicator:hover {
+  background: var(--carousel-indicator-bg-hover);
+  transform: scale(1.18);
+}
+
+.indicator:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.indicator.active {
+  width: var(--carousel-indicator-active-width);
+  background: var(--carousel-indicator-bg-active);
+  box-shadow: 0 0 10px rgba(201, 113, 143, 0.50);
+  cursor: default;
+}
+
+/* ============================================
+   ANIMATED TOP BAR on carousel container
+   ============================================ */
+.carousel-container::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--pink-dark), var(--accent), var(--pink-dark), var(--accent));
+  background-size: 300% 100%;
+  animation: barSlide 3s linear infinite;
+  z-index: 10;
+}
+
+@keyframes barSlide {
+  0%   { background-position: -300% 0; }
+  100% { background-position:  300% 0; }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+/* Tablet */
+@media (max-width: 900px) {
+  .carousel-wrapper,
+  .carousel-track {
+    height: var(--carousel-height-tablet);
+  }
+
+  .carousel-caption { bottom: 64px; }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .carousel-wrapper,
+  .carousel-track {
+    height: var(--carousel-height-mobile);
+  }
+
+  .carousel-caption {
+    bottom: 58px;
+    width: min(920px, 90%);
+    padding: 12px 14px;
+    border-radius: 10px;
+  }
+
+  .carousel-btn {
+    width: var(--carousel-btn-size-mobile);
+    height: var(--carousel-btn-size-mobile);
+  }
+
+  .carousel-indicators {
+    gap: 7px;
+    padding: 7px 10px;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 420px) {
+  .carousel-wrapper,
+  .carousel-track {
+    height: var(--carousel-height-small);
+  }
+
+  .carousel-caption {
+    bottom: 54px;
+    width: min(920px, 88%);
+    padding: 10px 12px;
+  }
+
+  .carousel-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 0.9rem;
+  }
+
+  .carousel-btn.prev { left: 8px; }
+  .carousel-btn.next { right: 8px; }
+
+  .carousel-indicators {
+    gap: 6px;
+    padding: 6px 9px;
+    bottom: 12px;
+  }
+
+  .indicator {
+    width: 8px;
+    height: 8px;
+  }
+
+  .indicator.active { width: 18px; }
+}
+
+/* ============================================
+   ACCESSIBILITY & MOTION
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .carousel-slide,
+  .carousel-btn,
+  .indicator {
+    transition-duration: 0.01ms !important;
+    animation-duration:  0.01ms !important;
+  }
+
+  .carousel-slide {
+    transform: scale(1) !important;
+  }
+
+  .carousel-container::before {
+    animation: none !important;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .carousel-btn,
+  .carousel-indicators,
+  .carousel-caption {
+    border-width: 2px;
+  }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.carousel-container.paused .carousel-slide {
+  animation-play-state: paused;
+}
+
+.carousel-container.loading::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(242, 216, 225, 0.60);
+  z-index: 10;
+}
+
+.carousel-container.no-controls   .carousel-btn        { display: none; }
+.carousel-container.no-indicators .carousel-indicators  { display: none; }

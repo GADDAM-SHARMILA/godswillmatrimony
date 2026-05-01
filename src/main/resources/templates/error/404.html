@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>404 — Page Not Found</title>
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+    <!-- Link your 404 CSS -->
+    <link rel="stylesheet" th:href="@{/css/404.css}">
+</head>
+
+<body>
+<main class="error-wrap">
+    <section class="error-card" role="region" aria-labelledby="error-title">
+        <div class="sparkle s1" aria-hidden="true">✦</div>
+        <div class="sparkle s2" aria-hidden="true">✧</div>
+        <div class="sparkle s3" aria-hidden="true">✦</div>
+
+        <p class="badge" aria-hidden="true">Oops</p>
+
+        <h1 id="error-title" class="code">404</h1>
+        <h2 class="title">Page not found</h2>
+
+        <p class="subtitle">
+            The page you’re looking for may have been moved, renamed, or never existed.
+        </p>
+
+        <div class="actions">
+            <a class="btn btn-primary" href="/">← Back to Home</a>
+            <a class="btn btn-secondary" href="/success-stories">View Success Stories</a>
+        </div>
+
+        <p class="help">
+            If you believe this is a mistake, you can
+            <a href="mailto:contact@godswillmatrimony.in?subject=Page%20Not%20Found%20Issue&body=Hello%2C%0A%0AI%20encountered%20a%20404%20error%20on%20your%20website.%0A%0APage%20I%20was%20trying%20to%20visit%3A%20%0A%0ADescription%20of%20the%20issue%3A%20%0A%0AThank%20you.">
+                contact us
+            </a>.
+        </p>
+    </section>
+</main>
+</body>
+</html>

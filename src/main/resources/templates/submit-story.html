@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
+    <title th:text="${pageTitle}">Submit Your Story</title>
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+    <link rel="stylesheet" th:href="@{/css/stories.css}">
+</head>
+<body>
+
+<!-- Header -->
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<div class="container" style="max-width:800px; margin:40px auto;">
+    <div class="card" style="padding:24px;">
+        <h1>Share Your Success Story</h1>
+        <p>Found your soulmate through our platform? Tell everyone!</p>
+
+        <form th:action="@{/submit-story}"
+              th:object="${successStory}"
+              method="post"
+              enctype="multipart/form-data"
+              style="margin-top:20px;">
+
+            <!-- Couple Name -->
+            <div class="form-group" style="margin-bottom:12px;">
+                <label for="coupleName">Couple Name</label>
+                <input type="text"
+                       id="coupleName"
+                       th:field="*{coupleName}"
+                       class="form-control"
+                       placeholder="e.g. Rahul & Priya"
+                       required />
+            </div>
+
+            <!-- Story -->
+            <div class="form-group" style="margin-bottom:12px;">
+                <label for="story">Your Story</label>
+                <textarea id="story"
+                          th:field="*{story}"
+                          class="form-control"
+                          rows="6"
+                          placeholder="Tell us how you met..."
+                          required></textarea>
+            </div>
+
+            <!-- Date + Location -->
+            <div class="form-row" style="display:flex; gap:12px;">
+                <div class="form-group" style="flex:1;">
+                    <label for="marriageDate">Marriage Date</label>
+                    <input type="date"
+                           id="marriageDate"
+                           th:field="*{marriageDate}"
+                           class="form-control" />
+                </div>
+
+                <div class="form-group" style="flex:1;">
+                    <label for="location">Location</label>
+                    <input type="text"
+                           id="location"
+                           th:field="*{location}"
+                           class="form-control"
+                           placeholder="City, Country" />
+                </div>
+            </div>
+
+            <!-- Image Upload -->
+            <div class="form-group" style="margin-top:12px;">
+                <label for="imageFile">Couple Photo (optional)</label>
+                <input type="file"
+                       id="imageFile"
+                       name="imageFile"
+                       accept="image/*"
+                       class="form-control" />
+
+                <small style="color:#666;">Max size: 2MB</small>
+
+                <div style="margin-top:12px;">
+                    <img id="preview"
+                         class="img-preview"
+                         src="#"
+                         alt="preview"
+                         style="display:none;" />
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div style="margin-top:18px; text-align:right;">
+                <a th:href="@{/success-stories}"
+                   class="btn btn-secondary"
+                   style="margin-right:8px;">Cancel</a>
+
+                <button type="submit" class="btn btn-primary">
+                    Submit Story 💕
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+    const input = document.getElementById('imageFile');
+    const preview = document.getElementById('preview');
+
+    if (input) {
+        input.addEventListener('change', e => {
+            const file = e.target.files[0];
+            if (!file) {
+                preview.style.display = 'none';
+                return;
+            }
+            const url = URL.createObjectURL(file);
+            preview.src = url;
+            preview.style.display = 'block';
+        });
+    }
+</script>
+
+<!-- Footer -->
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+</body>
+</html>

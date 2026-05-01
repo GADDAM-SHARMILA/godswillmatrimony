@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
+    <title>Admin - All Orders</title>
+    <link rel="stylesheet" th:href="@{/css/admin_pp.css}">
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+    <style>
+        /* ── Status filter tabs ── */
+        .filter-tabs {
+            display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.2rem;
+        }
+        .filter-tab {
+            padding: 6px 14px; border-radius: 999px; font-size: 0.82rem;
+            font-weight: 700; cursor: pointer; border: 1.5px solid #ddd;
+            background: #fff; color: #666; transition: all 0.2s;
+        }
+        .filter-tab.active, .filter-tab:hover {
+            background: #7a2a40; color: #fff; border-color: #7a2a40;
+        }
+
+        /* ── Stats bar ── */
+        .order-stats { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 1.2rem; }
+        .order-stat {
+            background: #fff; border: 1px solid #eee; border-radius: 10px;
+            padding: 10px 18px; font-size: 13px; font-weight: 700; color: #444;
+            flex: 1; min-width: 100px; text-align: center;
+        }
+        .order-stat span { display: block; font-size: 22px; font-weight: 900; color: #7a2a40; }
+
+        /* ── Order card ── */
+        .order-admin-card {
+            background: #fff; border: 1px solid #eee; border-radius: 12px;
+            padding: 16px; margin-bottom: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: box-shadow 0.2s;
+        }
+        .order-admin-card:hover { box-shadow: 0 4px 18px rgba(0,0,0,0.09); }
+
+        .order-admin-header {
+            display: flex; align-items: flex-start;
+            justify-content: space-between; flex-wrap: wrap;
+            gap: 10px; margin-bottom: 12px;
+            padding-bottom: 12px; border-bottom: 1px solid #f5f5f5;
+        }
+        .order-admin-id   { font-size: 12px; font-family: monospace; color: #888; }
+        .order-admin-date { font-size: 12px; color: #bbb; margin-top: 2px; }
+        .order-admin-customer { font-size: 14px; font-weight: 800; color: #222; margin-bottom: 2px; }
+        .order-admin-contact  { font-size: 12px; color: #777; }
+
+        /* Status badge */
+        .status-badge {
+            font-size: 11px; font-weight: 800;
+            padding: 4px 10px; border-radius: 999px;
+        }
+        .s-PENDING    { background: #fff8e1; color: #b45309; border: 1px solid #fde68a; }
+        .s-CONFIRMED  { background: #ecfdf3; color: #065f46; border: 1px solid #a7f3d0; }
+        .s-PROCESSING { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+        .s-SHIPPED    { background: #f5f3ff; color: #6d28d9; border: 1px solid #ddd6fe; }
+        .s-DELIVERED  { background: #ecfdf3; color: #065f46; border: 1px solid #6ee7b7; }
+        .s-CANCELLED  { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+
+        .pay-badge {
+            font-size: 11px; font-weight: 700;
+            padding: 3px 8px; border-radius: 999px;
+        }
+        .p-PAID     { background: #ecfdf3; color: #065f46; border: 1px solid #a7f3d0; }
+        .p-PENDING  { background: #fff8e1; color: #b45309; border: 1px solid #fde68a; }
+        .p-FAILED   { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+        .p-REFUNDED { background: #f5f3ff; color: #6d28d9; border: 1px solid #ddd6fe; }
+
+        /* Items table */
+        .order-items-mini { margin: 10px 0; display: flex; flex-direction: column; gap: 6px; }
+        .order-item-mini {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 13px; color: #444;
+        }
+        .order-item-mini img {
+            width: 38px; height: 38px; border-radius: 7px;
+            object-fit: cover; border: 1px solid #eee; flex-shrink: 0;
+        }
+        .item-mini-name { flex: 1; font-weight: 600; }
+        .item-mini-qty  { color: #999; font-size: 12px; }
+        .item-mini-price { font-weight: 700; white-space: nowrap; }
+
+        /* Footer row */
+        .order-admin-footer {
+            display: flex; align-items: center;
+            justify-content: space-between; flex-wrap: wrap;
+            gap: 10px; padding-top: 12px; border-top: 1px solid #f5f5f5;
+        }
+        .order-total-admin { font-size: 14px; font-weight: 900; color: #222; }
+        .order-total-admin span { color: #7a2a40; }
+        .order-discount-admin { font-size: 12px; color: #067647; font-weight: 600; }
+
+        /* Shipping address */
+        .shipping-mini {
+            font-size: 12px; color: #777; line-height: 1.5;
+            background: #fafafa; border-radius: 8px;
+            padding: 8px 12px; margin: 8px 0; border: 1px solid #f0f0f0;
+        }
+
+        /* Status update dropdown */
+        .status-update-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .status-select {
+            padding: 6px 10px; border: 1.5px solid #ddd; border-radius: 8px;
+            font-size: 12px; font-weight: 600; color: #444;
+            background: #fff; cursor: pointer; font-family: inherit;
+        }
+        .status-select:focus { outline: none; border-color: #7a2a40; }
+        .btn-update-status {
+            padding: 6px 14px; border-radius: 8px; border: none;
+            background: #7a2a40; color: #fff; font-size: 12px;
+            font-weight: 700; cursor: pointer; transition: background 0.2s;
+            font-family: inherit;
+        }
+        .btn-update-status:hover { background: #5a1e2e; }
+        .btn-update-status:disabled { background: #ccc; cursor: not-allowed; }
+
+        /* Quick links */
+        .quick-links { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 1.2rem; }
+        .btn-quick {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 18px; font-size: 0.85rem; font-weight: 700;
+            color: #7a2a40; background: #f7edf0; border: 1.5px solid #c0607a;
+            border-radius: 8px; text-decoration: none; transition: background .2s, color .2s;
+        }
+        .btn-quick:hover { background: #7a2a40; color: #fff; }
+
+        /* Guest tag */
+        .guest-tag {
+            font-size: 11px; font-weight: 700; padding: 2px 8px;
+            border-radius: 999px; background: #fff8e1; color: #b45309;
+            border: 1px solid #fde68a;
+        }
+        .user-tag {
+            font-size: 11px; font-weight: 700; padding: 2px 8px;
+            border-radius: 999px; background: #eff6ff; color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+        }
+
+        /* Search */
+        .search-bar input {
+            width: 100%; padding: 10px 14px; border: 1.5px solid #eee;
+            border-radius: 10px; font-size: 14px; font-family: inherit;
+            outline: none; margin-bottom: 1.2rem; transition: border-color 0.2s;
+        }
+        .search-bar input:focus { border-color: #7a2a40; }
+
+        /* Empty */
+        .empty-state { text-align: center; padding: 40px; color: #aaa; font-size: 14px; }
+
+        /* Loading */
+        .loading-state { text-align: center; padding: 30px; color: #aaa; }
+        .spinner-sm {
+            display: inline-block; width: 16px; height: 16px;
+            border: 2px solid #eee; border-top-color: #7a2a40;
+            border-radius: 50%; animation: spin 0.7s linear infinite;
+            vertical-align: middle; margin-right: 6px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Toast */
+        .toast {
+            position: fixed; bottom: 1.5rem; right: 1.5rem;
+            background: #333; color: #fff; padding: 0.7rem 1.2rem;
+            border-radius: 8px; font-size: 0.88rem; opacity: 0;
+            pointer-events: none; transition: opacity 0.3s; z-index: 9999;
+        }
+        .toast.show { opacity: 1; }
+    </style>
+</head>
+
+<body>
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<div class="container" style="max-width: 960px; margin: 2rem auto; padding: 0 1rem;">
+
+    <!-- Header -->
+    <div class="admin-header">
+        <h1>📦 All Orders</h1>
+    </div>
+
+    <!-- Nav Tabs -->
+    <div class="admin-nav-tabs">
+        <a th:href="@{/admin/profiles/all}">All Profiles</a>
+        <a th:href="@{/admin/profiles/pending}">Pending Approval</a>
+        <a th:href="@{/admin/orders}" class="active">📦 All Orders</a>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="quick-links">
+        <a class="btn-quick" th:href="@{/admin/products/add}">
+            <i class="fas fa-box-open"></i> Add Product
+        </a>
+        <a class="btn-quick" th:href="@{/admin/products/list}">
+            <i class="fas fa-list"></i> All Products
+        </a>
+    </div>
+
+    <!-- Stats -->
+    <div class="order-stats" id="orderStats">
+        <div class="order-stat">Loading...<span>—</span></div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="filter-tabs">
+        <button class="filter-tab active" onclick="filterByStatus('ALL', this)">All</button>
+        <button class="filter-tab" onclick="filterByStatus('PENDING', this)">Pending</button>
+        <button class="filter-tab" onclick="filterByStatus('CONFIRMED', this)">Confirmed</button>
+        <button class="filter-tab" onclick="filterByStatus('PROCESSING', this)">Processing</button>
+        <button class="filter-tab" onclick="filterByStatus('SHIPPED', this)">Shipped</button>
+        <button class="filter-tab" onclick="filterByStatus('DELIVERED', this)">Delivered</button>
+        <button class="filter-tab" onclick="filterByStatus('CANCELLED', this)">Cancelled</button>
+    </div>
+
+    <!-- Search -->
+    <div class="search-bar">
+        <input type="text" id="orderSearch"
+               placeholder="🔍 Search by customer name, phone, order ID, city..."
+               oninput="filterBySearch(this.value)" />
+    </div>
+
+    <!-- Orders List -->
+    <div id="ordersList">
+        <div class="loading-state">
+            <span class="spinner-sm"></span> Loading orders...
+        </div>
+    </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<script>
+    let allOrders      = [];
+    let activeStatus   = 'ALL';
+    let searchQuery    = '';
+
+    function formatPrice(n) { return '₹' + Number(n).toLocaleString('en-IN'); }
+
+    function formatDate(dateVal) {
+        if (!dateVal) return '—';
+        let d;
+        // Jackson serializes LocalDateTime as [year, month, day, hour, min, sec, nano]
+        // JS Date months are 0-indexed but LocalDateTime array months are 1-indexed
+        if (Array.isArray(dateVal)) {
+            d = new Date(dateVal[0], dateVal[1] - 1, dateVal[2],
+                         dateVal[3] || 0, dateVal[4] || 0, dateVal[5] || 0);
+        } else {
+            d = new Date(dateVal);
+        }
+        if (isNaN(d.getTime())) return '—';
+        return d.toLocaleDateString('en-IN', {
+            day: '2-digit', month: 'short', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        });
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg; t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    // ── Load all orders ────────────────────────────────────────────────────────
+    async function loadOrders() {
+        try {
+            const res = await fetch('/api/orders/admin/all');
+            allOrders = await res.json();
+            if (!Array.isArray(allOrders)) allOrders = [];
+            renderStats();
+            renderOrders();
+        } catch (e) {
+            document.getElementById('ordersList').innerHTML =
+                '<div class="empty-state">❌ Failed to load orders. Please refresh.</div>';
+        }
+    }
+
+    // ── Stats ──────────────────────────────────────────────────────────────────
+    function renderStats() {
+        const total     = allOrders.length;
+        const pending   = allOrders.filter(o => o.status === 'PENDING').length;
+        const confirmed = allOrders.filter(o => o.status === 'CONFIRMED').length;
+        const shipped   = allOrders.filter(o => o.status === 'SHIPPED').length;
+        const delivered = allOrders.filter(o => o.status === 'DELIVERED').length;
+        const cancelled = allOrders.filter(o => o.status === 'CANCELLED').length;
+        const revenue   = allOrders
+            .filter(o => o.paymentStatus === 'PAID')
+            .reduce((s, o) => s + (o.finalAmount || 0), 0);
+
+        document.getElementById('orderStats').innerHTML = `
+            <div class="order-stat"><span>${total}</span>Total</div>
+            <div class="order-stat"><span>${pending}</span>Pending</div>
+            <div class="order-stat"><span>${confirmed}</span>Confirmed</div>
+            <div class="order-stat"><span>${shipped}</span>Shipped</div>
+            <div class="order-stat"><span>${delivered}</span>Delivered</div>
+            <div class="order-stat"><span>${cancelled}</span>Cancelled</div>
+            <div class="order-stat"><span>${formatPrice(revenue)}</span>Revenue</div>
+        `;
+    }
+
+    // ── Filter ─────────────────────────────────────────────────────────────────
+    function filterByStatus(status, btn) {
+        activeStatus = status;
+        document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderOrders();
+    }
+
+    function filterBySearch(q) {
+        searchQuery = q.toLowerCase().trim();
+        renderOrders();
+    }
+
+    function getFilteredOrders() {
+        return allOrders.filter(o => {
+            const statusMatch = activeStatus === 'ALL' || o.status === activeStatus;
+            if (!statusMatch) return false;
+            if (!searchQuery)  return true;
+            const addr    = o.shippingAddress || {};
+            const haystack = [
+                o.id, addr.fullName, addr.phone, addr.email,
+                addr.city, addr.state, o.userId, o.guestId
+            ].join(' ').toLowerCase();
+            return haystack.includes(searchQuery);
+        });
+    }
+
+    // ── Render ─────────────────────────────────────────────────────────────────
+    function renderOrders() {
+        const list     = document.getElementById('ordersList');
+        const filtered = getFilteredOrders();
+
+        if (filtered.length === 0) {
+            list.innerHTML = '<div class="empty-state">No orders found.</div>';
+            return;
+        }
+
+        list.innerHTML = filtered.map(order => {
+            const addr = order.shippingAddress || {};
+
+            const itemsHtml = (order.items || []).map(item => `
+                <div class="order-item-mini">
+                    <img src="${item.imageUrl || '/images/box.jpg'}"
+                         onerror="this.src='/images/box.jpg'"
+                         alt="${item.productName}" />
+                    <span class="item-mini-name">${item.productName}</span>
+                    <span class="item-mini-qty">× ${item.quantity}</span>
+                    <span class="item-mini-price">${formatPrice(item.price * item.quantity)}</span>
+                </div>
+            `).join('');
+
+            const discountHtml = order.discountAmount > 0
+                ? `<div class="order-discount-admin">🎉 Discount: ${formatPrice(order.discountAmount)}</div>`
+                : '';
+
+            const userTag = order.userId
+                ? `<span class="user-tag">👤 User</span>`
+                : `<span class="guest-tag">👋 Guest</span>`;
+
+            const addressHtml = addr.fullName ? `
+                <div class="shipping-mini">
+                    📦 <strong>${addr.fullName}</strong> · ${addr.phone || ''}
+                    ${addr.email ? `· ${addr.email}` : ''}
+                    <br>${addr.addressLine1 || ''}
+                    ${addr.addressLine2 ? ', ' + addr.addressLine2 : ''}
+                    ${addr.city ? ', ' + addr.city : ''}
+                    ${addr.state ? ', ' + addr.state : ''}
+                    ${addr.pincode ? ' - ' + addr.pincode : ''}
+                </div>
+            ` : '';
+
+            const statusOptions = ['PENDING','CONFIRMED','PROCESSING','SHIPPED','DELIVERED','CANCELLED']
+                .map(s => `<option value="${s}" ${order.status === s ? 'selected' : ''}>${s}</option>`)
+                .join('');
+
+            return `
+                <div class="order-admin-card" id="order-${order.id}">
+                    <div class="order-admin-header">
+                        <div>
+                            <div class="order-admin-customer">
+                                ${addr.fullName || 'Unknown'}
+                                ${userTag}
+                            </div>
+                            <div class="order-admin-contact">
+                                ${addr.phone || ''} ${addr.email ? '· ' + addr.email : ''}
+                            </div>
+                            <div class="order-admin-id">Order: ${order.id}</div>
+                            <div class="order-admin-date">${formatDate(order.createdAt)}</div>
+                        </div>
+                        <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:flex-start;">
+                            <span class="status-badge s-${order.status}">${order.status}</span>
+                            <span class="pay-badge p-${order.paymentStatus}">${order.paymentStatus}</span>
+                        </div>
+                    </div>
+
+                    <div class="order-items-mini">${itemsHtml}</div>
+                    ${addressHtml}
+
+                    <div class="order-admin-footer">
+                        <div>
+                            <div class="order-total-admin">
+                                Total: <span>${formatPrice(order.finalAmount)}</span>
+                                <span style="font-size:12px;color:#aaa;font-weight:400;">
+                                    (subtotal ${formatPrice(order.totalAmount)})
+                                </span>
+                            </div>
+                            ${discountHtml}
+                        </div>
+
+                        <!-- Status update -->
+                        <div class="status-update-row">
+                            <select class="status-select" id="sel-${order.id}">
+                                ${statusOptions}
+                            </select>
+                            <button class="btn-update-status"
+                                    onclick="updateStatus('${order.id}')">
+                                Update Status
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // ── Update order status ───────────────────────────────────────────────────
+    async function updateStatus(orderId) {
+        const select = document.getElementById('sel-' + orderId);
+        const status = select.value;
+        const btn    = select.nextElementSibling;
+        btn.disabled = true; btn.textContent = '...';
+
+        try {
+            const res  = await fetch(`/api/orders/admin/${orderId}/status`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status })
+            });
+            const data = await res.json();
+            if (data.error) { showToast('❌ ' + data.error); return; }
+
+            // Update local data
+            const order = allOrders.find(o => o.id === orderId);
+            if (order) order.status = data.status;
+            renderStats();
+            renderOrders();
+            showToast('✅ Status updated to ' + data.status);
+        } catch (e) {
+            showToast('❌ Failed to update status.');
+        } finally {
+            btn.disabled = false; btn.textContent = 'Update Status';
+        }
+    }
+
+    loadOrders();
+</script>
+</body>
+</html>

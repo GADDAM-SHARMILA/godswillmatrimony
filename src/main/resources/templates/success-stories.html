@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
+    <title>Success Stories - Matrimony</title>
+    <link rel="stylesheet" th:href="@{/css/stories.css}">
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+</head>
+
+<body>
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<div class="profile-listing-header">
+    <div class="container">
+        <h1>💑 Success Stories</h1>
+        <p>Real couples who found their perfect match through our platform</p>
+
+        <!-- Keep only the COUNT (no debug, no top submit button) -->
+        <div class="stories-count"
+             th:text="'💑 Total Success Stories: ' + ${successStories != null ? successStories.size() : 0}">
+            💑 Total Success Stories: 0
+        </div>
+    </div>
+</div>
+
+<section class="success-stories-section" style="padding-top: 40px;">
+    <div class="container">
+        <div class="success-stories-grid">
+
+            <th:block th:if="${successStories != null and !successStories.isEmpty()}">
+                <div class="success-story-card" th:each="story : ${successStories}">
+                    <div class="success-story-image">
+                        <img th:src="@{/success-story/image/{id}(id=${story.id})}"
+                             th:alt="${story.coupleName}"
+                             onerror="this.onerror=null;this.src='/images/default-couple.jpg';">
+                    </div>
+
+
+                    <div class="success-story-content">
+                        <h3 th:text="${story.coupleName}">Couple Name</h3>
+                        <p th:text="${story.story}">Story text goes here...</p>
+
+                        <div class="success-story-meta">
+                            <div class="success-story-date"
+                                 th:if="${story.marriageDate != null}"
+                                 th:text="'Married on ' + ${#temporals.format(story.marriageDate, 'dd MMMM yyyy')}">
+                                Married on 15 January 2024
+                            </div>
+
+                            <div class="success-story-date"
+                                 th:if="${story.marriageDate == null}">
+                                Marriage date not shared
+                            </div>
+
+                            <div class="success-story-location"
+                                 th:if="${!#strings.isEmpty(story.location)}">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span th:text="${story.location}">Mumbai, India</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
+
+            <div class="no-results" th:if="${successStories == null || successStories.isEmpty()}">
+                <div class="no-results-icon">💕</div>
+                <h3>More Success Stories Coming Soon!</h3>
+                <p>Be the first to inspire others by sharing your love story.</p>
+
+                <div style="margin-top: 15px;">
+                    <a th:href="@{/submit-story}" class="btn btn-primary" style="margin-right: 10px;">
+                        <i class="fas fa-pen"></i> Submit Your Story
+                    </a>
+                    <a th:href="@{/}" class="btn btn-primary">Browse Profiles</a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Bottom CTA card -->
+        <div class="success-story-cta" style="margin-top: 60px; padding: 40px; text-align: center;">
+            <h2 style="margin-bottom: 15px; color: var(--primary-color);">
+                📝 Share Your Success Story
+            </h2>
+            <p style="color: #666; margin-bottom: 25px;">
+                Found your soulmate through our platform? Share your story and inspire others!
+            </p>
+            <a th:href="@{/submit-story}" class="btn btn-primary">
+                <i class="fas fa-pen"></i> Submit Your Story
+            </a>
+        </div>
+
+    </div>
+</section>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+</body>
+</html>

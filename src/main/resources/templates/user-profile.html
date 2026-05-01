@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
+    <title>My Profile - Matrimony</title>
+    <link rel="stylesheet" th:href="@{/css/up.css}">
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+    <style>
+        /* ── Orders Section ── */
+        .orders-section { margin-top: 22px; }
+        .orders-section h4 { margin: 0 0 14px; font-size: 15px; font-weight: 900; color: #222; }
+
+        .order-card {
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            background: #fafafa;
+            transition: box-shadow 0.2s;
+        }
+        .order-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+
+        .order-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .order-id { font-size: 12px; color: #888; font-family: monospace; }
+        .order-date { font-size: 12px; color: #aaa; }
+
+        .order-status-badge {
+            font-size: 11px; font-weight: 800;
+            padding: 4px 10px; border-radius: 999px;
+        }
+        .status-PENDING    { background: #fff8e1; color: #b45309; border: 1px solid #fde68a; }
+        .status-CONFIRMED  { background: #ecfdf3; color: #065f46; border: 1px solid #a7f3d0; }
+        .status-PROCESSING { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+        .status-SHIPPED    { background: #f5f3ff; color: #6d28d9; border: 1px solid #ddd6fe; }
+        .status-DELIVERED  { background: #ecfdf3; color: #065f46; border: 1px solid #6ee7b7; }
+        .status-CANCELLED  { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+
+        .payment-badge {
+            font-size: 11px; font-weight: 700;
+            padding: 3px 8px; border-radius: 999px;
+        }
+        .pay-PAID     { background: #ecfdf3; color: #065f46; border: 1px solid #a7f3d0; }
+        .pay-PENDING  { background: #fff8e1; color: #b45309; border: 1px solid #fde68a; }
+        .pay-FAILED   { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+        .pay-REFUNDED { background: #f5f3ff; color: #6d28d9; border: 1px solid #ddd6fe; }
+
+        .order-items { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+        .order-item-row {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 13px; color: #444;
+        }
+        .order-item-img {
+            width: 42px; height: 42px; border-radius: 8px;
+            object-fit: cover; border: 1px solid #eee; flex-shrink: 0;
+        }
+        .order-item-name { flex: 1; font-weight: 600; }
+        .order-item-qty  { color: #888; font-size: 12px; }
+        .order-item-price { font-weight: 700; color: #222; white-space: nowrap; }
+
+        .order-footer {
+            display: flex; align-items: center;
+            justify-content: space-between; flex-wrap: wrap; gap: 8px;
+            padding-top: 10px; border-top: 1px solid #f0f0f0;
+            font-size: 13px;
+        }
+        .order-total { font-weight: 900; color: #222; }
+        .order-total span { color: #c41e3a; }
+
+        .order-discount { font-size: 12px; color: #067647; font-weight: 600; }
+
+        .btn-cancel-order {
+            font-size: 12px; font-weight: 700; padding: 5px 12px;
+            border: 1.5px solid #fca5a5; border-radius: 8px;
+            background: #fff; color: #c41e3a; cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .btn-cancel-order:hover { background: #c41e3a; color: #fff; }
+
+        .empty-orders {
+            text-align: center; padding: 30px 20px;
+            border: 1px dashed #ddd; border-radius: 12px;
+            background: #fafafa; color: #999; font-size: 14px;
+        }
+        .empty-orders a { color: #c41e3a; font-weight: 700; text-decoration: none; }
+
+        /* Loading spinner */
+        .orders-loading { text-align: center; padding: 24px; color: #aaa; font-size: 14px; }
+        .spinner-sm {
+            display: inline-block; width: 16px; height: 16px;
+            border: 2px solid #eee; border-top-color: #c41e3a;
+            border-radius: 50%; animation: spin 0.7s linear infinite;
+            vertical-align: middle; margin-right: 6px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 600px) {
+            .order-card-header { flex-direction: column; align-items: flex-start; }
+            .order-footer { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+<!-- Navbar -->
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<main style="background:#f7f7fb; min-height: calc(100vh - 120px); padding: 28px 16px;">
+    <section style="max-width: 980px; margin: 0 auto;">
+
+        <!-- Page Title -->
+        <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom: 16px;">
+            <div>
+                <h2 style="margin:0; font-size: 22px; font-weight: 900; color:#222;">My Profile</h2>
+                <p style="margin:6px 0 0; color:#666; font-size:14px;">View your account details</p>
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <a class="btn btn-secondary" th:href="@{/profiles}" style="text-decoration:none;">Browse Profiles</a>
+                <a class="btn btn-primary"   th:href="@{/profile/edit}" style="text-decoration:none;">Edit Profile</a>
+            </div>
+        </div>
+
+        <!-- Alerts -->
+        <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+        <div class="alert alert-error"   th:if="${error}"   th:text="${error}"></div>
+
+        <!-- Profile Card -->
+        <div style="background:#fff; border:1px solid #eee; border-radius:14px; box-shadow: 0 6px 22px rgba(0,0,0,.06); padding: 20px;">
+
+            <!-- Top row -->
+            <div style="display:flex; gap:18px; align-items:center; flex-wrap:wrap; padding-bottom: 16px; border-bottom: 1px solid #f0f0f0;">
+
+                <!-- Avatar -->
+                <div style="width:86px; height:86px; border-radius:50%; background:#f1f5f9; display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:900; color:#c41e3a;">
+                    <span th:text="${user != null && user.firstName != null && !#strings.isEmpty(user.firstName) ? #strings.substring(user.firstName,0,1) : 'U'}">U</span>
+                </div>
+
+                <!-- Name and meta -->
+                <div style="flex:1; min-width:240px;">
+                    <h3 style="margin:0 0 6px; font-size: 20px; font-weight: 900; color:#222;">
+                        <span th:text="${user != null ? user.firstName : 'User'}">User</span>
+                        <span th:text="${user != null ? user.lastName : ''}"></span>
+                    </h3>
+
+                    <div style="display:flex; gap:10px; flex-wrap:wrap; color:#666; font-size:14px;">
+                        <span>
+                            <strong style="color:#444;">Email:</strong>
+                            <span th:text="${user != null ? user.email : '—'}">—</span>
+                        </span>
+                        <span style="color:#bbb;">•</span>
+                        <span>
+                            <strong style="color:#444;">Phone:</strong>
+                            <span th:text="${user != null ? user.phone : '—'}">—</span>
+                        </span>
+                    </div>
+
+                    <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                        <span style="font-size:12px; font-weight:800; padding:6px 10px; border-radius:999px;"
+                              th:style="${user != null && user.emailVerified != null && user.emailVerified} ?
+                                        'background:#ecfdf3;color:#067647;border:1px solid #abefc6;' :
+                                        'background:#fff7ed;color:#9a3412;border:1px solid #fed7aa;'">
+                            <span th:text="${user != null && user.emailVerified != null && user.emailVerified} ? 'Email Verified' : 'Email Not Verified'">
+                                Email Not Verified
+                            </span>
+                        </span>
+                        <span style="font-size:12px; color:#777;" th:if="${userProfile != null && userProfile.profileNumber != null}">
+                            <strong style="color:#444;">Profile ID:</strong>
+                            <span th:text="${userProfile.profileNumber}">—</span>
+                        </span>
+                        <span style="font-size:12px; color:#aaa;" th:if="${userProfile == null || userProfile.profileNumber == null}">
+                            No matrimony profile created yet
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Details grid -->
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 14px; padding-top: 16px;">
+
+                <!-- Basic info -->
+                <div style="border:1px solid #f0f0f0; border-radius:12px; padding: 16px;">
+                    <h4 style="margin:0 0 12px; font-size:15px; font-weight:900; color:#222;">Basic Information</h4>
+                    <div style="display:grid; gap:10px; font-size:14px; color:#444;">
+                        <div><strong>First Name:</strong> <span th:text="${user != null ? user.firstName : '—'}">—</span></div>
+                        <div><strong>Last Name:</strong>  <span th:text="${user != null ? user.lastName  : '—'}">—</span></div>
+                        <div><strong>Gender:</strong>     <span th:text="${user != null ? user.gender    : '—'}">—</span></div>
+                        <div>
+                            <strong>Date of Birth:</strong>
+                            <span th:text="${user != null && user.dateOfBirth != null ? #temporals.format(user.dateOfBirth,'dd MMM yyyy') : '—'}">—</span>
+                        </div>
+                        <div>
+                            <strong>Profile ID:</strong>
+                            <span th:text="${userProfile != null && userProfile.profileNumber != null ? userProfile.profileNumber : '—'}">—</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account info -->
+                <div style="border:1px solid #f0f0f0; border-radius:12px; padding: 16px;">
+                    <h4 style="margin:0 0 12px; font-size:15px; font-weight:900; color:#222;">Account Details</h4>
+                    <div style="display:grid; gap:10px; font-size:14px; color:#444;">
+                        <div>
+                            <strong>Created At:</strong>
+                            <span th:text="${user != null && user.createdAt != null ? #temporals.format(user.createdAt,'dd MMM yyyy, hh:mm a') : '—'}">—</span>
+                        </div>
+                        <div>
+                            <strong>Updated At:</strong>
+                            <span th:text="${user != null && user.updatedAt != null ? #temporals.format(user.updatedAt,'dd MMM yyyy, hh:mm a') : '—'}">—</span>
+                        </div>
+                        <div>
+                            <strong>Last Login:</strong>
+                            <span th:text="${user != null && user.lastLogin != null ? #temporals.format(user.lastLogin,'dd MMM yyyy, hh:mm a') : '—'}">—</span>
+                        </div>
+                        <div style="font-size:12px; color:#777; line-height:1.5; margin-top:6px;">
+                            Password is hidden for security.
+                            <a th:href="@{/forgot-password}" style="color:#c41e3a; font-weight:800; text-decoration:none;">Reset password</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Subscription Section ── -->
+            <div th:if="${activeSubscription != null}"
+                 style="margin-top:18px; border:1px solid #e8d5ff; border-radius:12px; padding:18px; background: linear-gradient(135deg,#fdf8ff 0%,#fff5f5 100%);">
+                <h4 style="margin:0 0 14px; font-size:15px; font-weight:900; color:#222;">⭐ Active Subscription</h4>
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size:14px; color:#444; flex:1; min-width:260px;">
+                        <div>
+                            <strong style="color:#555;">Plan:</strong>
+                            <span style="font-weight:800; color:#c41e3a; margin-left:4px;" th:text="${activeSubscription.plan}">—</span>
+                        </div>
+                        <div>
+                            <strong style="color:#555;">Amount Paid:</strong>
+                            <span style="margin-left:4px;">₹<span th:text="${activeSubscription.amount}">—</span></span>
+                        </div>
+                        <div>
+                            <strong style="color:#555;">Start Date:</strong>
+                            <span style="margin-left:4px;"
+                                  th:text="${activeSubscription.startDate != null ? #temporals.format(activeSubscription.startDate,'dd MMM yyyy') : '—'}">—</span>
+                        </div>
+                        <div>
+                            <strong style="color:#555;">Valid Until:</strong>
+                            <span style="margin-left:4px;"
+                                  th:text="${activeSubscription.endDate != null ? #temporals.format(activeSubscription.endDate,'dd MMM yyyy') : '—'}">—</span>
+                        </div>
+                        <div>
+                            <strong style="color:#555;">Status:</strong>
+                            <span style="margin-left:4px; color:#067647; font-weight:800;" th:text="${activeSubscription.paymentStatus}">SUCCESS</span>
+                        </div>
+                        <div>
+                            <strong style="color:#555;">Payment ID:</strong>
+                            <span style="margin-left:4px; font-size:12px; color:#777;"
+                                  th:text="${activeSubscription.razorpayPaymentId != null ? activeSubscription.razorpayPaymentId : '—'}">—</span>
+                        </div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:10px; align-items:flex-end;">
+                        <a th:href="@{/subscription/receipt/{id}(id=${activeSubscription.id})}"
+                           style="display:inline-flex; align-items:center; gap:8px; padding:12px 22px;
+                                  background:#c41e3a; color:#fff; border-radius:10px; font-weight:800;
+                                  font-size:14px; text-decoration:none; box-shadow: 0 4px 12px rgba(196,30,58,0.25);"
+                           onmouseover="this.style.background='#a01830'"
+                           onmouseout="this.style.background='#c41e3a'">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                                <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                            </svg>
+                            Download Receipt (PDF)
+                        </a>
+                        <span style="font-size:11px; color:#999;">Computer-generated receipt</span>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${activeSubscription == null}"
+                 style="margin-top:18px; border:1px dashed #fca5a5; border-radius:12px;
+                        padding:16px 20px; background:#fff8f8;
+                        display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+                <div>
+                    <p style="margin:0; font-size:14px; color:#666; font-weight:600;">You don't have an active premium subscription.</p>
+                    <p style="margin:4px 0 0; font-size:13px; color:#999;">Upgrade to access all features and view full profiles.</p>
+                </div>
+                <a th:href="@{/subscription/plans}"
+                   style="display:inline-block; padding:10px 20px; background:#c41e3a;
+                          color:#fff; border-radius:8px; font-weight:800; font-size:14px;
+                          text-decoration:none; white-space:nowrap;">
+                    Upgrade to Premium →
+                </a>
+            </div>
+
+            <!-- ── My Orders Section ── -->
+            <div class="orders-section">
+                <h4>🛍️ My Orders</h4>
+                <div id="ordersContainer">
+                    <div class="orders-loading">
+                        <span class="spinner-sm"></span> Loading your orders...
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</main>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<script th:inline="javascript">
+    const currentUserId = /*[[${user != null ? user.id : null}]]*/ null;
+
+    function formatPrice(n) { return '₹' + Number(n).toLocaleString('en-IN'); }
+
+    function formatDate(dateVal) {
+        if (!dateVal) return '—';
+        let d;
+        // Jackson serializes LocalDateTime as [year, month, day, hour, min, sec, nano]
+        // JS Date months are 0-indexed but LocalDateTime array months are 1-indexed
+        if (Array.isArray(dateVal)) {
+            d = new Date(dateVal[0], dateVal[1] - 1, dateVal[2],
+                         dateVal[3] || 0, dateVal[4] || 0, dateVal[5] || 0);
+        } else {
+            d = new Date(dateVal);
+        }
+        if (isNaN(d.getTime())) return '—';
+        return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    function statusBadge(status) {
+        return `<span class="order-status-badge status-${status}">${status}</span>`;
+    }
+
+    function paymentBadge(status) {
+        return `<span class="payment-badge pay-${status}">${status}</span>`;
+    }
+
+    function canCancel(status) {
+        return ['PENDING', 'CONFIRMED', 'PROCESSING'].includes(status);
+    }
+
+    async function cancelOrder(orderId) {
+        if (!confirm('Are you sure you want to cancel this order?')) return;
+        try {
+            const res  = await fetch(`/api/orders/${orderId}/cancel`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({})
+            });
+            const data = await res.json();
+            if (data.error) { alert('❌ ' + data.error); return; }
+            loadOrders(); // refresh
+        } catch (e) { alert('❌ Failed to cancel order.'); }
+    }
+
+    function renderOrders(orders) {
+        const container = document.getElementById('ordersContainer');
+
+        if (!orders || orders.length === 0) {
+            container.innerHTML = `
+                <div class="empty-orders">
+                    <p style="margin:0 0 8px; font-size:22px;">🛒</p>
+                    <p style="margin:0 0 10px;">You haven't placed any orders yet.</p>
+                    <a href="/shopping-page">Browse products →</a>
+                </div>`;
+            return;
+        }
+
+        container.innerHTML = orders.map(order => {
+            const itemsHtml = (order.items || []).map(item => `
+                <div class="order-item-row">
+                    <img class="order-item-img"
+                         src="${item.imageUrl || '/images/box.jpg'}"
+                         onerror="this.src='/images/box.jpg'"
+                         alt="${item.productName}" />
+                    <span class="order-item-name">${item.productName}</span>
+                    <span class="order-item-qty">× ${item.quantity}</span>
+                    <span class="order-item-price">${formatPrice(item.price * item.quantity)}</span>
+                </div>
+            `).join('');
+
+            const discountHtml = order.discountAmount > 0
+                ? `<span class="order-discount">🎉 Saved ${formatPrice(order.discountAmount)}</span>`
+                : '';
+
+            const cancelBtn = canCancel(order.status)
+                ? `<button class="btn-cancel-order" onclick="cancelOrder('${order.id}')">Cancel Order</button>`
+                : '';
+
+            return `
+                <div class="order-card">
+                    <div class="order-card-header">
+                        <div>
+                            <div class="order-id">Order ID: ${order.id}</div>
+                            <div class="order-date">Placed on ${formatDate(order.createdAt)}</div>
+                        </div>
+                        <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                            ${statusBadge(order.status)}
+                            ${paymentBadge(order.paymentStatus)}
+                        </div>
+                    </div>
+                    <div class="order-items">${itemsHtml}</div>
+                    <div class="order-footer">
+                        <div>
+                            <div class="order-total">Total: <span>${formatPrice(order.finalAmount)}</span></div>
+                            ${discountHtml}
+                        </div>
+                        ${cancelBtn}
+                    </div>
+                </div>`;
+        }).join('');
+    }
+
+    async function loadOrders() {
+        if (!currentUserId) {
+            document.getElementById('ordersContainer').innerHTML =
+                '<div class="empty-orders">Please <a href="/login">log in</a> to view your orders.</div>';
+            return;
+        }
+        try {
+            const res    = await fetch('/api/orders/my');
+            const orders = await res.json();
+            renderOrders(Array.isArray(orders) ? orders : []);
+        } catch (e) {
+            document.getElementById('ordersContainer').innerHTML =
+                '<div class="empty-orders">Failed to load orders. Please refresh.</div>';
+        }
+    }
+
+    loadOrders();
+</script>
+</body>
+</html>

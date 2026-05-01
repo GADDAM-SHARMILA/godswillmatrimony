@@ -1,0 +1,312 @@
+/* ============================================================
+   tc_pp.css — Terms & Conditions | Privacy Policy
+   Color Palette: #F2D8E1 (blush pink) + White
+   Location: static/css/tc_pp.css
+   ============================================================ */
+
+/* ── CSS Variables ───────────────────────────────────────── */
+:root {
+    --pink:           #F2D8E1;
+    --pink-dark:      #e8c2d0;
+    --pink-light:     #faeef3;
+    --accent:         #c9718f;
+    --accent-dark:    #a85570;
+    --violet-brand:   #6b3fa0;
+    --secondary-color:#a85570;
+    --white:          #ffffff;
+    --text-dark:      #2c1a2e;
+    --text-mid:       #5a3a4a;
+    --text-soft:      #a07080;
+    --border:         rgba(180, 110, 140, 0.28);
+    --shadow-sm:      0 2px 10px rgba(193, 100, 135, 0.10);
+    --shadow-md:      0 6px 24px rgba(193, 100, 135, 0.16);
+    --radius:         14px;
+    --radius-sm:      10px;
+    --transition:     all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Reset & Body ────────────────────────────────────────── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: linear-gradient(160deg, #fdf4f7 0%, #f5e8ef 50%, #faeef3 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+    color: var(--text-dark);
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* ── Container ───────────────────────────────────────────── */
+.container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: #F2D8E1;
+    background-image:
+        linear-gradient(rgba(242, 216, 225, 0.75), rgba(242, 216, 225, 0.75)),
+        url('/images/GVM_Background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-bottom: 1.5px solid var(--pink-dark);
+    box-shadow: 0 2px 14px rgba(170, 90, 120, 0.14);
+    transition: var(--transition);
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    height: 72px;
+    justify-content: center;
+}
+
+.logo-text-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    text-align: center;
+}
+
+.brand-name {
+    font-size: 1.45rem;
+    font-weight: 900;
+    color: var(--text-dark);
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    line-height: 1.1;
+}
+
+.brand-tagline {
+    font-size: 0.80rem;
+    color: var(--accent-dark);
+    font-style: italic;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+/* ============================================================
+   POLICY CONTENT WRAPPER
+   ============================================================ */
+.policy-content {
+    position: relative;
+    z-index: 1;
+    background: var(--white);
+    border: 1.5px solid var(--pink-dark);
+    border-radius: var(--radius);
+    padding: 44px 48px;
+    margin: 44px auto 64px;
+    box-shadow: var(--shadow-md);
+    animation: fadeInUp 0.6s ease both;
+}
+
+/* Animated pink top accent bar */
+.policy-content::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    border-radius: var(--radius) var(--radius) 0 0;
+    background: linear-gradient(90deg, var(--pink-dark), var(--accent), var(--pink-dark), var(--accent));
+    background-size: 300% 100%;
+    animation: barSlide 3s linear infinite;
+}
+
+/* ── Main Title ──────────────────────────────────────────── */
+.policy-content h1 {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--violet-brand);
+    border-bottom: 2px solid #EFC4D1;
+    padding-bottom: 12px;
+    margin-bottom: 28px;
+    letter-spacing: -0.3px;
+    position: relative;
+}
+
+.policy-content h1::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 0;
+    width: 56px; height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+}
+
+/* ── Section Headings ────────────────────────────────────── */
+.policy-content h2 {
+    font-size: 1.08rem;
+    font-weight: 800;
+    color: var(--secondary-color);
+    margin-top: 32px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.policy-content h2::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 18px;
+    background: linear-gradient(180deg, var(--accent), var(--pink-dark));
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+/* ── Body Text ───────────────────────────────────────────── */
+.policy-content p {
+    font-size: 0.93rem;
+    color: var(--text-mid);
+    line-height: 1.75;
+    margin-bottom: 6px;
+}
+
+.policy-content strong {
+    color: var(--text-dark);
+    font-weight: 700;
+}
+
+/* ── Safety Alert Box ────────────────────────────────────── */
+.safety-alert {
+    background: var(--pink-light);
+    border: 1.5px solid var(--pink-dark);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius-sm);
+    padding: 20px 24px;
+    margin: 24px 0;
+    animation: slideDown 0.5s ease both;
+    transition: var(--transition);
+}
+
+.safety-alert:hover {
+    box-shadow: var(--shadow-sm);
+    border-left-color: var(--accent-dark);
+}
+
+.safety-alert h3 {
+    font-size: 0.98rem;
+    font-weight: 800;
+    color: var(--accent-dark);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.safety-alert h3::before { content: '⚠️'; font-size: 1rem; }
+
+.safety-alert ul {
+    margin-left: 20px;
+    line-height: 1.8;
+    color: var(--text-mid);
+    font-size: 0.91rem;
+}
+
+.safety-alert ul li {
+    padding: 3px 0;
+    position: relative;
+}
+
+.safety-alert ul li::marker { color: var(--accent); }
+
+/* ── Highlight Card ──────────────────────────────────────── */
+.highlight-card {
+    background: linear-gradient(135deg, var(--pink) 0%, var(--pink-light) 100%);
+    border: 1.5px solid var(--pink-dark);
+    border-radius: var(--radius-sm);
+    padding: 22px 26px;
+    margin: 20px 0 28px;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.highlight-card::after {
+    content: '🔒';
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2.4rem;
+    opacity: 0.20;
+}
+
+.highlight-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.highlight-card h3 {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--accent-dark);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.highlight-card h3::before { content: '🛡️'; font-size: 1rem; }
+
+.highlight-card p {
+    font-size: 0.91rem;
+    color: var(--text-mid);
+    line-height: 1.65;
+    margin: 0;
+}
+
+/* ============================================================
+   KEYFRAMES
+   ============================================================ */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes barSlide {
+    0%   { background-position: -300% 0; }
+    100% { background-position: 300% 0; }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+    .policy-content {
+        padding: 28px 20px;
+        margin: 24px auto 48px;
+    }
+
+    .policy-content h1 { font-size: 1.5rem; }
+    .policy-content h2 { font-size: 0.97rem; }
+
+    .brand-name { font-size: 1rem; }
+    .brand-tagline { font-size: 0.70rem; }
+
+    .navbar { height: 60px; }
+}
+
+@media (max-width: 480px) {
+    .policy-content h1 { font-size: 1.25rem; }
+    .safety-alert { padding: 16px; }
+    .highlight-card { padding: 16px; }
+    .highlight-card::after { display: none; }
+}

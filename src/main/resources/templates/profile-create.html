@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <th:block th:replace="~{fragments/header :: head}"></th:block>
+  <title>Create Profile - Matrimony</title>
+  <link rel="stylesheet" th:href="@{/css/profile.css}">
+  <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+  <!-- Cropper.js CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css"/>
+
+</head>
+
+<body th:attr="data-logged-in=${session.user != null ? 'true' : 'false'}">
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<!-- ══════════════ CROP MODAL ══════════════ -->
+<div id="cropModal">
+  <div class="crop-modal-box">
+    <h3><i class="fas fa-crop-alt"></i> Crop your photo — drag to reposition, pinch/scroll to zoom</h3>
+    <div class="crop-image-wrap">
+      <img id="cropImage" src="" alt="Crop" />
+    </div>
+    <div class="crop-modal-actions">
+      <button type="button" class="btn-crop-cancel" id="cropCancelBtn">Cancel</button>
+      <button type="button" class="btn-crop-confirm" id="cropConfirmBtn">✔ Use this crop</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="profile-create-container">
+    <div class="profile-create-header">
+      <h1>Create Your Profile</h1>
+      <p>Fill in your details to create an attractive profile</p>
+    </div>
+
+    <!-- Alert Messages -->
+    <div class="alert alert-error"   th:if="${error}"   th:text="${error}"></div>
+    <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+
+    <!-- Profile Form -->
+    <form class="profile-form"
+          th:action="@{/profile/create}"
+          method="post"
+          id="profileForm"
+          enctype="multipart/form-data">
+
+      <!-- ══ Personal Information ══ -->
+      <div class="form-section">
+        <h2 class="form-section-title">Personal Information</h2>
+
+        <div class="image-upload-container">
+
+          <!-- ── Main Photo ── -->
+          <p style="font-size:13px;color:#555;margin-bottom:6px;font-weight:600;">Profile Photo</p>
+          <div class="photo-preview-box" id="imagePreview">
+            <img th:if="${profile != null and !#strings.isEmpty(profile.imageUrl)}"
+                 th:src="@{${profile.imageUrl}}" alt="Profile Photo" />
+            <i th:if="${profile == null or #strings.isEmpty(profile.imageUrl)}"
+               class="fas fa-user" style="font-size:36px;color:#ccc;"></i>
+          </div>
+          <div class="file-input-wrapper">
+            <label for="profileImageRaw" class="file-input-label">
+              <i class="fas fa-camera"></i> Upload Photo
+            </label>
+            <input type="file" id="profileImageRaw" accept="image/*" style="display:none">
+          </div>
+          <!-- Hidden base64 input sent to server -->
+          <input type="hidden" id="profileImageData" name="profileImageData">
+          <p style="font-size:12px;color:#888;margin-top:6px;">Max 5MB · JPG / PNG · Crop after selecting</p>
+
+          <!-- ── Premium Extra Photos ── -->
+          <div th:if="${isPremium}" style="margin-top:24px;padding:16px;background:#fffdf0;border:1px solid #f0c040;border-radius:10px;">
+            <h3 style="font-size:14px;color:#b7860b;margin-bottom:16px;">
+              <i class="fas fa-crown"></i> Premium: Add up to 2 more photos
+            </h3>
+
+            <!-- Extra Photo 2 -->
+            <div style="margin-bottom:20px;">
+              <p style="font-size:13px;color:#555;margin-bottom:6px;font-weight:600;">Photo 2</p>
+              <div class="photo-preview-box" id="imagePreview2">
+                <img th:if="${profile != null and !#strings.isEmpty(profile.imageUrl2)}"
+                     th:src="@{${profile.imageUrl2}}" alt="Photo 2" />
+                <i th:if="${profile == null or #strings.isEmpty(profile.imageUrl2)}"
+                   class="fas fa-image" style="font-size:30px;color:#ccc;"></i>
+              </div>
+              <div class="file-input-wrapper">
+                <label for="profileImage2Raw" class="file-input-label" style="font-size:13px;">
+                  <i class="fas fa-camera"></i> Upload Photo 2
+                </label>
+                <input type="file" id="profileImage2Raw" accept="image/*" style="display:none">
+              </div>
+              <input type="hidden" id="profileImageData2" name="profileImageData2">
+            </div>
+
+            <!-- Extra Photo 3 -->
+            <div>
+              <p style="font-size:13px;color:#555;margin-bottom:6px;font-weight:600;">Photo 3</p>
+              <div class="photo-preview-box" id="imagePreview3">
+                <img th:if="${profile != null and !#strings.isEmpty(profile.imageUrl3)}"
+                     th:src="@{${profile.imageUrl3}}" alt="Photo 3" />
+                <i th:if="${profile == null or #strings.isEmpty(profile.imageUrl3)}"
+                   class="fas fa-image" style="font-size:30px;color:#ccc;"></i>
+              </div>
+              <div class="file-input-wrapper">
+                <label for="profileImage3Raw" class="file-input-label" style="font-size:13px;">
+                  <i class="fas fa-camera"></i> Upload Photo 3
+                </label>
+                <input type="file" id="profileImage3Raw" accept="image/*" style="display:none">
+              </div>
+              <input type="hidden" id="profileImageData3" name="profileImageData3">
+            </div>
+          </div>
+
+          <!-- Non-premium upsell -->
+          <div th:unless="${isPremium}"
+               style="margin-top:16px;padding:12px;background:#fffbea;border:1px solid #f0c040;border-radius:8px;font-size:13px;">
+            <i class="fas fa-lock" style="color:#b7860b;"></i>
+            <strong> Unlock 2 more photo slots</strong> — upgrade to Premium!
+            <a th:href="@{/subscription/plans}" style="color:#b7860b;text-decoration:underline;margin-left:6px;">Upgrade Now</a>
+          </div>
+
+        </div><!-- /image-upload-container -->
+
+        <div class="form-row" style="margin-top:20px;">
+          <div class="form-group">
+            <label for="firstName">First Name *</label>
+            <input type="text" id="firstName" name="firstName" class="form-control" required
+                   th:value="${profile != null ? profile.firstName : ''}">
+          </div>
+          <div class="form-group">
+            <label for="lastName">Last Name *</label>
+            <input type="text" id="lastName" name="lastName" class="form-control" required
+                   th:value="${profile != null ? profile.lastName : ''}">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="gender">Gender *</label>
+            <select id="gender" name="gender" class="form-control" required>
+              <option value="">Select Gender</option>
+              <option value="male"   th:selected="${profile != null and profile.gender == 'male'}">Male</option>
+              <option value="female" th:selected="${profile != null and profile.gender == 'female'}">Female</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="dateOfBirth">Date of Birth *</label>
+            <input type="date" id="dateOfBirth" name="dateOfBirth" class="form-control" required
+                   th:value="${profile != null and profile.dateOfBirth != null ? #temporals.format(profile.dateOfBirth,'yyyy-MM-dd') : ''}">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="maritalStatus">Marital Status *</label>
+            <select id="maritalStatus" name="maritalStatus" class="form-control" required>
+              <option value="">Select Status</option>
+              <option value="never_married"    th:selected="${profile != null and profile.maritalStatus == 'never_married'}">Never Married</option>
+              <option value="divorced"         th:selected="${profile != null and profile.maritalStatus == 'divorced'}">Divorced</option>
+              <option value="widowed"          th:selected="${profile != null and profile.maritalStatus == 'widowed'}">Widowed</option>
+              <option value="awaiting_divorce" th:selected="${profile != null and profile.maritalStatus == 'awaiting_divorce'}">Awaiting Divorce</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="height">Height (in cm) *</label>
+            <input type="number" id="height" name="height" class="form-control" min="100" max="250" required
+                   th:value="${profile != null ? profile.height : ''}">
+          </div>
+        </div>
+
+        <div class="form-group form-group-full">
+          <label for="motherTongue">Mother Tongue *</label>
+          <select id="motherTongue" name="motherTongue" class="form-control" required>
+            <option value="">Select Mother Tongue</option>
+            <option value="hindi"     th:selected="${profile != null and profile.motherTongue == 'hindi'}">Hindi</option>
+            <option value="english"   th:selected="${profile != null and profile.motherTongue == 'english'}">English</option>
+            <option value="tamil"     th:selected="${profile != null and profile.motherTongue == 'tamil'}">Tamil</option>
+            <option value="telugu"    th:selected="${profile != null and profile.motherTongue == 'telugu'}">Telugu</option>
+            <option value="marathi"   th:selected="${profile != null and profile.motherTongue == 'marathi'}">Marathi</option>
+            <option value="gujarati"  th:selected="${profile != null and profile.motherTongue == 'gujarati'}">Gujarati</option>
+            <option value="bengali"   th:selected="${profile != null and profile.motherTongue == 'bengali'}">Bengali</option>
+            <option value="kannada"   th:selected="${profile != null and profile.motherTongue == 'kannada'}">Kannada</option>
+            <option value="malayalam" th:selected="${profile != null and profile.motherTongue == 'malayalam'}">Malayalam</option>
+            <option value="punjabi"   th:selected="${profile != null and profile.motherTongue == 'punjabi'}">Punjabi</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- ══ Religious Information ══ -->
+      <div class="form-section">
+        <h2 class="form-section-title">Religious Information</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="religion">Religion *</label>
+            <select id="religion" name="religion" class="form-control" required>
+              <option value="">Select Religion</option>
+              <option value="christian"           th:selected="${profile != null and profile.religion == 'christian'}">Christian</option>
+              <option value="converted_christian" th:selected="${profile != null and profile.religion == 'converted_christian'}">Converted-Christian</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="caste">Caste</label>
+            <input type="text" id="caste" name="caste" class="form-control"
+                   th:value="${profile != null ? profile.caste : ''}">
+          </div>
+        </div>
+        <div class="form-row" id="denominationRow" style="display:none;">
+          <div class="form-group">
+            <label for="denomination">Denomination *</label>
+            <select id="denomination" name="denomination" class="form-control">
+              <option value="">Select Denomination</option>
+              <option value="hebron"   th:selected="${profile != null and profile.denomination == 'hebron'}">Hebron</option>
+              <option value="lutheran" th:selected="${profile != null and profile.denomination == 'lutheran'}">Lutheran</option>
+              <option value="roman"    th:selected="${profile != null and profile.denomination == 'roman'}">Roman</option>
+              <option value="baptist"  th:selected="${profile != null and profile.denomination == 'baptist'}">Baptist</option>
+              <option value="csi"      th:selected="${profile != null and profile.denomination == 'csi'}">CSI</option>
+              <option value="catholic" th:selected="${profile != null and profile.denomination == 'catholic'}">Catholic</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ Location Details ══ -->
+      <div class="form-section">
+        <h2 class="form-section-title">Location Details</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="country">Country *</label>
+            <select id="country" name="country" class="form-control" required>
+              <option value="">Select Country</option>
+              <option value="india"     th:selected="${profile != null and profile.country == 'india'}">India</option>
+              <option value="usa"       th:selected="${profile != null and profile.country == 'usa'}">USA</option>
+              <option value="uk"        th:selected="${profile != null and profile.country == 'uk'}">UK</option>
+              <option value="canada"    th:selected="${profile != null and profile.country == 'canada'}">Canada</option>
+              <option value="australia" th:selected="${profile != null and profile.country == 'australia'}">Australia</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="state">State *</label>
+            <input type="text" id="state" name="state" class="form-control" required
+                   th:value="${profile != null ? profile.state : ''}">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="city">City *</label>
+            <input type="text" id="city" name="city" class="form-control" required
+                   th:value="${profile != null ? profile.city : ''}">
+          </div>
+          <div class="form-group">
+            <label for="pincode">Pincode</label>
+            <input type="text" id="pincode" name="pincode" class="form-control"
+                   th:value="${profile != null ? profile.pincode : ''}">
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ Professional Information ══ -->
+      <div class="form-section">
+        <h2 class="form-section-title">Professional Information</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="education">Highest Education *</label>
+            <select id="education" name="education" class="form-control" required>
+              <option value="">Select Education</option>
+              <option value="high_school" th:selected="${profile != null and profile.education == 'high_school'}">High School</option>
+              <option value="diploma"     th:selected="${profile != null and profile.education == 'diploma'}">Diploma</option>
+              <option value="bachelors"   th:selected="${profile != null and profile.education == 'bachelors'}">Bachelor's Degree</option>
+              <option value="masters"     th:selected="${profile != null and profile.education == 'masters'}">Master's Degree</option>
+              <option value="doctorate"   th:selected="${profile != null and profile.education == 'doctorate'}">Doctorate</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="profession">Profession *</label>
+            <input type="text" id="profession" name="profession" class="form-control" required
+                   th:value="${profile != null ? profile.profession : ''}">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="annualIncome">Annual Income *</label>
+            <select id="annualIncome" name="annualIncome" class="form-control" required>
+              <option value="">Select Income Range</option>
+              <option value="0-3"   th:selected="${profile != null and profile.annualIncome == '0-3'}">₹0 - 3 Lakhs</option>
+              <option value="3-5"   th:selected="${profile != null and profile.annualIncome == '3-5'}">₹3 - 5 Lakhs</option>
+              <option value="5-7"   th:selected="${profile != null and profile.annualIncome == '5-7'}">₹5 - 7 Lakhs</option>
+              <option value="7-10"  th:selected="${profile != null and profile.annualIncome == '7-10'}">₹7 - 10 Lakhs</option>
+              <option value="10-15" th:selected="${profile != null and profile.annualIncome == '10-15'}">₹10 - 15 Lakhs</option>
+              <option value="15+"   th:selected="${profile != null and profile.annualIncome == '15+'}">₹15+ Lakhs</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="employedIn">Employed In</label>
+            <select id="employedIn" name="employedIn" class="form-control">
+              <option value="">Select</option>
+              <option value="private"       th:selected="${profile != null and profile.employedIn == 'private'}">Private Sector</option>
+              <option value="government"    th:selected="${profile != null and profile.employedIn == 'government'}">Government</option>
+              <option value="business"      th:selected="${profile != null and profile.employedIn == 'business'}">Business</option>
+              <option value="self_employed" th:selected="${profile != null and profile.employedIn == 'self_employed'}">Self Employed</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ About Me ══ -->
+      <div class="form-section">
+        <h2 class="form-section-title">About Me</h2>
+        <div class="form-group form-group-full">
+          <label for="aboutMe">Write About Yourself</label>
+          <textarea id="aboutMe" name="aboutMe" class="form-control" rows="5"
+                    th:text="${profile != null ? profile.aboutMe : ''}"></textarea>
+        </div>
+      </div>
+
+      <!-- ══ Contact Information ══ -->
+      <div class="form-section">
+        <h2 class="form-section-title">Contact Information</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" class="form-control" required
+                   th:value="${profile != null ? profile.email : ''}">
+          </div>
+          <div class="form-group">
+            <label for="phone">Mobile Number *</label>
+            <input type="tel" id="phone" name="phone" class="form-control" required
+                   th:value="${profile != null ? profile.phone : ''}">
+          </div>
+        </div>
+        <div class="form-group form-group-full">
+          <label class="checkbox-option">
+            <input type="checkbox" name="verifyMobile" value="true">
+            <span>Verify my mobile number (Get 100% Verified badge)</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- ══ Form Actions ══ -->
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" onclick="window.history.back()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Profile</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<!-- Cropper.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+<script>
+  (function () {
+
+    // ── Photo slots config ──
+    const slots = [
+      { rawInput: 'profileImageRaw',  dataInput: 'profileImageData',  preview: 'imagePreview'  },
+      { rawInput: 'profileImage2Raw', dataInput: 'profileImageData2', preview: 'imagePreview2' },
+      { rawInput: 'profileImage3Raw', dataInput: 'profileImageData3', preview: 'imagePreview3' },
+    ];
+
+    // ── Modal elements ──
+    const modal      = document.getElementById('cropModal');
+    const cropImg    = document.getElementById('cropImage');
+    const confirmBtn = document.getElementById('cropConfirmBtn');
+    const cancelBtn  = document.getElementById('cropCancelBtn');
+
+    let cropper    = null;
+    let activeSlot = null;
+
+    // ── Wire up each slot ──
+    slots.forEach(function (slot) {
+      var rawInput = document.getElementById(slot.rawInput);
+      if (!rawInput) return;
+
+      rawInput.addEventListener('change', function () {
+        var file = this.files && this.files[0];
+        if (!file) return;
+
+        if (file.size > 5 * 1024 * 1024) {
+          alert('Image is too large. Max size is 5MB.');
+          this.value = '';
+          return;
+        }
+        if (!file.type.startsWith('image/')) {
+          alert('Please select a valid image file (JPG / PNG).');
+          this.value = '';
+          return;
+        }
+
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          activeSlot = slot;
+          openCropModal(e.target.result);
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    // ── Open modal + init Cropper ──
+    function openCropModal(src) {
+      cropImg.src = src;
+      modal.classList.add('active');
+
+      if (cropper) { cropper.destroy(); cropper = null; }
+
+      cropper = new Cropper(cropImg, {
+        viewMode: 1,
+        aspectRatio: NaN,       // free crop — user decides
+        autoCropArea: 0.85,
+        movable: true,
+        rotatable: true,
+        scalable: true,
+        zoomable: true,
+        responsive: true,
+      });
+    }
+
+    // ── Confirm: get canvas → base64 → hidden input + preview ──
+    confirmBtn.addEventListener('click', function () {
+      if (!cropper || !activeSlot) return;
+
+      var canvas = cropper.getCroppedCanvas({ maxWidth: 900, maxHeight: 900 });
+      var dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+
+      document.getElementById(activeSlot.dataInput).value = dataUrl;
+
+      var box = document.getElementById(activeSlot.preview);
+      box.innerHTML = '<img src="' + dataUrl + '" />';
+
+      closeCropModal();
+    });
+
+    // ── Cancel ──
+    cancelBtn.addEventListener('click', function () {
+      if (activeSlot) {
+        var raw = document.getElementById(activeSlot.rawInput);
+        if (raw) raw.value = '';
+      }
+      closeCropModal();
+    });
+
+    // Click backdrop to cancel
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) cancelBtn.click();
+    });
+
+    function closeCropModal() {
+      modal.classList.remove('active');
+      if (cropper) { cropper.destroy(); cropper = null; }
+      activeSlot = null;
+      cropImg.src = '';
+    }
+
+    // ── Religion → Denomination toggle ──
+    (function () {
+      var religionEl = document.getElementById('religion');
+      var denomRow   = document.getElementById('denominationRow');
+      var denomEl    = document.getElementById('denomination');
+
+      function update() {
+        if (!religionEl || !denomRow || !denomEl) return;
+        var r = (religionEl.value || '').trim();
+        var show = (r === 'christian' || r === 'converted_christian');
+        denomRow.style.display = show ? '' : 'none';
+        denomEl.required = show;
+        if (!show) denomEl.value = '';
+      }
+
+      if (religionEl) {
+        religionEl.addEventListener('change', update);
+        update();
+      }
+    })();
+
+  })();
+</script>
+
+</body>
+</html>

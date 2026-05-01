@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
+    <title>Groom Products | God's Will Matrimony</title>
+    <link rel="stylesheet" th:href="@{/css/stories.css}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+    <style>
+        :root {
+          --color-accent-pink: #f4c2c2;
+          --color-accent-gold: #d4af37;
+          --shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+        .page-header {
+          text-align: center;
+          padding: 2.5rem 1rem 1.5rem;
+        }
+
+        .page-title {
+          margin: 0 0 0.4rem 0;
+          font-size: 2rem;
+          color: var(--color-accent-gold);
+        }
+
+        .page-subtitle { margin: 0; color: #777; }
+
+        .top-bar {
+          max-width: 1200px;
+          margin: 0 auto 0.5rem;
+          padding: 0 1rem;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .back-link {
+          color: var(--color-accent-gold);
+          text-decoration: none;
+          font-size: 0.9rem;
+          font-weight: 500;
+          transition: opacity 0.2s;
+        }
+        .back-link:hover { opacity: 0.75; }
+
+        .cart-bar {
+          background: var(--color-accent-gold);
+          color: white;
+          padding: 0.5rem 1rem;
+          border-radius: 20px;
+          font-size: 0.85rem;
+          font-weight: 600;
+          box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+          text-decoration: none;
+          transition: background 0.2s;
+        }
+        .cart-bar:hover { background: #b8932d; }
+
+        .login-notice {
+          background: #fffdf0;
+          border: 1.5px solid #d4af37;
+          border-radius: 10px;
+          padding: 0.7rem 1.2rem;
+          text-align: center;
+          max-width: 600px;
+          margin: 0 auto 1.5rem;
+          font-size: 0.88rem;
+          color: #888;
+        }
+        .login-notice a { color: var(--color-accent-gold); font-weight: 600; text-decoration: none; }
+
+        .products-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+          gap: 1.8rem;
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 0 1rem;
+        }
+        .products-grid {
+    margin-bottom: 2rem;
+}
+
+        .product-card {
+          border-radius: 16px;
+          background: #fff;
+          border: 2px solid rgba(255,255,255,0.8);
+          box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+          overflow: hidden;
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .product-card:hover { transform: translateY(-6px); box-shadow: var(--shadow); }
+
+        /* Clickable image wrapper */
+        .product-image-wrap {
+          position: relative;
+          cursor: zoom-in;
+          overflow: hidden;
+        }
+        .product-image {
+          width: 100%;
+          height: 200px;
+          object-fit: cover;
+          display: block;
+          transition: transform 0.3s ease;
+        }
+        .product-image-wrap:hover .product-image { transform: scale(1.05); }
+
+        .zoom-icon {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          background: rgba(0,0,0,0.45);
+          color: #fff;
+          border-radius: 50%;
+          width: 30px;
+          height: 30px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 0.8rem;
+          opacity: 0;
+          transition: opacity 0.2s;
+          pointer-events: none;
+        }
+        .product-image-wrap:hover .zoom-icon { opacity: 1; }
+
+        .product-body { padding: 1rem 1.2rem; }
+        .product-title { margin: 0 0 0.4rem 0; font-size: 1.1rem; font-weight: 600; color: var(--color-accent-gold); }
+        .product-price { margin: 0.3rem 0 0.3rem 0; font-weight: 600; color: #444; }
+        .product-stock { margin: 0 0 0.6rem 0; font-size: 0.82rem; color: #888; }
+        .product-stock.out { color: #e74c3c; }
+
+        .product-button {
+          display: inline-block;
+          padding: 0.6rem 1.2rem;
+          border-radius: 6px;
+          border: none;
+          background-color: var(--color-accent-gold);
+          color: white;
+          font-weight: 500;
+          font-size: 0.9rem;
+          cursor: pointer;
+          transition: background 0.2s ease;
+          font-family: 'Poppins', sans-serif;
+        }
+        .product-button:hover:not(:disabled) { background-color: #b8932d; }
+        .product-button:disabled { background-color: #ccc; cursor: not-allowed; }
+
+        /* ── Lightbox ── */
+        .lightbox-overlay {
+          display: none;
+          position: fixed;
+          inset: 0;
+          background: rgba(0,0,0,0.85);
+          z-index: 9999;
+          align-items: center;
+          justify-content: center;
+          padding: 1rem;
+          backdrop-filter: blur(4px);
+          animation: fadeIn 0.2s ease;
+        }
+        .lightbox-overlay.open { display: flex; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .lightbox-box {
+          position: relative;
+          background: #fff;
+          border-radius: 16px;
+          overflow: hidden;
+          max-width: 90vw;
+          max-height: 90vh;
+          box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+          animation: popIn 0.25s ease;
+          display: flex;
+          flex-direction: column;
+        }
+        @keyframes popIn {
+          from { transform: scale(0.9); opacity: 0; }
+          to   { transform: scale(1);   opacity: 1; }
+        }
+
+        .lightbox-img {
+          max-width: 100%;
+          max-height: 75vh;
+          object-fit: contain;
+          display: block;
+        }
+
+        .lightbox-caption {
+          padding: 0.8rem 1.2rem;
+          font-weight: 600;
+          color: #7a5a00;
+          font-size: 0.95rem;
+          border-top: 1px solid #f5e8b0;
+          background: #fff;
+        }
+
+        .lightbox-close {
+          position: absolute;
+          top: 10px;
+          right: 12px;
+          background: rgba(0,0,0,0.5);
+          color: #fff;
+          border: none;
+          border-radius: 50%;
+          width: 34px;
+          height: 34px;
+          font-size: 1.1rem;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: background 0.2s;
+          z-index: 10;
+        }
+        .lightbox-close:hover { background: rgba(0,0,0,0.8); }
+
+        .toast {
+          position: fixed;
+          bottom: 1.5rem;
+          right: 1.5rem;
+          background: #333;
+          color: #fff;
+          padding: 0.8rem 1.4rem;
+          border-radius: 8px;
+          font-size: 0.9rem;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.3s ease;
+          z-index: 99999;
+        }
+        .toast.show { opacity: 1; }
+
+        @media (max-width: 576px) { .page-title { font-size: 1.6rem; } }
+    </style>
+</head>
+<body>
+
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<div class="page-header">
+    <h1 class="page-title">👔 Groom Products</h1>
+    <p class="page-subtitle">Browse suits, accessories, and grooming products for the groom.</p>
+</div>
+
+<div class="top-bar">
+    <a th:href="@{/shopping-page}" class="back-link">← Back to Shopping</a>
+    <a th:href="@{/cart?cartType=GROOM}" class="cart-bar">
+        🛒 Groom Cart (<span id="cartCount">0</span>)
+    </a>
+</div>
+
+<div class="login-notice" th:if="${session.user == null}">
+    🛒 You're browsing as a guest. <a th:href="@{/login}">Log in</a> to save your cart permanently!
+</div>
+
+<div class="products-grid">
+    <div class="product-card" th:each="product : ${products}">
+
+        <!-- Clickable image -->
+        <div class="product-image-wrap"
+             th:attr="onclick='openLightbox(' + '&quot;' + ${product.imageUrl} + '&quot;' + ', &quot;' + ${product.name} + '&quot;)'">
+            <img th:src="${product.imageUrl}" th:alt="${product.name}"
+                 class="product-image" onerror="this.src='/images/box.jpg'" />
+            <span class="zoom-icon">🔍</span>
+        </div>
+
+        <div class="product-body">
+            <h3 class="product-title" th:text="${product.name}">Product Name</h3>
+            <p class="product-price" th:text="'₹' + ${#numbers.formatInteger(product.price, 1, 'COMMA')}">₹0</p>
+            <p class="product-stock"
+               th:classappend="${product.stock == 0} ? 'out'"
+               th:text="${product.stock > 0} ? 'In Stock (' + ${product.stock} + ' left)' : 'Out of Stock'">
+                In Stock
+            </p>
+            <button class="product-button"
+                    th:attr="data-id=${product.id}, data-name=${product.name}"
+                    th:disabled="${product.stock == 0}"
+                    onclick="addToCart(this)">
+                Add to Cart
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox-overlay" id="lightbox" onclick="closeLightboxOnOverlay(event)">
+    <div class="lightbox-box">
+        <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+        <img src="" alt="" class="lightbox-img" id="lightboxImg">
+        <div class="lightbox-caption" id="lightboxCaption"></div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<script th:inline="javascript">
+    const sessionUserId = /*[[${session.user?.id}]]*/ null;
+    const isLoggedIn    = sessionUserId !== null && sessionUserId !== 'null';
+
+    /* ── Lightbox ── */
+    function openLightbox(src, name) {
+        document.getElementById('lightboxImg').src = src || '/images/box.jpg';
+        document.getElementById('lightboxCaption').textContent = name || '';
+        document.getElementById('lightbox').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+        document.getElementById('lightbox').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    function closeLightboxOnOverlay(e) {
+        if (e.target === document.getElementById('lightbox')) closeLightbox();
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeLightbox();
+    });
+
+    /* ── Cart ── */
+    function generateUUID() {
+        if (crypto && crypto.randomUUID) return crypto.randomUUID();
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            const r = Math.random() * 16 | 0;
+            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+    }
+
+    function getGuestId() {
+        if (isLoggedIn) return null;
+        let gid = localStorage.getItem('guestId');
+        if (!gid) { gid = 'guest_' + generateUUID(); localStorage.setItem('guestId', gid); }
+        return gid;
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    function updateCartBadge(count) {
+        document.getElementById('cartCount').textContent = count;
+    }
+
+    function addToCart(btn) {
+        const productId   = btn.getAttribute('data-id');
+        const productName = btn.getAttribute('data-name');
+        btn.disabled    = true;
+        btn.textContent = 'Adding...';
+        const body = { productId, quantity: 1 };
+        if (!isLoggedIn) body.guestId = getGuestId();
+        fetch('/api/cart/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.error) showToast('❌ ' + data.error);
+            else { showToast('✅ ' + productName + ' added to cart!'); updateCartBadge(data.totalItems); }
+        })
+        .catch(() => showToast('❌ Failed to add to cart.'))
+        .finally(() => { btn.disabled = false; btn.textContent = 'Add to Cart'; });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const params = isLoggedIn
+            ? '?cartType=GROOM'
+            : '?cartType=GROOM&guestId=' + (getGuestId() || '');
+        fetch('/api/cart' + params)
+            .then(r => r.json())
+            .then(cart => {
+                if (cart && cart.items)
+                    updateCartBadge(cart.items.reduce((s, i) => s + i.quantity, 0));
+            })
+            .catch(() => {});
+    });
+</script>
+</body>
+</html>

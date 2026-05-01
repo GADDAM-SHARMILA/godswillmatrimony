@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title th:text="${pageTitle != null and !#strings.isEmpty(pageTitle)} ? ${pageTitle} : 'Matrimony - Find Your Perfect Life Partner'">
+        Matrimony
+    </title>
+
+    <link rel="icon" type="image/x-icon" th:href="@{/images/favicon.ico}">
+
+    <!-- Font Awesome — required for nav icons & hamburger -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+    <link rel="stylesheet" th:href="@{/css/fragments.css}">
+
+    <style>
+
+.navbar {
+    gap: 1rem !important;
+}
+
+.nav-links {
+    gap: 0.5rem !important;
+    max-width: 80% !important;
+}
+
+.nav-links a {
+    padding: 0.45rem 0.65rem !important;
+    font-size: 1rem !important;
+    min-height: unset !important;
+}
+
+/* Mobile adjustments */
+@media (max-width: 991px) {
+    .nav-links {
+        gap: 0.2rem !important;
+        max-width: 100% !important;
+    }
+    .nav-links a {
+        padding: 0.4rem 0.55rem !important;
+        font-size: 0.82rem !important;
+    }
+    .btn-register-animate {
+        padding: 7px 18px !important;
+        font-size: 0.88rem !important;
+    }
+}
+
+
+        /* ── Register Free! pop animation ── */
+        @keyframes popInOut {
+            0%   { transform: scale(1);    box-shadow: 0 0 0 0 rgba(232, 93, 117, 0.7); }
+            50%  { transform: scale(1.12); box-shadow: 0 0 0 10px rgba(232, 93, 117, 0); }
+            100% { transform: scale(1);    box-shadow: 0 0 0 0 rgba(232, 93, 117, 0); }
+        }
+
+        .btn-register-animate {
+            animation: popInOut 1.4s ease-in-out infinite !important;
+            background: linear-gradient(135deg, #e85d75, #c0392b) !important;
+            color: #fff !important;
+            font-weight: 700 !important;
+            border: none !important;
+            border-radius: 25px !important;
+            padding: 8px 20px !important;
+            letter-spacing: 0.5px !important;
+        }
+
+        .btn-register-animate:hover {
+            animation-play-state: paused !important;
+            transform: scale(1.1) !important;
+        }
+
+        /* ───────── Logo Section ───────── */
+        .logo-text-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-name {
+            font-weight: 450;
+            letter-spacing: 1.5px;
+            white-space: nowrap;
+        }
+
+        /* ───────── PERFECT TAGLINE ALIGNMENT ───────── */
+        .brand-tagline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 0.7rem;
+            margin-top: 4px;
+            white-space: nowrap;
+        }
+
+        .tagline-left,
+        .tagline-center,
+        .tagline-right {
+            font-weight: 600;
+            color: #c0697a;
+        }
+
+        .tagline-connector {
+            width: 48px;
+            display: flex;
+            align-items: center;
+        }
+
+        .tagline-connector svg {
+            width: 100%;
+            height: 14px;
+        }
+
+        /* ───────── MOBILE & TABLET TAGLINE FIX ───────── */
+        @media (max-width: 991px) {
+        .navbar {
+        height: 65px !important; /* Smaller header height */
+        gap: 0.5rem !important;
+        padding: 0.25rem 0 !important;
+    }
+
+    .navbar-logo {
+        height: 45px !important; /* Smaller logo */
+        width: auto !important;
+        max-height: 45px !important;
+    }
+
+    .logo {
+        gap: 0.5rem !important;
+    }
+            .logo-text-container {
+                align-items: center !important;
+                text-align: center;
+            }
+
+            .brand-name {
+        font-size: 1rem !important;
+        letter-spacing: 0.8px !important;
+    }
+
+            .brand-tagline {
+                justify-content: center !important;
+                gap: clamp(2px, 1vw, 4px) !important;
+                font-size: clamp(0.55rem, 2vw, 0.65rem) !important;
+                margin-top: 2px !important;
+                width: 100%;
+            }
+
+            .tagline-connector {
+                width: clamp(28px, 4vw, 38px) !important;
+                min-width: 28px !important;
+            }
+
+            .tagline-left, .tagline-center, .tagline-right {
+                font-size: clamp(0.55rem, 2vw, 0.65rem) !important;
+                white-space: nowrap !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+        .navbar {
+        height: 58px !important;
+    }
+
+    .navbar-logo {
+        height: 38px !important;
+    }
+
+    .brand-name {
+        font-size: 0.9rem !important;
+    }
+
+            .brand-tagline {
+                gap: 2px !important;
+                font-size: 0.55rem !important;
+            }
+
+            .tagline-connector {
+                width: 30px !important;
+            }
+
+            .tagline-left, .tagline-center, .tagline-right {
+                font-size: 0.55rem !important;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<header class="main-header" th:fragment="navbar">
+    <div class="container">
+        <nav class="navbar">
+
+            <!-- Logo -->
+            <a th:href="@{/}" class="logo">
+                <img th:src="@{/images/logo.png}" alt="GVM Logo" class="navbar-logo">
+                <div class="logo-text-container">
+                    <span class="brand-name">GOD'S WILL MATRIMONY</span>
+                    <div class="brand-tagline">
+                        <span class="tagline-left">God's Will</span>
+                        <span class="tagline-connector"><svg viewBox="0 0 100 12" xmlns="http://www.w3.org/2000/svg"><path
+                                d="M0 6 Q12 1 24 6 Q36 11 48 6" stroke="#c0697a" stroke-width="1" stroke-linecap="round"
+                                fill="none"/><path
+                                d="M50 10 C50 10 44 5 44 3 C44 1.2 45.5 0.5 47.5 2 C48.5 2.8 49 3.5 50 4.5 C51 3.5 51.5 2.8 52.5 2 C54.5 0.5 56 1.2 56 3 C56 5 50 10 50 10Z"
+                                fill="#c0697a"/><path d="M52 6 Q64 1 76 6 Q88 11 100 6" stroke="#c0697a"
+                                                      stroke-width="1" stroke-linecap="round" fill="none"/></svg></span>
+                        <span class="tagline-center">God's Way</span>
+                        <span class="tagline-connector"><svg viewBox="0 0 100 12" xmlns="http://www.w3.org/2000/svg"><path
+                                d="M0 6 Q12 1 24 6 Q36 11 48 6" stroke="#c0697a" stroke-width="1" stroke-linecap="round"
+                                fill="none"/><path
+                                d="M50 10 C50 10 44 5 44 3 C44 1.2 45.5 0.5 47.5 2 C48.5 2.8 49 3.5 50 4.5 C51 3.5 51.5 2.8 52.5 2 C54.5 0.5 56 1.2 56 3 C56 5 50 10 50 10Z"
+                                fill="#c0697a"/><path d="M52 6 Q64 1 76 6 Q88 11 100 6" stroke="#c0697a"
+                                                      stroke-width="1" stroke-linecap="round" fill="none"/></svg></span>
+                        <span class="tagline-right">God's Time</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Nav links -->
+            <ul class="nav-links" id="navLinks">
+                <li>
+                    <a th:href="@{/}" th:classappend="${activePage == 'home'} ? ' active' : ''">
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/about}" th:classappend="${activePage == 'about'} ? ' active' : ''">
+                        About Us
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/profiles}" th:classappend="${activePage == 'profiles'} ? ' active' : ''">
+                        Profiles
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/success-stories}" th:classappend="${activePage == 'stories'} ? ' active' : ''">
+                        Success Stories
+                    </a>
+                </li>
+
+                <!-- ── ITEMS VISIBLE TO NORMAL USERS ONLY (not admin) ── -->
+
+                <!-- ✅ Premium Plans — hidden if user is already premium -->
+                <li th:if="${session.user != null
+                             and (session.user.role == null
+                                  or !session.user.role.equalsIgnoreCase('ADMIN'))
+                             and !session.user.isPremium()}">
+                    <a th:href="@{/subscription/plans}"
+                       th:classappend="${activePage == 'premium-plans'} ? ' active' : ''"
+                       class="premium-link">
+                        <i class="fas fa-crown"></i> Premium Plans
+                    </a>
+                </li>
+
+                <!-- My Shortlist -->
+                <li th:if="${session.user != null
+                             and (session.user.role == null
+                                  or !session.user.role.equalsIgnoreCase('ADMIN'))}">
+                    <a th:href="@{/shortlist}"
+                       th:classappend="${activePage == 'shortlist'} ? ' active' : ''"
+                       class="nav-shortlist-link">
+                        <i class="fas fa-heart"></i>
+                        My Shortlist
+                        <span class="shortlist-count-badge" id="shortlist-badge"
+                              style="display:none;background:#e85d75;color:#fff;margin-left:7px;
+                                     font-size:0.8rem;padding:2px 8px;border-radius:12px;font-weight:600;">
+                            0
+                        </span>
+                    </a>
+                </li>
+
+                <!-- My Profile -->
+                <li th:if="${session.user != null
+                             and (session.user.role == null
+                                  or !session.user.role.equalsIgnoreCase('ADMIN'))}">
+                    <a th:href="@{/my-profile}">
+                        My Profile
+                        <span th:if="${session.user.currentPlan != null and session.user.isPremium()}"
+                              class="user-premium-badge">
+                            <i class="fas fa-crown"></i>
+                        </span>
+                    </a>
+                </li>
+
+                <!-- ── ADMIN ONLY ── -->
+                <li th:if="${session.user != null
+                             and session.user.role != null
+                             and session.user.role.equalsIgnoreCase('ADMIN')}">
+                    <a th:href="@{/admin}"
+                       th:classappend="${activePage == 'admin'} ? ' active' : ''">
+                        Admin
+                    </a>
+                </li>
+
+                <!-- ── LOGOUT (all logged-in users) ── -->
+                <li th:if="${session.user != null}">
+                    <a th:href="@{/logout}" class="btn-logout">Logout</a>
+                </li>
+                <li>
+                    <a th:href="@{/shopping-page}"
+                       th:classappend="${activePage == 'shopping'} ? ' active' : ''">
+                        🛍️ Shopping
+                    </a>
+                </li>
+
+                <!-- ── GUEST ONLY ── -->
+                <li th:if="${session.user == null}">
+                    <a th:href="@{/login}" class="btn-login">Sign In</a>
+                </li>
+                <li th:if="${session.user == null}">
+                    <a th:href="@{/register}" class="btn-register btn-register-animate">Register Free!</a>
+                </li>
+            </ul>
+
+            <!-- Hamburger -->
+            <button class="mobile-menu-toggle" id="mobileMenuToggle"
+                    type="button" aria-label="Toggle menu" aria-expanded="false">
+                <i class="fas fa-bars" id="menuIconOpen"></i>
+                <i class="fas fa-times" id="menuIconClose" style="display:none;"></i>
+                <span class="menu-hamburger-fallback" id="menuFallback" aria-hidden="true">&#9776;</span>
+            </button>
+
+        </nav>
+    </div>
+
+    <script>
+        (function () {
+            function initMobileMenu() {
+                var toggleBtn = document.getElementById('mobileMenuToggle');
+                var navLinks  = document.getElementById('navLinks');
+                var iconOpen  = document.getElementById('menuIconOpen');
+                var iconClose = document.getElementById('menuIconClose');
+                var fallback  = document.getElementById('menuFallback');
+
+                if (!toggleBtn || !navLinks) return;
+
+                function syncFallback() {
+                    if (iconOpen && iconOpen.offsetWidth > 0) {
+                        if (fallback) fallback.style.display = 'none';
+                    }
+                }
+
+                function openMenu() {
+                    navLinks.classList.add('active');
+                    toggleBtn.setAttribute('aria-expanded', 'true');
+                    if (iconOpen)  iconOpen.style.display  = 'none';
+                    if (iconClose) iconClose.style.display = 'inline';
+                    if (fallback)  fallback.textContent    = '\u2715';
+                }
+
+                function closeMenu() {
+                    navLinks.classList.remove('active');
+                    toggleBtn.setAttribute('aria-expanded', 'false');
+                    if (iconOpen)  iconOpen.style.display  = 'inline';
+                    if (iconClose) iconClose.style.display = 'none';
+                    if (fallback)  fallback.textContent    = '\u2630';
+                }
+
+                toggleBtn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    navLinks.classList.contains('active') ? closeMenu() : openMenu();
+                });
+
+                navLinks.querySelectorAll('a').forEach(function (link) {
+                    link.addEventListener('click', closeMenu);
+                });
+
+                document.addEventListener('click', function (e) {
+                    if (!navLinks.contains(e.target) && !toggleBtn.contains(e.target)) {
+                        closeMenu();
+                    }
+                });
+
+                window.addEventListener('resize', function () {
+                    if (window.innerWidth > 900) closeMenu();
+                });
+
+                setTimeout(syncFallback, 600);
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    initMobileMenu();
+                    syncTaglineWidth();
+                });
+            } else {
+                initMobileMenu();
+                syncTaglineWidth();
+            }
+        })();
+
+    </script>
+
+</header>
+
+<!-- Shortlist script -->
+<script th:src="@{/js/shortlist.js}"></script>
+
+</body>
+</html>

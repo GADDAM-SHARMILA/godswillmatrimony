@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
+    <title>Admin - Create User Profile</title>
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+    <link rel="stylesheet" th:href="@{/css/admin_pp.css}">
+</head>
+<body th:attr="data-logged-in=${session.user != null}">
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<div class="admin-wrapper">
+
+    <div class="page-header">
+        <h1>➕ Create New User &amp; Profile</h1>
+        <a class="btn-back" th:href="@{/admin/profiles/all}">← Back to All Profiles</a>
+    </div>
+
+    <!-- Alerts -->
+    <div class="alert alert-error"   th:if="${error}"   th:text="${error}"></div>
+    <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+
+    <!-- Steps indicator -->
+    <div class="steps">
+        <div class="step-tab active" id="tab-1" onclick="goToStep(1)">1. Account</div>
+        <div class="step-tab"        id="tab-2" onclick="goToStep(2)">2. Personal</div>
+        <div class="step-tab"        id="tab-3" onclick="goToStep(3)">3. Religious</div>
+        <div class="step-tab"        id="tab-4" onclick="goToStep(4)">4. Professional</div>
+        <div class="step-tab"        id="tab-5" onclick="goToStep(5)">5. About</div>
+    </div>
+
+    <div class="info-note">
+        ℹ️ Admin-created accounts are <strong>auto-verified</strong> — no OTP needed. The user can log in immediately with the credentials you set.
+    </div>
+
+    <form th:action="@{/admin/users/create}" method="post" id="adminCreateForm">
+
+        <!-- ══ STEP 1: ACCOUNT INFO ══ -->
+        <div class="form-section active card" id="section-1">
+            <h2>Step 1: Account Information</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>First Name *</label>
+                    <input type="text" name="firstName" required placeholder="First name">
+                </div>
+                <div class="form-group">
+                    <label>Last Name *</label>
+                    <input type="text" name="lastName" required placeholder="Last name">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Email Address *</label>
+                    <input type="email" name="email" required placeholder="user@example.com">
+                    <span class="hint">Used for login</span>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number *</label>
+                    <input type="tel" name="phone" required placeholder="10-digit number" maxlength="10">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>WhatsApp Number</label>
+                    <input type="tel" name="whatsapp" placeholder="If different from phone">
+                </div>
+                <div class="form-group">
+                    <label>Gender / Profile For *</label>
+                    <select name="gender" required>
+                        <option value="">Select</option>
+                        <option value="male">Groom (Male)</option>
+                        <option value="female">Bride (Female)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Date of Birth *</label>
+                    <input type="date" name="dateOfBirth" required>
+                </div>
+                <div class="form-group">
+                    <label>Marital Status</label>
+                    <select name="maritalStatus">
+                        <option value="">Select</option>
+                        <option value="Never Married">Never Married</option>
+                        <option value="Divorced">Divorced</option>
+                        <option value="Widowed">Widowed</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Password *</label>
+                    <div class="pw-wrap">
+                        <input type="password" name="password" id="pwField" required
+                               placeholder="Min 8 characters" minlength="8">
+                        <button type="button" class="pw-toggle" onclick="togglePw('pwField',this)">👁</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Confirm Password *</label>
+                    <div class="pw-wrap">
+                        <input type="password" name="confirmPassword" id="pwField2" required
+                               placeholder="Repeat password" minlength="8">
+                        <button type="button" class="pw-toggle" onclick="togglePw('pwField2',this)">👁</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ STEP 2: PERSONAL ══ -->
+        <div class="form-section card" id="section-2">
+            <h2>Step 2: Personal Details</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Height (cm)</label>
+                    <input type="number" name="height" placeholder="e.g. 170" min="100" max="250">
+                </div>
+                <div class="form-group">
+                    <label>Mother Tongue</label>
+                    <input type="text" name="motherTongue" placeholder="e.g. Tamil, Telugu">
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ STEP 3: RELIGIOUS ══ -->
+        <div class="form-section card" id="section-3">
+            <h2>Step 3: Religious Details</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Religion *</label>
+                    <select name="religion" id="religionSelect" required onchange="updateDenomination()">
+                        <option value="">Select Religion</option>
+                        <option value="christian">Christian</option>
+                        <option value="converted_christian">Converted Christian</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Caste</label>
+                    <input type="text" name="caste" placeholder="Your caste">
+                </div>
+            </div>
+            <div class="form-row" id="denominationRow" style="display:none;">
+                <div class="form-group">
+                    <label>Denomination</label>
+                    <select name="denomination" id="denominationSelect">
+                        <option value="">Select Denomination</option>
+                        <option value="hebron">Hebron</option>
+                        <option value="lutheran">Lutheran</option>
+                        <option value="roman">Roman Catholic</option>
+                        <option value="baptist">Baptist</option>
+                        <option value="csi">CSI</option>
+                        <option value="catholic">Catholic</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ STEP 4: PROFESSIONAL ══ -->
+        <div class="form-section card" id="section-4">
+            <h2>Step 4: Professional &amp; Location</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Education</label>
+                    <select name="education">
+                        <option value="">Select</option>
+                        <option value="High School">High School</option>
+                        <option value="Bachelor">Bachelor's</option>
+                        <option value="Master">Master's</option>
+                        <option value="PhD">PhD</option>
+                        <option value="Professional">Professional</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Profession / Occupation</label>
+                    <input type="text" name="profession" placeholder="e.g. Software Engineer">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Annual Income</label>
+                    <input type="text" name="annualIncome" placeholder="e.g. 5-10 LPA">
+                </div>
+                <div class="form-group">
+                    <label>Employed In</label>
+                    <input type="text" name="employedIn" placeholder="Company / Organization">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>City *</label>
+                    <input type="text" name="city" required placeholder="City">
+                </div>
+                <div class="form-group">
+                    <label>State *</label>
+                    <input type="text" name="state" required placeholder="State">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Country</label>
+                    <input type="text" name="country" value="India" placeholder="Country">
+                </div>
+                <div class="form-group">
+                    <label>Pincode</label>
+                    <input type="text" name="pincode" placeholder="Pincode">
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ STEP 5: ABOUT ══ -->
+        <div class="form-section card" id="section-5">
+            <h2>Step 5: About the Person</h2>
+            <div class="form-row single">
+                <div class="form-group">
+                    <label>About Me</label>
+                    <textarea name="aboutMe" placeholder="A short bio about the person..."></textarea>
+                </div>
+            </div>
+
+            <!-- Summary before submit -->
+            <div class="info-note" style="margin-top:1rem;">
+                ✅ Review all details before submitting. The account will be <strong>created and verified instantly</strong>.
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="form-nav" id="formNav">
+            <button type="button" class="btn btn-prev" id="prevBtn" onclick="prevStep()" style="display:none;">← Previous</button>
+            <button type="button" class="btn btn-next" id="nextBtn" onclick="nextStep()">Next →</button>
+            <button type="submit" class="btn btn-submit" id="submitBtn" style="display:none;">✅ Create Account &amp; Profile</button>
+        </div>
+
+    </form>
+</div>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<script>
+    let currentStep = 1;
+    const totalSteps = 5;
+
+    function showStep(n) {
+        for (let i = 1; i <= totalSteps; i++) {
+            document.getElementById(`section-${i}`).classList.remove('active');
+            const tab = document.getElementById(`tab-${i}`);
+            tab.classList.remove('active', 'done');
+            if (i < n) tab.classList.add('done');
+        }
+        document.getElementById(`section-${n}`).classList.add('active');
+        document.getElementById(`tab-${n}`).classList.add('active');
+
+        document.getElementById('prevBtn').style.display   = n === 1 ? 'none' : 'inline-block';
+        document.getElementById('nextBtn').style.display   = n === totalSteps ? 'none' : 'inline-block';
+        document.getElementById('submitBtn').style.display = n === totalSteps ? 'inline-block' : 'none';
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goToStep(n) {
+        if (n < currentStep) { currentStep = n; showStep(n); }
+    }
+
+    function validateStep(step) {
+        const section = document.getElementById(`section-${step}`);
+        const required = section.querySelectorAll('[required]');
+        let valid = true;
+        required.forEach(f => {
+            f.classList.remove('is-invalid');
+            if (!f.value.trim()) { f.classList.add('is-invalid'); valid = false; }
+        });
+
+        if (step === 1) {
+            const pw  = document.getElementById('pwField').value;
+            const pw2 = document.getElementById('pwField2').value;
+            if (pw !== pw2) {
+                alert('Passwords do not match!');
+                document.getElementById('pwField2').classList.add('is-invalid');
+                valid = false;
+            }
+            const phone = section.querySelector('[name="phone"]').value;
+            if (phone && !/^\d{10}$/.test(phone)) {
+                alert('Phone must be exactly 10 digits!');
+                valid = false;
+            }
+        }
+
+        if (!valid) alert('Please fill all required fields correctly.');
+        return valid;
+    }
+
+    function nextStep() {
+        if (!validateStep(currentStep)) return;
+        if (currentStep < totalSteps) { currentStep++; showStep(currentStep); }
+    }
+
+    function prevStep() {
+        if (currentStep > 1) { currentStep--; showStep(currentStep); }
+    }
+
+    function updateDenomination() {
+        const val = document.getElementById('religionSelect').value;
+        const row = document.getElementById('denominationRow');
+        row.style.display = (val === 'christian' || val === 'converted_christian') ? '' : 'none';
+    }
+
+    function togglePw(id, btn) {
+        const f = document.getElementById(id);
+        f.type = f.type === 'password' ? 'text' : 'password';
+        btn.textContent = f.type === 'password' ? '👁' : '🙈';
+    }
+
+    document.getElementById('adminCreateForm').addEventListener('submit', function(e) {
+        for (let i = 1; i <= totalSteps; i++) {
+            if (i === 1 || i === 4) {
+                if (!validateStep(i)) {
+                    e.preventDefault();
+                    currentStep = i;
+                    showStep(i);
+                    return;
+                }
+            }
+        }
+    });
+
+    showStep(1);
+</script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Franchise Login - God's Will Matrimony</title>
+
+    <!-- Include head fragment for meta, CSS, JS -->
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/pastors.css}">
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+
+    <style>
+        /* ── Override: hide user-only nav items on pastor login page ── */
+        .nav-shortlist-link,
+        .user-premium-badge {
+            display: none !important;
+        }
+
+        /* ── Password toggle wrapper ── */
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-wrapper input {
+            width: 100%;
+            padding-right: 42px; /* space for the eye icon */
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            color: #F2D8E1;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle-password:hover {
+            color: #c0697a;
+        }
+    </style>
+</head>
+
+<body>
+<!-- Include navbar — activePage left unset so no link is highlighted -->
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<div class="auth-page">
+    <div class="auth-container">
+        <div class="auth-header">
+            <h2>⛪ Franchise Login</h2>
+            <p>Welcome back! Please sign in to your account</p>
+        </div>
+
+        <!-- Error / logout message -->
+        <div th:if="${param.error}" class="error-message">
+            Invalid email or password. Please try again.
+        </div>
+        <div th:if="${param.logout}" class="error-message"
+             style="background: #d4edda; color: #155724; border-color: #c3e6cb;">
+            You have been logged out successfully.
+        </div>
+
+        <form th:action="@{/pastors/login}" method="post">
+            <div class="form-group">
+                <label>Email *</label>
+                <input type="email" name="email" required
+                       placeholder="Enter your email address" autofocus />
+            </div>
+
+            <div class="form-group">
+                <label>Password *</label>
+                <div class="password-wrapper">
+                    <input type="password" id="passwordInput" name="password" required
+                           placeholder="Enter your password" />
+                    <button type="button" class="toggle-password" id="togglePassword" aria-label="Toggle password visibility">
+                        <i class="fas fa-eye" id="eyeIcon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary">
+                Sign In
+            </button>
+        </form>
+
+        <div class="back-link">
+            <a th:href="@{/pastors/register}">← Don't have an account? Register Now</a>
+        </div>
+    </div>
+</div>
+
+<!-- Include footer -->
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<script>
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput  = document.getElementById('passwordInput');
+    const eyeIcon        = document.getElementById('eyeIcon');
+
+    togglePassword.addEventListener('click', function () {
+        const isHidden = passwordInput.type === 'password';
+        passwordInput.type = isHidden ? 'text' : 'password';
+        eyeIcon.className  = isHidden ? 'fas fa-eye-slash' : 'fas fa-eye';
+    });
+</script>
+
+</body>
+</html>

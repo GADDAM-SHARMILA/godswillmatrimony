@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
+    <title>Admin - Pending Profiles</title>
+    <link rel="stylesheet" th:href="@{/css/admin_pp.css}">
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+</head>
+
+<body th:attr="data-logged-in=${session.user != null}">
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<div class="container" style="max-width: 900px; margin: 2rem auto; padding: 0 1rem;">
+
+    <!-- Header -->
+    <div class="admin-header">
+        <h1>⏳ Pending Approval</h1>
+        <a class="btn btn-create" th:href="@{/admin/profiles/create}">+ Add New Profile</a>
+    </div>
+
+    <!-- Nav Tabs -->
+    <div class="admin-nav-tabs">
+        <a th:href="@{/admin/profiles/all}"              >All Profiles</a>
+        <a th:href="@{/admin/profiles/pending}" class="active">Pending Approval</a>
+    </div>
+
+    <!-- Alerts -->
+    <div class="alert alert-error"   th:if="${error}"   th:text="${error}"></div>
+    <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+
+    <!-- Empty State -->
+    <div class="empty-state" th:if="${profiles == null or profiles.isEmpty()}">
+        <p>🎉 No pending profiles. All caught up!</p>
+    </div>
+
+    <!-- Cards -->
+    <div class="pending-profile-card" th:each="p : ${profiles}">
+        <div class="pending-profile-inner">
+
+            <img class="pending-profile-image"
+                 th:src="${#strings.isEmpty(p.imageUrl)} ? @{/images/default-avatar.jpg} : @{${p.imageUrl}}"
+                 alt="Profile image"/>
+
+            <div class="pending-profile-info">
+                <div class="pending-profile-name"
+                     th:text="|${p.firstName} ${p.lastName}|">Name</div>
+
+                <div class="pending-profile-location"
+                     th:text="|${p.city}, ${p.state}|">Location</div>
+
+                <div class="pending-profile-ids"
+                     th:text="'Profile No: ' + ${p.profileNumber} + ' | MongoId: ' + ${p.id}">Ids</div>
+
+                <div class="pending-profile-contact"
+                     th:text="'Email: ' + ${p.email} + ' | Phone: ' + ${p.phone}">Contact</div>
+            </div>
+
+            <div class="pending-profile-actions">
+                <a class="btn btn-secondary" th:href="@{/profile/{id}(id=${p.id})}">View</a>
+
+                <form th:action="@{/admin/profiles/{id}/approve(id=${p.id})}" method="post">
+                    <button type="submit" class="btn btn-approve">Approve</button>
+                </form>
+
+                <form th:action="@{/admin/profiles/{id}/reject(id=${p.id})}" method="post"
+                      onsubmit="return confirm('Reject this profile?')">
+                    <button type="submit" class="btn btn-reject">Reject</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+</body>
+</html>

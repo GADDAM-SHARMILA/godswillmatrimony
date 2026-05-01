@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
+    <title>Admin - All Profiles</title>
+    <link rel="stylesheet" th:href="@{/css/admin_pp.css}">
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+    <style>
+        .pastor-tag-admin {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.72rem;
+            color: #7a2a40;
+            background: #f2d8e1;
+            border: 1px solid #d4a0b0;
+            border-radius: 12px;
+            padding: 2px 8px;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+        .pastor-tag-admin i { color: #a0405a; font-size: 0.68rem; }
+
+        .btn-add-product {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #7a2a40;
+            background: #f7edf0;
+            border: 1.5px solid #c0607a;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background .2s, color .2s;
+        }
+        .btn-add-product:hover {
+            background: #7a2a40;
+            color: #fff;
+        }
+
+        /* ✅ Orders button — slightly different color to stand out */
+        .btn-orders {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #1d4ed8;
+            background: #eff6ff;
+            border: 1.5px solid #93c5fd;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background .2s, color .2s;
+        }
+        .btn-orders:hover {
+            background: #1d4ed8;
+            color: #fff;
+        }
+
+        .quick-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+        }
+    </style>
+</head>
+
+<body th:attr="data-logged-in=${session.user != null}">
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<div class="container" style="max-width: 900px; margin: 2rem auto; padding: 0 1rem;">
+
+    <!-- Header -->
+    <div class="admin-header">
+        <h1>👤 All Profiles</h1>
+        <a class="btn btn-create" th:href="@{/admin/profiles/create}">+ Add New Profile</a>
+    </div>
+
+    <!-- Nav Tabs -->
+    <div class="admin-nav-tabs">
+        <a th:href="@{/admin/profiles/all}"    class="active">All Profiles</a>
+        <a th:href="@{/admin/profiles/pending}"              >Pending Approval</a>
+        <!-- ✅ Orders tab added -->
+        <a th:href="@{/admin/orders}">📦 All Orders</a>
+        <a th:href="@{/admin/catering}">🍽️ Catering</a>
+    </div>
+
+    <!-- ✅ Quick Links — Admin shortcuts -->
+    <div class="quick-links">
+        <a class="btn-add-product" th:href="@{/admin/products/add}">
+            <i class="fas fa-box-open"></i> Add Product
+        </a>
+        <a class="btn-add-product" th:href="@{/admin/products/list}">
+            <i class="fas fa-list"></i> All Products
+        </a>
+        <!-- ✅ Orders quick link -->
+        <a class="btn-orders" th:href="@{/admin/orders}">
+            <i class="fas fa-shopping-bag"></i> View All Orders
+        </a>
+        <a class="btn-add-product" th:href="@{/admin/catering/add}">
+            <i class="fas fa-utensils"></i> Add Catering Item
+        </a>
+        <a class="btn-orders" th:href="@{/admin/catering}">
+            <i class="fas fa-th-list"></i> All Catering Items
+        </a>
+    </div>
+
+    <!-- Alerts -->
+    <div class="alert alert-error"   th:if="${error}"   th:text="${error}"></div>
+    <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="stat-badge">Total: <span th:text="${totalCount}">0</span></div>
+        <div class="stat-badge">Verified: <span th:text="${verifiedCount}">0</span></div>
+        <div class="stat-badge">Pending: <span th:text="${pendingCount}">0</span></div>
+        <div class="stat-badge">Active: <span th:text="${activeCount}">0</span></div>
+    </div>
+
+    <!-- Search (client-side filter) -->
+    <div class="search-bar">
+        <input type="text" id="profileSearch"
+               placeholder="🔍 Search by name, email, city, profession..."
+               oninput="filterCards(this.value)"/>
+    </div>
+
+    <!-- Empty state -->
+    <div class="empty-state" th:if="${profiles == null or profiles.isEmpty()}">
+        <p>No profiles found.</p>
+    </div>
+
+    <!-- Profile Cards -->
+    <div id="profileList">
+        <div class="profile-card-admin"
+             th:each="p : ${profiles}"
+             th:attr="data-search=${#strings.toLowerCase(
+                 (p.firstName ?: '') + ' ' +
+                 (p.lastName  ?: '') + ' ' +
+                 (p.email     ?: '') + ' ' +
+                 (p.city      ?: '') + ' ' +
+                 (p.profession?: '') + ' ' +
+                 (p.profileNumber ?: '')
+             )}">
+
+            <!-- Avatar -->
+            <img class="profile-card-img"
+                 th:src="${#strings.isEmpty(p.imageUrl)} ? @{/images/default-avatar.jpg} : @{${p.imageUrl}}"
+                 alt="Profile image"/>
+
+            <!-- Info -->
+            <div class="profile-card-body">
+
+                <div class="profile-card-name">
+                    <span th:text="|${p.firstName} ${p.lastName}|">Name</span>
+
+                    <!-- Status badges -->
+                    <span class="badge badge-verified"  th:if="${p.verified != null && p.verified}">✓ Verified</span>
+                    <span class="badge badge-pending"   th:if="${p.verified == null || !p.verified}">⏳ Pending</span>
+                    <span class="badge badge-inactive"  th:if="${p.active != null && !p.active}">Inactive</span>
+                    <span class="badge badge-male"      th:if="${p.gender == 'male'}">Male</span>
+                    <span class="badge badge-female"    th:if="${p.gender == 'female'}">Female</span>
+                </div>
+
+                <div class="profile-card-meta">
+                    <span th:if="${p.calculatedAge != null}" th:text="|🎂 ${p.calculatedAge} yrs|"></span>
+                    <span th:if="${p.city != null}"          th:text="|📍 ${p.city}${p.state != null ? ', ' + p.state : ''}|"></span>
+                    <span th:if="${p.profession != null}"    th:text="|💼 ${p.profession}|"></span>
+                    <span th:if="${p.denomination != null}"  th:text="|⛪ ${p.denomination}|"></span>
+                    <span th:if="${p.email != null}"         th:text="|✉ ${p.email}|"></span>
+                    <span th:if="${p.phone != null}"         th:text="|📞 ${p.phone}|"></span>
+                </div>
+
+                <!-- Pastor proposed badge -->
+                <div th:if="${p.proposedByPastorName != null and !#strings.isEmpty(p.proposedByPastorName)}">
+                    <span class="pastor-tag-admin">
+                        <i class="fas fa-church"></i>
+                        Proposed by Pastor <span th:text="${p.proposedByPastorName}">Pastor Name</span>
+                    </span>
+                </div>
+
+                <div class="profile-card-ids"
+                     th:text="'Profile No: ' + ${p.profileNumber} + ' | ID: ' + ${p.id}">
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="profile-card-actions">
+                <a class="btn btn-view" th:href="@{/profile/{id}(id=${p.id})}">View</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<script>
+    function filterCards(value) {
+        const q = value.toLowerCase().trim();
+        document.querySelectorAll('#profileList .profile-card-admin').forEach(card => {
+            const data = card.getAttribute('data-search') || '';
+            card.style.display = data.includes(q) ? '' : 'none';
+        });
+    }
+</script>
+
+</body>
+</html>

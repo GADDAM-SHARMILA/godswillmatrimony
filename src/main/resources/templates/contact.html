@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
+    <title>Contact - Godswill Matrimony</title>
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+    <link rel="stylesheet" th:href="@{/css/login_register.css}">
+</head>
+
+<body>
+
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<div class="auth-page">
+    <div class="auth-container">
+
+        <div class="auth-header">
+            <div class="auth-logo">📩</div>
+            <h2>Contact Godswill Matrimony</h2>
+            <p>If you have any queries, please fill the contact form below.</p>
+        </div>
+
+        <!-- Contact Info -->
+        <div style="text-align:center; margin-bottom:20px;">
+            Contact Mail 📧
+            <a href="mailto:contact@godswillmatrimony.in">
+                contact@godswillmatrimony.in
+            </a>
+        </div>
+
+        <!-- Success Message -->
+        <div id="contactSuccessMessage"
+             class="success-box"
+             style="display:none;">
+            ✅ Thank you for reaching out.
+            Our Godswill Matrimony team will connect with you within 24 hrs.
+        </div>
+
+        <!-- Contact Form -->
+        <form id="contactForm" class="auth-form">
+
+            <div class="form-group">
+                <label>Name *</label>
+                <input type="text"
+                       class="form-control"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label>Email *</label>
+                <input type="email"
+                       class="form-control"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label>Contact Number *</label>
+                <input type="tel"
+                       class="form-control"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label>Message *</label>
+                <textarea class="form-control"
+                          rows="4"
+                          required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100">
+                Send Message
+            </button>
+
+        </form>
+
+
+
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<script>
+    document.getElementById("contactForm")
+    .addEventListener("submit", function(e) {
+
+        e.preventDefault();
+
+        this.style.display = "none";
+
+        document.getElementById("contactSuccessMessage")
+        .style.display = "block";
+
+    });
+</script>
+
+</body>
+</html>

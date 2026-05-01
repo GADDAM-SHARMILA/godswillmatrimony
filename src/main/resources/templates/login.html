@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
+    <title>Login - Matrimony</title>
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+    <link rel="stylesheet" th:href="@{/css/login_register.css}">
+</head>
+<body>
+<!-- Header -->
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<!-- Login Page -->
+<div class="auth-page">
+    <div class="auth-container">
+        <div class="auth-header">
+            <div class="auth-logo">💑</div>
+            <h2>Welcome Back</h2>
+            <p>Login to continue your search</p>
+        </div>
+
+        <!-- Alert Messages -->
+        <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+        <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+        <div class="alert alert-info" th:if="${message}" th:text="${message}"></div>
+
+        <!-- Login Form -->
+        <form class="auth-form" th:action="@{/login}" method="post" id="loginForm">
+            <div class="form-group">
+                <label for="email">Email Address or Mobile Number</label>
+                <input type="text"
+                       id="email"
+                       name="email"
+                       class="form-control"
+                       placeholder="Enter your email or mobile"
+                       required
+                       autocomplete="username"
+                       th:value="${email != null} ? ${email} : ''">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="password-input-wrapper">
+                    <input type="password"
+                           id="password"
+                           name="password"
+                           class="form-control"
+                           placeholder="Enter your password"
+                           required
+                           autocomplete="current-password">
+                    <button type="button"
+                            class="password-toggle"
+                            onclick="togglePassword(event, 'password')"
+                            aria-label="Toggle password visibility">
+                        <i class="far fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="auth-options">
+                <label class="remember-me">
+                    <input type="checkbox" name="remember" value="true">
+                    <span>Remember me</span>
+                </label>
+                <a th:href="@{/forgot-password}" class="forgot-password">Forgot Password?</a>
+            </div>
+
+            <!-- ✅ Image CAPTCHA -->
+            <div class="form-group">
+                <label for="captcha">Enter CAPTCHA Code *</label>
+                <div class="captcha-container">
+                    <img id="captchaImage"
+                         th:src="@{/captcha-image}"
+                         alt="CAPTCHA"
+                         class="captcha-image"
+                         onclick="refreshCaptcha()">
+                    <button type="button"
+                            class="captcha-refresh"
+                            onclick="refreshCaptcha()"
+                            title="Refresh CAPTCHA">
+                        🔄
+                    </button>
+                </div>
+                <input type="text"
+                       id="captcha"
+                       name="captcha"
+                       class="form-control captcha-input"
+                       placeholder="Enter the code shown above"
+                       required
+                       autocomplete="off"
+                       maxlength="5">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+
+        <div class="auth-divider">
+            <span>OR</span>
+        </div>
+
+
+
+        <div class="auth-footer">
+            Don't have an account?
+            <a th:href="@{/register}">Register now</a>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<script>
+    function togglePassword(evt, fieldId) {
+        const field = document.getElementById(fieldId);
+        const icon = evt.currentTarget.querySelector('i');
+
+        if (!field || !icon) return;
+
+        if (field.type === 'password') {
+            field.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            field.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+
+    // ✅ Refresh CAPTCHA image
+    function refreshCaptcha() {
+        const captchaImage = document.getElementById('captchaImage');
+        captchaImage.src = '/captcha-image?' + new Date().getTime();
+        document.getElementById('captcha').value = '';
+    }
+
+    // Auto-refresh CAPTCHA on page load
+    window.addEventListener('load', function() {
+        refreshCaptcha();
+    });
+</script>
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/69b14b6bbe53e11c396ec50f/1jje8t7rf';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+</script>
+<!--End of Tawk.to Script-->
+</body>
+</html>

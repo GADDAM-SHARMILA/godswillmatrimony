@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/css/fragments.css}">
+</head>
+<body>
+
+<aside class="sidebar" th:fragment="sidebar">
+    <!-- Bride Profiles -->
+    <a th:href="@{/profiles(gender='female')}" class="category-banner">
+        <div class="category-banner-content">
+            <img th:src="@{/images/bride.jpg}" alt="Bride Profiles" class="category-banner-image">
+            <h3>👰 Bride Profiles</h3>
+            <p>Browse verified bride profiles</p>
+        </div>
+    </a>
+
+    <!-- Groom Profiles -->
+    <a th:href="@{/profiles(gender='male')}" class="category-banner">
+        <div class="category-banner-content">
+            <img th:src="@{/images/groom.jpg}" alt="Groom Profiles" class="category-banner-image">
+            <h3>🤵 Groom Profiles</h3>
+            <p>Browse verified groom profiles</p>
+        </div>
+    </a>
+
+    <!-- Verified Profiles -->
+    <a th:href="@{/profiles(verified='true')}" class="category-banner">
+        <div class="category-banner-content">
+            <img th:src="@{/images/verified.png}" alt="Verified Profiles" class="category-banner-image">
+            <h3>✓ Verified Profiles</h3>
+            <p>100% verified mobile profiles</p>
+        </div>
+    </a>
+
+    <!-- Premium Profiles -->
+    <a th:href="@{/profiles(premium='true')}" class="category-banner">
+        <div class="category-banner-content">
+            <img th:src="@{/images/premium.png}" alt="Premium Profiles" class="category-banner-image">
+            <h3>⭐ Premium Profiles</h3>
+            <p>Featured premium members</p>
+        </div>
+    </a>
+
+    <!-- Recent Profiles -->
+    <a th:href="@{/profiles(sort='recent')}" class="category-banner">
+        <div class="category-banner-content">
+            <img th:src="@{/images/girl_2.jpg}" alt="Recent Profiles" class="category-banner-image">
+            <h3>🆕 Recent Profiles</h3>
+            <p>Newly registered members</p>
+        </div>
+    </a>
+
+    <!-- Catering Menu -->
+    <a th:href="@{/catering}" class="category-banner">
+        <div class="category-banner-content">
+            <img th:src="@{/images/catering.png}" alt="Catering Menu" class="category-banner-image">
+            <h3>🍽️ Catering Menu</h3>
+            <p>Explore our food catalogue</p>
+        </div>
+    </a>
+
+</aside>
+
+</body>
+</html>

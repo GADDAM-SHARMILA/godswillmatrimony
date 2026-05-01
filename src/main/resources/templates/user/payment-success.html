@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
+    <title>Payment Successful - Godswill Matrimony</title>
+    <link rel="stylesheet" th:href="@{/css/user.css}">
+</head>
+
+<body>
+
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<div class="success-container">
+    <i class="fas fa-check-circle success-icon"></i>
+    <h1>Payment Successful!</h1>
+    <p>Your subscription has been activated successfully.</p>
+
+    <div class="subscription-details" th:if="${subscription != null}">
+        <p><strong>Plan:</strong> <span th:text="${subscription.plan}">GOLD</span></p>
+        <p><strong>Amount Paid:</strong> ₹<span th:text="${subscription.amount}">999</span></p>
+        <p><strong>Valid Until:</strong> <span th:text="${#temporals.format(subscription.endDate, 'dd MMM yyyy')}">31 Dec 2026</span></p>
+        <p><strong>Payment ID:</strong> <span th:text="${subscription.razorpayPaymentId}">pay_xxxxx</span></p>
+    </div>
+
+    <div class="btn-group">
+        <a th:href="@{/}" class="btn btn-primary">Go to Home</a>
+        <a th:href="@{/profiles}" class="btn btn-secondary">Browse Profiles</a>
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+</body>
+</html>

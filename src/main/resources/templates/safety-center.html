@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safety Centre - God's Will Matrimony</title>
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" th:href="@{/css/fragments.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --brand-red:    #C41E3A;
+            --brand-pink:   #F2D8E1;
+            --brand-dark:   #2C1A1D;
+            --brand-mid:    #B4506E;
+            --text-main:    #1e1e2e;
+            --text-muted:   #6b7280;
+            --bg:           #fdfbfc;
+            --card-bg:      #ffffff;
+            --border:       #f0e4e8;
+            --green:        #16a34a;
+            --green-light:  #dcfce7;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* ── NAV HINT ── */
+        .nav-hint {
+            background: var(--brand-red);
+            color: white;
+            text-align: center;
+            padding: 10px 16px;
+            font-size: 13px;
+            letter-spacing: 0.3px;
+        }
+        .nav-hint a { color: var(--brand-pink); text-decoration: none; font-weight: 600; }
+
+        /* ── HERO ── */
+        .hero {
+            background: linear-gradient(135deg, #1a0a2e 0%, #3d0d28 30%, #c41e3a 65%, #e8563a 100%);
+            padding: 72px 24px 56px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: var(--brand-pink);
+            padding: 6px 16px; border-radius: 100px;
+            font-size: 13px; font-weight: 500;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            color: white;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+        .hero p {
+            color: rgba(255,255,255,0.75);
+            font-size: 16px;
+            max-width: 520px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        /* ── MAIN LAYOUT ── */
+        .main {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 56px 24px 80px;
+        }
+
+        /* ── FEATURE BANNER ── */
+        .feature-banner {
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--card-bg);
+            box-shadow: 0 4px 24px rgba(196,30,58,0.08);
+            border: 1px solid var(--border);
+            margin-bottom: 56px;
+        }
+        .feature-img-wrap {
+            position: relative;
+            height: 240px;
+            background: linear-gradient(135deg, #fce4ec 0%, #ffd6cc 50%, #ffe0b2 100%);
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+        .feature-img-wrap .shield-icon {
+            width: 80px; height: 80px;
+            background: var(--green);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 32px rgba(22,163,74,0.35);
+            animation: pulse-ring 2.5s ease-in-out infinite;
+        }
+        .feature-img-wrap .decorative {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(196,30,58,0.06);
+        }
+        .decorative.d1 { width:200px;height:200px;top:-60px;left:-60px; }
+        .decorative.d2 { width:140px;height:140px;bottom:-30px;right:-30px;background:rgba(180,80,110,0.08); }
+        .decorative.d3 { width:80px;height:80px;top:20px;right:60px;background:rgba(196,30,58,0.05); }
+
+        @keyframes pulse-ring {
+            0%,100% { box-shadow: 0 8px 32px rgba(22,163,74,0.35), 0 0 0 0 rgba(22,163,74,0.3); }
+            50% { box-shadow: 0 8px 32px rgba(22,163,74,0.35), 0 0 0 16px rgba(22,163,74,0); }
+        }
+        .feature-cta {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 20px 24px;
+            border-top: 1px solid var(--border);
+        }
+        .feature-cta span {
+            font-weight: 600; font-size: 15px; color: var(--text-main);
+        }
+        .feature-cta .arrow {
+            width: 32px; height: 32px;
+            background: var(--brand-pink);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--brand-red);
+            font-size: 16px;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .feature-cta:hover .arrow { background: var(--brand-red); color: white; transform: translateX(4px); }
+
+        /* ── SECTION TITLE ── */
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            color: var(--brand-dark);
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--brand-pink);
+        }
+
+        /* ── SAFETY ITEMS ── */
+        .safety-items { display: flex; flex-direction: column; gap: 4px; margin-bottom: 56px; }
+
+        .safety-item {
+            display: flex; gap: 20px; align-items: flex-start;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid transparent;
+            transition: border-color 0.2s, background 0.2s, transform 0.2s;
+            cursor: pointer;
+        }
+        .safety-item:hover {
+            border-color: var(--border);
+            background: white;
+            transform: translateX(4px);
+            box-shadow: 0 2px 16px rgba(196,30,58,0.06);
+        }
+        .safety-icon {
+            width: 44px; height: 44px; flex-shrink: 0;
+            background: var(--brand-pink);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--brand-red);
+            transition: background 0.2s;
+        }
+        .safety-item:hover .safety-icon { background: var(--brand-red); color: white; }
+        .safety-icon svg { width: 22px; height: 22px; }
+
+        .safety-text h3 {
+            font-weight: 600; font-size: 16px; margin-bottom: 6px; color: var(--text-main);
+        }
+        .safety-text p {
+            font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 0;
+        }
+
+        /* ── WE'RE HERE FOR YOU ── */
+        .support-section {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            padding: 40px;
+            box-shadow: 0 4px 24px rgba(196,30,58,0.06);
+        }
+        .support-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            color: var(--brand-dark);
+            margin-bottom: 8px;
+        }
+        .support-section > p {
+            color: var(--text-muted); font-size: 14px; margin-bottom: 32px;
+        }
+
+        .support-group { margin-bottom: 28px; }
+        .support-group-label {
+            font-size: 12px; font-weight: 600; letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--brand-mid);
+            margin-bottom: 14px;
+        }
+        .support-row {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 12px;
+        }
+        .support-row svg { width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0; }
+        .support-row span { font-size: 15px; color: var(--text-main); }
+        .support-row a { color: var(--brand-red); font-weight: 600; text-decoration: none; }
+        .support-row a:hover { text-decoration: underline; }
+
+        .support-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 0 32px;
+        }
+        @media (max-width: 560px) { .support-grid { grid-template-columns: 1fr; } }
+
+        /* ── DIVIDER ── */
+        .support-divider {
+            height: 1px; background: var(--border); margin: 24px 0;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 600px) {
+            .hero { padding: 48px 16px 40px; }
+            .support-section { padding: 28px 20px; }
+            .safety-item { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-badge">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        Trusted & Secure
+    </div>
+    <h1>Safety Centre</h1>
+    <p>Your safety is our highest priority at God's Will Matrimony. We use advanced tools to ensure your matchmaking journey stays secure and protected.</p>
+</section>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+    <!-- Feature Banner -->
+    <div class="feature-banner">
+        <div class="feature-img-wrap">
+            <div class="decorative d1"></div>
+            <div class="decorative d2"></div>
+            <div class="decorative d3"></div>
+            <div class="shield-icon">
+                <svg width="36" height="36" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <polyline points="9 12 11 14 15 10" stroke="white" stroke-width="2.5"/>
+                </svg>
+            </div>
+        </div>
+        <a href="#safety-tips" class="feature-cta" style="text-decoration:none;">
+            <span>Find out how God's Will Matrimony builds a safer space for love.</span>
+            <div class="arrow">›</div>
+        </a>
+    </div>
+
+    <!-- Safety Topics -->
+    <h2 class="section-title" id="safety-tips">Safety Guidelines</h2>
+    <div class="safety-items">
+
+        <div class="safety-item">
+            <div class="safety-icon">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+            </div>
+            <div class="safety-text">
+                <h3>Safety Tips</h3>
+                <p>Follow these practical guidelines to protect yourself while connecting with potential matches. Never share financial details or OTPs with anyone on the platform.</p>
+            </div>
+        </div>
+
+        <div class="safety-item">
+            <div class="safety-icon">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+            </div>
+            <div class="safety-text">
+                <h3>Report a Profile</h3>
+                <p>Report any suspicious or inappropriate behaviour immediately — especially requests for money, unsolicited contact, or blackmail threats. We investigate every report.</p>
+            </div>
+        </div>
+
+        <div class="safety-item">
+            <div class="safety-icon">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+                </svg>
+            </div>
+            <div class="safety-text">
+                <h3>Privacy Settings</h3>
+                <p>Manage who sees your photos, contact information, and profile details. You are always in complete control of your personal data on our platform.</p>
+            </div>
+        </div>
+
+        <div class="safety-item">
+            <div class="safety-icon">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+                </svg>
+            </div>
+            <div class="safety-text">
+                <h3>Mental Wellbeing</h3>
+                <p>Here's how you can prioritise your mental well-being while making this life-changing decision. Finding a life partner is a journey — take it at your own pace.</p>
+            </div>
+        </div>
+
+        <div class="safety-item">
+            <div class="safety-icon">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>
+            </div>
+            <div class="safety-text">
+                <h3>Profile Verification</h3>
+                <p>We verify profiles using multiple checks to ensure you interact only with genuine, authentic members who are serious about finding a life partner.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- We're Here For You -->
+    <div class="support-section">
+        <h2>We're Here For You!</h2>
+        <p>Reach out anytime — our team is dedicated to making your experience safe and joyful.</p>
+
+        <!-- God's Will Support -->
+        <div class="support-group">
+            <div class="support-group-label">God's Will Matrimony Support</div>
+            <div class="support-row">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                <span>Email: <a href="mailto:care@godswillmatrimony.in">care@godswillmatrimony.in</a></span>
+            </div>
+        </div>
+
+        <div class="support-divider"></div>
+
+        <!-- Cyber Crime Reporting -->
+        <div class="support-group">
+            <div class="support-group-label">Cyber Crime Reporting</div>
+            <div class="support-grid">
+                <div>
+                    <div class="support-row">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                            <polyline points="22,6 12,13 2,6"/>
+                        </svg>
+                        <span>Cyber Crime Portal: <a href="https://cybercrime.gov.in" target="_blank" rel="noopener">cybercrime.gov.in</a></span>
+                    </div>
+                    <div class="support-row">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 11.5 19.79 19.79 0 01.94 2.82 2 2 0 012.92 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0121 16.92z"/>
+                        </svg>
+                        <span>Women's Helpline: <strong>181</strong></span>
+                    </div>
+                </div>
+                <div>
+                    <div class="support-row">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 11.5 19.79 19.79 0 01.94 2.82 2 2 0 012.92 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0121 16.92z"/>
+                        </svg>
+                        <span>Helpline: <strong>1930</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
+    <title>Payment Failed - Godswill Matrimony</title>
+    <link rel="stylesheet" th:href="@{/css/user.css}">
+</head>
+
+<body>
+
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<div class="failed-container">
+    <i class="fas fa-times-circle failed-icon"></i>
+    <h1>Payment Failed</h1>
+    <p>We couldn't process your payment. Please try again.</p>
+
+    <div class="btn-group">
+        <a th:href="@{/subscription/plans}" class="btn btn-primary">Try Again</a>
+        <a th:href="@{/}" class="btn btn-secondary">Go to Home</a>
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+</body>
+</html>

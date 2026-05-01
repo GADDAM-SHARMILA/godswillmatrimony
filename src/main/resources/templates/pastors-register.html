@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
+    <title>Pastor Registration - Matrimony</title>
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+    <link rel="stylesheet" th:href="@{/css/pastors.css}">
+</head>
+
+<body>
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<div class="auth-page">
+    <div class="auth-container">
+        <div class="auth-header">
+            <h2>⛪ Pastor Registration</h2>
+            <p>Please complete all required details</p>
+        </div>
+
+        <!-- SUCCESS MESSAGE -->
+        <div th:if="${successMessage}" class="success-message" id="successMessage">
+            <h3>✅ Registration Successful!</h3>
+            <p>Your pastor account has been created successfully.</p>
+            <p>Redirecting you to login page in <span id="countdown">5</span> seconds...</p>
+            <div class="redirect-countdown">
+                Click <a th:href="@{/pastors/login}">here</a> to login now
+            </div>
+        </div>
+
+        <!-- REGISTRATION FORM -->
+        <form th:action="@{/pastors/register}"
+              th:object="${pastor}"
+              method="post"
+              id="pastorForm"
+              th:unless="${successMessage}">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>First Name *</label>
+                    <input type="text" th:field="*{firstName}" required />
+                </div>
+                <div class="form-group">
+                    <label>Last Name *</label>
+                    <input type="text" th:field="*{lastName}" required />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Age *</label>
+                    <input type="number" th:field="*{age}" required min="18" max="100" />
+                </div>
+                <div class="form-group">
+                    <label>Date of Birth *</label>
+                    <input type="date" th:field="*{dateOfBirth}" required />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Born Again *</label>
+                <div class="radio-group">
+                    <label><input type="radio" th:field="*{bornAgain}" value="Yes" required /> Yes</label>
+                    <label><input type="radio" th:field="*{bornAgain}" value="No" /> No</label>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Date of Baptism *</label>
+                    <input type="date" th:field="*{baptismDate}" required/>
+                </div>
+                <div class="form-group">
+                    <label>Date of Calling *</label>
+                    <input type="date" th:field="*{callingDate}" required/>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Location *</label>
+                    <input type="text" th:field="*{location}" required />
+                </div>
+                <div class="form-group">
+                    <label>Place *</label>
+                    <input type="text" th:field="*{place}" required />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Name of Church *</label>
+                <input type="text" th:field="*{churchName}" required />
+            </div>
+
+            <div class="form-group">
+                <label>Denomination *</label>
+                <input type="text" th:field="*{denomination}" required/>
+            </div>
+
+            <div class="form-group">
+                <label>Address *</label>
+                <textarea th:field="*{address}" rows="3" required></textarea>
+            </div>
+
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" th:field="*{email}" required />
+                </div>
+                <div class="form-group">
+                    <label>Phone Number *</label>
+                    <input type="tel" th:field="*{phoneNumber}" required />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Alternate Phone *</label>
+                <input type="tel" th:field="*{alternatePhoneNumber}" required />
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Password *</label>
+                    <input type="password" id="password" name="password" required
+                           minlength="8" maxlength="128" />
+                    <span class="password-match" id="passwordMatch"></span>
+                </div>
+                <div class="form-group">
+                    <label>Confirm Password *</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required
+                           minlength="8" maxlength="128" />
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary" id="submitBtn">
+                Register Pastor
+            </button>
+        </form>
+
+        <!-- ORIGINAL SIMPLE STYLE LINKS - BOTH AT BOTTOM -->
+        <div class="back-link" th:unless="${successMessage}">
+            <a th:href="@{/pastors/login}">← Already Registered? Login</a>
+        </div>
+
+        <div class="back-link" th:unless="${successMessage}">
+            <a th:href="@{/register}">← Back to User Registration</a>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+        const passwordMatch = document.getElementById('passwordMatch');
+        const form = document.getElementById('pastorForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        if (password && confirmPassword) {
+            function checkPasswordMatch() {
+                if (confirmPassword.value && password.value) {
+                    if (password.value === confirmPassword.value) {
+                        passwordMatch.textContent = '✓';
+                        passwordMatch.className = 'password-match match';
+                    } else {
+                        passwordMatch.textContent = '✗';
+                        passwordMatch.className = 'password-match mismatch';
+                    }
+                    passwordMatch.style.display = 'block';
+                } else {
+                    passwordMatch.style.display = 'none';
+                }
+            }
+
+            password.addEventListener('input', checkPasswordMatch);
+            confirmPassword.addEventListener('input', checkPasswordMatch);
+
+            form.addEventListener('submit', function(e) {
+                if (password.value !== confirmPassword.value) {
+                    e.preventDefault();
+                    alert('Passwords do not match!');
+                    confirmPassword.focus();
+                    return false;
+                }
+                if (password.value.length < 8) {
+                    e.preventDefault();
+                    alert('Password must be at least 8 characters long!');
+                    password.focus();
+                    return false;
+                }
+            });
+        }
+
+        const successMessage = document.getElementById('successMessage');
+        if (successMessage) {
+            let countdown = 5;
+            const countdownElement = document.getElementById('countdown');
+            const timer = setInterval(() => {
+                countdown--;
+                countdownElement.textContent = countdown;
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    window.location.href = '/pastors/login';
+                }
+            }, 1000);
+        }
+    });
+</script>
+
+</body>
+</html>

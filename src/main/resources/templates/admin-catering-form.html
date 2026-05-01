@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
+    <title th:text="${isEdit} ? 'Edit Catering Item' : 'Add Catering Item'">Catering Form</title>
+    <link rel="stylesheet" th:href="@{/css/admin_pp.css}">
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+    <style>
+        .form-card {
+            background: #fff;
+            border: 1px solid #f0d9e0;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 2px 12px rgba(122,42,64,.08);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .form-card h2 { margin: 0 0 24px; font-size: 1.3rem; color: #7a2a40; }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label {
+            display: block; font-weight: 700;
+            font-size: .88rem; margin-bottom: 6px; color: #4b1c2c;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%; padding: 10px 14px;
+            border: 1px solid #e5c8d0; border-radius: 10px;
+            font-size: .95rem; outline: none;
+            box-sizing: border-box; transition: border-color .2s;
+            font-family: inherit;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus { border-color: #c0607a; }
+        .form-group textarea { min-height: 85px; resize: vertical; }
+
+        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+        /* ── Image upload — same as admin-add-product ── */
+        .img-upload-area {
+            border: 2px dashed #dbbfc9;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color .2s, background .2s;
+            background: #fdf7f9;
+            position: relative;
+        }
+        .img-upload-area:hover { border-color: #a0405a; background: #fdf0f4; }
+        .img-upload-area input[type="file"] {
+            position: absolute; inset: 0;
+            opacity: 0; cursor: pointer;
+            width: 100%; height: 100%;
+            border: none; padding: 0;
+        }
+        .upload-placeholder { pointer-events: none; }
+        .upload-placeholder i { font-size: 1.6rem; color: #c0708a; margin-bottom: 6px; }
+        .upload-placeholder p { font-size: 0.78rem; color: #a0607a; margin: 0; }
+
+        .img-preview-wrap {
+            margin-top: 10px;
+            display: flex; gap: 10px;
+            flex-wrap: wrap; align-items: center;
+        }
+        .img-thumb {
+            width: 90px; height: 90px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #e0b8c6;
+        }
+        .img-thumb.hidden { display: none; }
+
+        .remove-img-btn {
+            background: #fdecea; color: #b71c1c;
+            border: 1px solid #f5b5b5;
+            border-radius: 6px; padding: 4px 10px;
+            font-size: 0.75rem; cursor: pointer;
+            display: none; align-items: center; gap: 4px;
+        }
+        .remove-img-btn.visible { display: inline-flex; }
+
+        /* ── Toggle switch ── */
+        .toggle-row { display: flex; align-items: center; gap: 12px; margin-top: .4rem; }
+        .toggle-row label { font-size: .85rem; font-weight: 600; color: #5a1a2e; margin: 0; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; inset: 0;
+            background: #d4a0b0; border-radius: 34px;
+            cursor: pointer; transition: .3s;
+        }
+        .slider:before {
+            content: ""; position: absolute;
+            width: 18px; height: 18px;
+            left: 3px; bottom: 3px;
+            background: white; border-radius: 50%; transition: .3s;
+        }
+        .switch input:checked + .slider { background: #7a2a40; }
+        .switch input:checked + .slider:before { transform: translateX(20px); }
+
+        .section-label {
+            font-size: 0.72rem; font-weight: 700;
+            letter-spacing: .08em; text-transform: uppercase;
+            color: #a0405a; margin: 1.4rem 0 .8rem;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed #e0b8c6;
+        }
+
+        .btn-save {
+            background: #7a2a40; color: #fff;
+            padding: 11px 28px; border: none;
+            border-radius: 10px; font-size: .95rem;
+            font-weight: 700; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 8px;
+            transition: background .2s;
+        }
+        .btn-save:hover { background: #5a1e2e; }
+        .btn-save:disabled { opacity: .6; cursor: not-allowed; }
+        .btn-back {
+            color: #7a2a40; text-decoration: none;
+            margin-left: 16px; font-size: .9rem; font-weight: 600;
+        }
+        .btn-back:hover { text-decoration: underline; }
+        .alert-error {
+            background: #fee2e2; color: #991b1b;
+            padding: 12px 16px; border-radius: 10px; margin-bottom: 16px;
+        }
+        @media (max-width: 600px) { .row-2 { grid-template-columns: 1fr; } }
+    </style>
+</head>
+
+<body th:attr="data-logged-in=${session.user != null}">
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<div class="container" style="max-width: 800px; margin: 2rem auto; padding: 0 1rem 60px;">
+
+    <div class="admin-nav-tabs">
+        <a th:href="@{/admin/profiles/all}">All Profiles</a>
+        <a th:href="@{/admin/profiles/pending}">Pending Approval</a>
+        <a th:href="@{/admin/orders}">📦 All Orders</a>
+        <a th:href="@{/admin/catering}" class="active">🍽️ Catering</a>
+    </div>
+
+    <div th:if="${error}" class="alert-error" th:text="${error}"></div>
+
+    <div class="form-card">
+        <h2 th:text="${isEdit} ? '✏️ Edit Catering Item' : '➕ Add Catering Item'">Form</h2>
+
+        <!-- NOTE: no th:object — we use @RequestParam in controller (same as product form) -->
+        <form id="cateringForm"
+              th:action="${isEdit} ? @{/admin/catering/{id}/edit(id=${item.id})} : @{/admin/catering/add}"
+              method="post">
+
+            <!-- Hidden: base64 image from JS -->
+            <input type="hidden" id="imageData" name="imageData"/>
+
+            <!-- Hidden: existing image URL preserved on edit -->
+            <input type="hidden" id="existingImageUrl" name="existingImageUrl"
+                   th:value="${item.imageUrl}"/>
+
+            <!-- ── Basic info ── -->
+            <div class="section-label"><i class="fas fa-tag"></i> &nbsp;Basic Information</div>
+            <div class="row-2">
+                <div class="form-group">
+                    <label>Dish Name *</label>
+                    <input type="text" name="name" th:value="${item.name}"
+                           placeholder="e.g. Hyderabadi Dum Biryani" required/>
+                </div>
+                <div class="form-group">
+                    <label>Category *</label>
+                    <select name="category" required>
+                        <option value="">-- Select Category --</option>
+                        <option value="Biryani"               th:selected="${item.category == 'Biryani'}">Biryani</option>
+                        <option value="Fried Rice &amp; Noodles" th:selected="${item.category == 'Fried Rice &amp; Noodles'}">Fried Rice &amp; Noodles</option>
+                        <option value="Roti &amp; Bread"      th:selected="${item.category == 'Roti &amp; Bread'}">Roti &amp; Bread</option>
+                        <option value="Snacks"                th:selected="${item.category == 'Snacks'}">Snacks</option>
+                        <option value="Curries"               th:selected="${item.category == 'Curries'}">Curries</option>
+                        <option value="Starters"              th:selected="${item.category == 'Starters'}">Starters</option>
+                        <option value="Platters"              th:selected="${item.category == 'Platters'}">Platters</option>
+                        <option value="Desserts"              th:selected="${item.category == 'Desserts'}">Desserts</option>
+                        <option value="Beverages"             th:selected="${item.category == 'Beverages'}">Beverages</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Description *</label>
+                <textarea name="description" placeholder="Short description of the dish…"
+                          required th:text="${item.description}"></textarea>
+            </div>
+
+            <div class="row-2">
+                <div class="form-group">
+                    <label>Origin</label>
+                    <input type="text" name="origin" th:value="${item.origin}"
+                           placeholder="e.g. Hyderabad, South India"/>
+                </div>
+                <div class="form-group">
+                    <label>Display Order</label>
+                    <input type="number" name="displayOrder" th:value="${item.displayOrder}"
+                           placeholder="0" min="0"/>
+                </div>
+            </div>
+
+            <!-- ── Image upload ── -->
+            <div class="section-label"><i class="fas fa-image"></i> &nbsp;Dish Image</div>
+            <div class="form-group">
+                <div class="img-upload-area" id="uploadArea">
+                    <input type="file" accept="image/*" id="imageFile"
+                           onchange="handleImageSelect(this)">
+                    <div class="upload-placeholder">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click to upload image<br>
+                            <span style="color:#c0a0b0;font-size:.72rem;">JPG, PNG, WEBP — max 15MB</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="img-preview-wrap">
+                    <img id="imgPreview"
+                         th:src="${item.imageUrl}"
+                         th:class="${item.imageUrl != null and !#strings.isEmpty(item.imageUrl)} ? 'img-thumb' : 'img-thumb hidden'"
+                         alt="Dish image preview"/>
+                    <button type="button" id="removeBtn"
+                            th:class="${item.imageUrl != null and !#strings.isEmpty(item.imageUrl)} ? 'remove-img-btn visible' : 'remove-img-btn'"
+                            onclick="removeImage()">
+                        <i class="fas fa-times"></i> Remove
+                    </button>
+                </div>
+            </div>
+
+            <!-- ── Visibility ── -->
+            <div class="section-label"><i class="fas fa-toggle-on"></i> &nbsp;Visibility</div>
+            <div class="toggle-row">
+                <label class="switch">
+                    <input type="checkbox" name="active" id="activeToggle"
+                           th:checked="${item.active == null or item.active}">
+                    <span class="slider"></span>
+                </label>
+                <label for="activeToggle">Show on website</label>
+            </div>
+
+            <div style="margin-top: 24px;">
+                <button type="submit" class="btn-save" id="saveBtn">
+                    <i class="fas fa-save"></i>
+                    <span th:text="${isEdit} ? 'Update Item' : 'Add Item'">Save</span>
+                </button>
+                <a href="/admin/catering" class="btn-back">← Back to list</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<script>
+    // ── Compress + preview + store as base64 (same logic as admin-add-product) ──
+    function handleImageSelect(input) {
+        const file = input.files[0];
+        if (!file) return;
+        if (file.size > 15 * 1024 * 1024) {
+            alert("Image too large (max 15MB). Please choose a smaller file.");
+            input.value = "";
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const img = new Image();
+            img.onload = function () {
+                const canvas = document.createElement("canvas");
+                const MAX_W = 800, MAX_H = 800;
+                let w = img.width, h = img.height;
+                if (w > MAX_W || h > MAX_H) {
+                    if (w / h > MAX_W / MAX_H) { h = Math.round(h * MAX_W / w); w = MAX_W; }
+                    else { w = Math.round(w * MAX_H / h); h = MAX_H; }
+                }
+                canvas.width = w; canvas.height = h;
+                canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+                const compressed = canvas.toDataURL("image/jpeg", 0.8);
+
+                // Store base64 in hidden field
+                document.getElementById("imageData").value = compressed;
+
+                // Show preview
+                const preview = document.getElementById("imgPreview");
+                preview.src = compressed;
+                preview.classList.remove("hidden");
+                document.getElementById("removeBtn").classList.add("visible");
+
+                // Visual feedback on upload area
+                const area = document.getElementById("uploadArea");
+                area.style.borderColor = "#7a2a40";
+                area.style.background  = "#fdf0f4";
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // ── Clear image selection ──
+    function removeImage() {
+        document.getElementById("imageData").value        = "";
+        document.getElementById("existingImageUrl").value = "";
+        const preview = document.getElementById("imgPreview");
+        preview.src = "";
+        preview.classList.add("hidden");
+        document.getElementById("removeBtn").classList.remove("visible");
+        document.getElementById("imageFile").value = "";
+        const area = document.getElementById("uploadArea");
+        area.style.borderColor = "";
+        area.style.background  = "";
+    }
+
+    // ── Loading state on submit ──
+    document.getElementById("cateringForm").addEventListener("submit", function () {
+        const btn = document.getElementById("saveBtn");
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
+    });
+</script>
+</body>
+</html>

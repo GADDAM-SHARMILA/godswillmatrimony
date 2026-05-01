@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
+    <title>Admin - Catering Items</title>
+    <link rel="stylesheet" th:href="@{/css/admin_pp.css}">
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+    <style>
+        .btn-add-product {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 18px; font-size: 0.85rem; font-weight: 700;
+            color: #7a2a40; background: #f7edf0;
+            border: 1.5px solid #c0607a; border-radius: 8px;
+            text-decoration: none; transition: background .2s, color .2s;
+        }
+        .btn-add-product:hover { background: #7a2a40; color: #fff; }
+
+        .btn-orders {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 18px; font-size: 0.85rem; font-weight: 700;
+            color: #1d4ed8; background: #eff6ff;
+            border: 1.5px solid #93c5fd; border-radius: 8px;
+            text-decoration: none; transition: background .2s, color .2s;
+        }
+        .btn-orders:hover { background: #1d4ed8; color: #fff; }
+
+        .quick-links { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 1.2rem; }
+
+        .catering-table-wrap {
+            background: #fff;
+            border: 1px solid #f0d9e0;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(122,42,64,.07);
+        }
+        .catering-table-wrap table { width: 100%; border-collapse: collapse; }
+        .catering-table-wrap th {
+            background: #f7edf0; padding: 12px 14px;
+            text-align: left; font-size: .85rem;
+            color: #7a2a40; font-weight: 700;
+            border-bottom: 1px solid #f0d9e0;
+        }
+        .catering-table-wrap td {
+            padding: 12px 14px; border-bottom: 1px solid #fdf0f3;
+            font-size: .9rem; vertical-align: middle;
+        }
+        .catering-table-wrap tr:last-child td { border-bottom: none; }
+        .catering-table-wrap tr:hover td { background: #fffbfc; }
+
+        /* ── Image thumbnail ── */
+        .dish-thumb {
+            width: 54px; height: 54px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid #e5c8d0;
+            display: block;
+        }
+        .dish-thumb-placeholder {
+            width: 54px; height: 54px;
+            border-radius: 10px;
+            border: 2px dashed #e5c8d0;
+            background: linear-gradient(135deg, #f2d8e1, #fdf0f3);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        .badge-active { background: #d1fae5; color: #065f46; padding: 3px 10px; border-radius: 999px; font-size: .78rem; font-weight: 700; }
+        .badge-hidden { background: #fee2e2; color: #991b1b; padding: 3px 10px; border-radius: 999px; font-size: .78rem; font-weight: 700; }
+
+        .act-btn {
+            padding: 5px 12px; border-radius: 7px;
+            font-size: .8rem; font-weight: 700;
+            border: none; cursor: pointer; text-decoration: none;
+            display: inline-block;
+        }
+        .act-edit          { background: #fef3c7; color: #92400e; }
+        .act-edit:hover    { background: #f59e0b; color: #fff; }
+        .act-toggle        { background: #e0e7ff; color: #3730a3; }
+        .act-toggle:hover  { background: #4338ca; color: #fff; }
+        .act-del           { background: #fee2e2; color: #991b1b; }
+        .act-del:hover     { background: #ef4444; color: #fff; }
+
+        .act-form { display: inline; }
+        .empty-state { text-align: center; padding: 48px; color: #9ca3af; }
+        .search-bar input {
+            width: 100%; padding: 10px 14px;
+            border: 1px solid #e5c8d0; border-radius: 10px;
+            font-size: .95rem; outline: none; margin-bottom: 1rem;
+        }
+        .search-bar input:focus { border-color: #c0607a; }
+
+        /* ── Dish name + category stacked in one cell ── */
+        .dish-name    { font-weight: 700; color: #3d0a1a; font-size: .92rem; }
+        .dish-cat-sub { font-size: .76rem; color: #a0405a; margin-top: 2px; }
+    </style>
+</head>
+
+<body th:attr="data-logged-in=${session.user != null}">
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<div class="container" style="max-width: 1050px; margin: 2rem auto; padding: 0 1rem;">
+
+    <div class="admin-header">
+        <h1>🍽️ Catering Items</h1>
+        <a class="btn btn-create" th:href="@{/admin/catering/add}">+ Add New Item</a>
+    </div>
+
+    <!-- Nav Tabs -->
+    <div class="admin-nav-tabs">
+        <a th:href="@{/admin/profiles/all}">All Profiles</a>
+        <a th:href="@{/admin/profiles/pending}">Pending Approval</a>
+        <a th:href="@{/admin/orders}">📦 All Orders</a>
+        <a th:href="@{/admin/catering}" class="active">🍽️ Catering</a>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="quick-links">
+        <a class="btn-add-product" th:href="@{/admin/catering/add}">
+            <i class="fas fa-plus"></i> Add Item
+        </a>
+        <a class="btn-orders" th:href="@{/admin/profiles/all}">
+            <i class="fas fa-users"></i> All Profiles
+        </a>
+    </div>
+
+    <!-- Alerts -->
+    <div class="alert alert-error"   th:if="${error}"   th:text="${error}"></div>
+    <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+        <div class="stat-badge">Total: <span th:text="${items.size()}">0</span></div>
+        <div class="stat-badge">Active: <span th:text="${#lists.size(items.?[active])}">0</span></div>
+        <div class="stat-badge">Hidden: <span th:text="${#lists.size(items.?[!active])}">0</span></div>
+    </div>
+
+    <!-- Search -->
+    <div class="search-bar">
+        <input type="text" id="cateringSearch"
+               placeholder="🔍 Search by name, category, origin..."
+               oninput="filterRows(this.value)"/>
+    </div>
+
+    <!-- Table -->
+    <div class="catering-table-wrap" th:if="${!items.isEmpty()}">
+        <table>
+            <thead>
+            <tr>
+                <th style="width:40px;">#</th>
+                <th style="width:66px;">Image</th>
+                <th>Name &amp; Category</th>
+                <th>Origin</th>
+                <th style="width:60px;">Order</th>
+                <th style="width:80px;">Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody id="cateringTableBody">
+            <tr th:each="item, stat : ${items}"
+                th:attr="data-search=${#strings.toLowerCase(item.name + ' ' + item.category + ' ' + (item.origin ?: ''))}">
+
+                <!-- # -->
+                <td th:text="${stat.count}">1</td>
+
+                <!-- Image thumbnail -->
+                <td>
+                    <img th:if="${item.imageUrl != null and !#strings.isEmpty(item.imageUrl)}"
+                         th:src="${item.imageUrl}"
+                         th:alt="${item.name}"
+                         class="dish-thumb"/>
+                    <div th:unless="${item.imageUrl != null and !#strings.isEmpty(item.imageUrl)}"
+                         class="dish-thumb-placeholder">🍽️</div>
+                </td>
+
+                <!-- Name + category stacked -->
+                <td>
+                    <div class="dish-name" th:text="${item.name}">Name</div>
+                    <div class="dish-cat-sub" th:text="${item.category}">Category</div>
+                </td>
+
+                <!-- Origin -->
+                <td th:text="${item.origin}">Origin</td>
+
+                <!-- Display order -->
+                <td th:text="${item.displayOrder}">0</td>
+
+                <!-- Status badge -->
+                <td>
+                    <span th:if="${item.active}"     class="badge-active">Active</span>
+                    <span th:unless="${item.active}" class="badge-hidden">Hidden</span>
+                </td>
+
+                <!-- Actions -->
+                <td style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+                    <a class="act-btn act-edit"
+                       th:href="@{/admin/catering/{id}/edit(id=${item.id})}">✏️ Edit</a>
+
+                    <form class="act-form"
+                          th:action="@{/admin/catering/{id}/toggle(id=${item.id})}"
+                          method="post">
+                        <button type="submit" class="act-btn act-toggle"
+                                th:text="${item.active} ? '🙈 Hide' : '👁 Show'">Toggle</button>
+                    </form>
+
+                    <form class="act-form"
+                          th:action="@{/admin/catering/{id}/delete(id=${item.id})}"
+                          method="post"
+                          onsubmit="return confirm('Delete this item permanently?')">
+                        <button type="submit" class="act-btn act-del">🗑️ Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="empty-state" th:if="${items.isEmpty()}">
+        <p style="font-size:1.1rem;">No catering items yet.</p>
+        <a th:href="@{/admin/catering/add}" class="btn btn-create" style="margin-top:12px;">
+            + Add First Item
+        </a>
+    </div>
+
+</div>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<script>
+    function filterRows(value) {
+        const q = value.toLowerCase().trim();
+        document.querySelectorAll('#cateringTableBody tr').forEach(row => {
+            const data = row.getAttribute('data-search') || '';
+            row.style.display = data.includes(q) ? '' : 'none';
+        });
+    }
+</script>
+</body>
+</html>

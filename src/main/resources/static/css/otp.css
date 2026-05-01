@@ -1,0 +1,390 @@
+/* ============================================================
+   otp.css — Verify OTP Page
+   Color Palette: #F2D8E1 (blush pink) + White
+   Location: static/css/otp.css
+   ============================================================ */
+
+/* ── CSS Variables ───────────────────────────────────────── */
+:root {
+    --pink:           #F2D8E1;
+    --pink-dark:      #e8c2d0;
+    --pink-light:     #faeef3;
+    --accent:         #c9718f;
+    --accent-dark:    #a85570;
+    --white:          #ffffff;
+    --text-dark:      #2c1a2e;
+    --text-mid:       #5a3a4a;
+    --text-soft:      #a07080;
+    --border:         rgba(180, 110, 140, 0.28);
+    --border-focus:   rgba(180, 110, 140, 0.60);
+    --shadow-sm:      0 2px 10px rgba(193, 100, 135, 0.10);
+    --shadow-md:      0 6px 24px rgba(193, 100, 135, 0.16);
+    --shadow-lg:      0 16px 48px rgba(193, 100, 135, 0.22);
+    --radius:         16px;
+    --radius-sm:      10px;
+    --transition:     all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Body ────────────────────────────────────────────────── */
+body {
+    background: linear-gradient(160deg, #fdf4f7 0%, #f5e8ef 50%, #faeef3 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+    color: var(--text-dark);
+}
+
+/* ============================================================
+   OTP CONTAINER
+   ============================================================ */
+.otp-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 120px);
+    padding: 40px 16px;
+}
+
+/* ── OTP Box ─────────────────────────────────────────────── */
+.otp-box {
+    background: var(--white);
+    border: 1.5px solid var(--pink-dark);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    padding: 40px 36px 36px;
+    width: 100%;
+    max-width: 440px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.55s ease both;
+}
+
+/* Animated top bar */
+.otp-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--pink-dark), var(--accent), var(--pink-dark), var(--accent));
+    background-size: 300% 100%;
+    animation: barSlide 3s linear infinite;
+}
+
+/* Radial glow background */
+.otp-box::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 10% 20%, rgba(210, 150, 185, 0.18) 0%, transparent 50%),
+        radial-gradient(ellipse at 90% 80%, rgba(210, 150, 185, 0.14) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.otp-box > * { position: relative; z-index: 1; }
+
+/* ── OTP Header ──────────────────────────────────────────── */
+.otp-header {
+    text-align: center;
+    margin-bottom: 24px;
+    animation: fadeInDown 0.6s 0.05s ease both;
+}
+
+.otp-header h2 {
+    font-size: 1.55rem;
+    font-weight: 900;
+    color: var(--text-dark);
+    margin: 0 0 8px;
+    letter-spacing: -0.3px;
+}
+
+.otp-header p {
+    font-size: 0.88rem;
+    color: var(--text-soft);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ── Alert Container ─────────────────────────────────────── */
+#alertContainer {
+    margin-bottom: 16px;
+}
+
+.alert {
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 0.88rem;
+    font-weight: 600;
+    line-height: 1.5;
+    animation: fadeInDown 0.4s ease both;
+}
+
+.alert-success {
+    background: #ecfdf3;
+    color: #067647;
+    border: 1.5px solid #abefc6;
+}
+
+.alert-error {
+    background: #fff7ed;
+    color: #9a3412;
+    border: 1.5px solid #fed7aa;
+}
+
+.alert-info {
+    background: var(--pink-light);
+    color: var(--accent-dark);
+    border: 1.5px solid var(--pink-dark);
+}
+
+/* ── Verification Info ───────────────────────────────────── */
+.verification-info {
+    background: var(--pink-light);
+    border: 1.5px solid var(--pink-dark);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    font-size: 0.88rem;
+    color: var(--text-mid);
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    animation: fadeInUp 0.5s 0.1s ease both;
+    transition: var(--transition);
+}
+
+.verification-info:hover {
+    border-color: var(--accent);
+    box-shadow: var(--shadow-sm);
+}
+
+.verification-info strong {
+    color: var(--text-dark);
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.verification-info span {
+    color: var(--accent-dark);
+    font-weight: 600;
+    word-break: break-all;
+}
+
+/* ── OTP Input Group ─────────────────────────────────────── */
+.otp-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 22px;
+    animation: fadeInUp 0.5s 0.15s ease both;
+}
+
+.otp-input-group label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-mid);
+    letter-spacing: 0.2px;
+}
+
+.otp-input-group input[type="text"] {
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--pink-light);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    letter-spacing: 0.5rem;
+    text-align: center;
+    transition: var(--transition);
+    outline: none;
+    box-sizing: border-box;
+    font-family: 'Courier New', monospace;
+    appearance: none;
+}
+
+.otp-input-group input[type="text"]:focus {
+    background: var(--white);
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(201, 113, 143, 0.12);
+}
+
+.otp-input-group input[type="text"]::placeholder {
+    color: var(--text-soft);
+    font-size: 0.88rem;
+    letter-spacing: 0.1rem;
+    font-weight: 500;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.help-text {
+    font-size: 0.78rem;
+    color: var(--text-soft);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.help-text::before {
+    content: '💡';
+    font-size: 0.80rem;
+}
+
+/* ── Verify Button ───────────────────────────────────────── */
+.btn-verify {
+    width: 100%;
+    padding: 13px 24px;
+    background: #F2D8E1;
+    color: var(--text-dark);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.98rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    animation: fadeInUp 0.5s 0.20s ease both;
+}
+
+.btn-verify:hover:not(:disabled) {
+    background: var(--white);
+    color: var(--accent-dark);
+    border-color: var(--border-focus);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(193, 100, 135, 0.22);
+}
+
+.btn-verify:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ── Resend Section ──────────────────────────────────────── */
+.resend-section {
+    text-align: center;
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 1.5px solid var(--pink-light);
+    animation: fadeInUp 0.5s 0.25s ease both;
+}
+
+.resend-section p {
+    font-size: 0.85rem;
+    color: var(--text-soft);
+    margin: 0 0 12px;
+}
+
+/* ── Resend Button ───────────────────────────────────────── */
+.btn-resend {
+    background: var(--white);
+    color: var(--text-dark);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 22px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+.btn-resend:hover:not(:disabled) {
+    background: #F2D8E1;
+    color: var(--accent-dark);
+    border-color: var(--border-focus);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 14px rgba(193, 100, 135, 0.16);
+}
+
+.btn-resend:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ── Timer ───────────────────────────────────────────────── */
+.timer {
+    margin-top: 10px;
+    min-height: 22px;
+}
+
+#resend-timer {
+    font-size: 0.80rem;
+    color: var(--accent-dark);
+    font-weight: 700;
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--pink-light);
+    border: 1px solid var(--pink-dark);
+    border-radius: 999px;
+    animation: fadeInDown 0.3s ease both;
+}
+
+/* ── Loading Spinner ─────────────────────────────────────── */
+.loading {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border: 2.5px solid rgba(44, 26, 46, 0.25);
+    border-top-color: var(--accent-dark);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+}
+
+/* ============================================================
+   KEYFRAMES
+   ============================================================ */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-18px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes barSlide {
+    0%   { background-position: -300% 0; }
+    100% { background-position: 300% 0; }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 480px) {
+    .otp-box {
+        padding: 28px 20px 28px;
+    }
+
+    .otp-header h2 {
+        font-size: 1.3rem;
+    }
+
+    .otp-input-group input[type="text"] {
+        font-size: 1.1rem;
+        letter-spacing: 0.35rem;
+        padding: 12px 12px;
+    }
+
+    .btn-verify {
+        font-size: 0.92rem;
+        padding: 12px 18px;
+    }
+}

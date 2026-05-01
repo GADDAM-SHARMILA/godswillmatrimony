@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
+    <title th:text="|${#strings.capitalize(profile.firstName)} ${#strings.capitalize(profile.lastName)} - Profile Details|">
+        Profile Details - Matrimony
+    </title>
+    <link rel="stylesheet" th:href="@{/css/profile.css}">
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+    <style>
+        .profile-details-image .main-photo-wrap {
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: block;
+            overflow: hidden;
+        }
+        .profile-details-image .main-photo-wrap img.main-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.25s ease;
+        }
+        .profile-details-image .main-photo-wrap:hover img.main-photo {
+            transform: scale(1.04);
+        }
+        .profile-details-image .main-photo-wrap::after {
+            content: '\f00e';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.45);
+            color: #fff;
+            font-size: 1.1rem;
+            padding: 6px 9px;
+            border-radius: 6px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+        }
+        .profile-details-image .main-photo-wrap:hover::after {
+            opacity: 1;
+        }
+
+        /* ✅ Pastor badge styling */
+        .pastor-proposed-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f2d8e1;
+            border: 1px solid #d4a0b0;
+            color: #7a2a40;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 6px;
+        }
+        .pastor-proposed-badge i {
+            color: #a0405a;
+        }
+    </style>
+</head>
+
+<body th:attr="data-logged-in=${isLoggedIn}">
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<!-- LIGHTBOX -->
+<div id="photoLightbox">
+    <span class="close-lb" onclick="closeLightbox()">&times;</span>
+    <img id="lightboxImg" src="" alt="Photo" />
+</div>
+
+<div class="container">
+    <div class="profile-details-container">
+        <div class="profile-details-card">
+
+            <div class="profile-details-header">
+
+                <div class="profile-details-image">
+                    <div th:if="${isPremium}"
+                         class="main-photo-wrap"
+                         th:attr="data-src=${#strings.isEmpty(profile.imageUrl) ? '/images/default-avatar.jpg' : profile.imageUrl}"
+                         onclick="openLightbox(this.getAttribute('data-src'))">
+                        <img class="main-photo"
+                             th:src="${#strings.isEmpty(profile.imageUrl)} ? @{/images/default-avatar.jpg} : ${profile.imageUrl}"
+                             th:alt="|${#strings.capitalize(profile.firstName)} ${#strings.capitalize(profile.lastName)}|" />
+                    </div>
+                    <div th:unless="${isPremium}"
+                         style="display:flex;align-items:center;justify-content:center;background:#f7f7f7;width:100%;height:100%;min-height:120px;">
+                        <i class="fas fa-lock" style="font-size:50px;color:#b7a900;"></i>
+                    </div>
+                    <img th:src="@{/images/logo_1.png}" alt="" class="profile-details-logo">
+                </div>
+
+                <!-- Extra Photos -->
+                <th:block th:if="${isPremium}">
+                    <div class="extra-photos-gallery"
+                         th:if="${(profile.imageUrl2 != null and !#strings.isEmpty(profile.imageUrl2)) or (profile.imageUrl3 != null and !#strings.isEmpty(profile.imageUrl3))}">
+                        <div class="extra-photo-wrap"
+                             th:if="${profile.imageUrl2 != null and !#strings.isEmpty(profile.imageUrl2)}"
+                             th:attr="data-src=${profile.imageUrl2}"
+                             onclick="openLightbox(this.getAttribute('data-src'))">
+                            <img class="extra-photo-img" th:src="${profile.imageUrl2}" alt="Photo 2" />
+                            <img class="extra-photo-logo" th:src="@{/images/logo_1.png}" alt="" />
+                        </div>
+                        <div class="extra-photo-wrap"
+                             th:if="${profile.imageUrl3 != null and !#strings.isEmpty(profile.imageUrl3)}"
+                             th:attr="data-src=${profile.imageUrl3}"
+                             onclick="openLightbox(this.getAttribute('data-src'))">
+                            <img class="extra-photo-img" th:src="${profile.imageUrl3}" alt="Photo 3" />
+                            <img class="extra-photo-logo" th:src="@{/images/logo_1.png}" alt="" />
+                        </div>
+                    </div>
+                </th:block>
+
+                <!-- Profile Summary -->
+                <div class="profile-details-summary">
+                    <h1 th:text="|${#strings.capitalize(profile.firstName)} ${#strings.capitalize(profile.lastName)}|">John Doe</h1>
+                    <p class="profile-id">
+                        Profile ID: <strong th:text="${profile.profileNumber}">GWM-1</strong>
+                        <span class="verified-badge" th:if="${profile.verified}">Verified</span>
+                    </p>
+
+                    <!-- ✅ Pastor proposed badge — shown right below profile ID -->
+                    <div th:if="${profile.proposedByPastorName != null and !#strings.isEmpty(profile.proposedByPastorName)}">
+                        <span class="pastor-proposed-badge">
+                            <i class="fas fa-church"></i>
+                            Proposed by Pastor <span th:text="${profile.proposedByPastorName}">Pastor Name</span>
+                        </span>
+                    </div>
+
+                    <div class="profile-quick-info">
+                        <div class="quick-info-item"><span class="quick-info-label">Age</span><span class="quick-info-value" th:text="|${profile.calculatedAge} years|">28 years</span></div>
+                        <div class="quick-info-item"><span class="quick-info-label">Height</span><span class="quick-info-value" th:text="|${profile.height} cm|">170 cm</span></div>
+                        <div class="quick-info-item"><span class="quick-info-label">Religion</span><span class="quick-info-value" th:text="${#strings.capitalize(profile.religion)}">Christian</span></div>
+                        <div class="quick-info-item"><span class="quick-info-label">Location</span><span class="quick-info-value" th:text="${#strings.capitalize(profile.city)}">City</span></div>
+                        <div class="quick-info-item"><span class="quick-info-label">Marital Status</span><span class="quick-info-value" th:text="${#strings.capitalize(profile.maritalStatus)}">Never Married</span></div>
+                        <div class="quick-info-item"><span class="quick-info-label">Education</span><span class="quick-info-value" th:text="${#strings.capitalize(profile.education)}">Bachelor's</span></div>
+                    </div>
+                    <div class="profile-details-actions">
+                        <button class="btn btn-primary btn-contact" type="button" th:attr="data-profile-id=${profile.id}">
+                            <i class="fas fa-phone"></i> Contact Now
+                        </button>
+                        <button class="btn btn-secondary btn-shortlist" type="button"
+                                th:attr="data-profile-id=${profile.id}"
+                                th:classappend="${profile.shortlisted} ? ' shortlisted' : ''">
+                            <i class="fas fa-heart"></i>
+                            <span th:text="${profile.shortlisted} ? 'Shortlisted' : 'Shortlist'">Shortlist</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blur Container -->
+            <div class="blur-container">
+                <div class="blur-overlay" th:unless="${isPremium}">
+                    <span class="lock-icon"><i class="fas fa-lock"></i></span>
+                    <h2>This profile's details are only available for Premium members.</h2>
+                    <a th:href="@{/subscription/plans}" class="btn-upgrade">Upgrade to Premium</a>
+                </div>
+
+                <div class="profile-details-body" th:classappend="${!isPremium} ? 'blurred'">
+
+                    <div class="details-section" th:if="${profile.aboutMe != null and !#strings.isEmpty(profile.aboutMe)}">
+                        <h2 class="details-section-title">About Me</h2>
+                        <p th:text="${profile.aboutMe}">About me...</p>
+                    </div>
+
+                    <div class="details-section">
+                        <h2 class="details-section-title">Basic Details</h2>
+                        <div class="details-grid">
+                            <div class="detail-item"><span class="detail-label">Name</span><span class="detail-value" th:text="|${#strings.capitalize(profile.firstName)} ${#strings.capitalize(profile.lastName)}|">John Doe</span></div>
+                            <div class="detail-item"><span class="detail-label">Age</span><span class="detail-value" th:text="|${profile.calculatedAge} years|">28 years</span></div>
+                            <div class="detail-item"><span class="detail-label">Date of Birth</span><span class="detail-value" th:text="${profile.dateOfBirth != null} ? ${#temporals.format(profile.dateOfBirth, 'dd MMM yyyy')} : 'N/A'">15 Jan 1995</span></div>
+                            <div class="detail-item"><span class="detail-label">Gender</span><span class="detail-value" th:text="${#strings.capitalize(profile.gender)}">Male</span></div>
+                            <div class="detail-item"><span class="detail-label">Height</span><span class="detail-value" th:text="|${profile.height} cm|">170 cm</span></div>
+                            <div class="detail-item"><span class="detail-label">Marital Status</span><span class="detail-value" th:text="${#strings.capitalize(profile.maritalStatus)}">Never Married</span></div>
+                            <div class="detail-item"><span class="detail-label">Mother Tongue</span><span class="detail-value" th:text="${#strings.capitalize(profile.motherTongue)}">English</span></div>
+                        </div>
+                    </div>
+
+                    <div class="details-section">
+                        <h2 class="details-section-title">Religious Information</h2>
+                        <div class="details-grid">
+                            <div class="detail-item"><span class="detail-label">Religion</span><span class="detail-value" th:text="${#strings.capitalize(profile.religion)}">Christian</span></div>
+                            <div class="detail-item" th:if="${profile.denomination != null and !#strings.isEmpty(profile.denomination)}"><span class="detail-label">Denomination</span><span class="detail-value" th:text="${#strings.capitalize(profile.denomination)}">CSI</span></div>
+                            <div class="detail-item" th:if="${profile.caste != null and !#strings.isEmpty(profile.caste)}"><span class="detail-label">Caste</span><span class="detail-value" th:text="${#strings.capitalize(profile.caste)}">N/A</span></div>
+                        </div>
+                    </div>
+
+                    <div class="details-section">
+                        <h2 class="details-section-title">Location Details</h2>
+                        <div class="details-grid">
+                            <div class="detail-item"><span class="detail-label">Country</span><span class="detail-value" th:text="${#strings.capitalize(profile.country)}">India</span></div>
+                            <div class="detail-item"><span class="detail-label">State</span><span class="detail-value" th:text="${#strings.capitalize(profile.state)}">State</span></div>
+                            <div class="detail-item"><span class="detail-label">City</span><span class="detail-value" th:text="${#strings.capitalize(profile.city)}">City</span></div>
+                            <div class="detail-item" th:if="${profile.pincode != null and !#strings.isEmpty(profile.pincode)}"><span class="detail-label">Pincode</span><span class="detail-value" th:text="${profile.pincode}">400001</span></div>
+                        </div>
+                    </div>
+
+                    <div class="details-section">
+                        <h2 class="details-section-title">Professional Information</h2>
+                        <div class="details-grid">
+                            <div class="detail-item"><span class="detail-label">Education</span><span class="detail-value" th:text="${#strings.capitalize(profile.education)}">Bachelor's Degree</span></div>
+                            <div class="detail-item"><span class="detail-label">Profession</span><span class="detail-value" th:text="${#strings.capitalize(profile.profession)}">Software Engineer</span></div>
+                            <div class="detail-item"><span class="detail-label">Annual Income</span><span class="detail-value" th:text="${profile.annualIncome}">&#8377;10-15 Lakhs</span></div>
+                            <div class="detail-item" th:if="${profile.employedIn != null and !#strings.isEmpty(profile.employedIn)}"><span class="detail-label">Employed In</span><span class="detail-value" th:text="${#strings.capitalize(profile.employedIn)}">Private Sector</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Contact (unlocked) -->
+                    <div class="details-section" th:if="${canViewContact}" id="contact-section">
+                        <h2 class="details-section-title"><i class="fas fa-lock-open"></i> Contact Information</h2>
+                        <div class="details-grid">
+                            <div class="detail-item"><span class="detail-label">Email</span><span class="detail-value"><a th:href="|mailto:${profile.email}|" th:text="${profile.email}">email@example.com</a></span></div>
+                            <div class="detail-item"><span class="detail-label">Phone</span><span class="detail-value"><a th:href="|tel:${profile.phone}|" th:text="${profile.phone}">+91 9876543210</a></span></div>
+                        </div>
+                    </div>
+
+                    <!-- Contact (locked) -->
+                    <div class="details-section" th:unless="${canViewContact}" id="contact-section-locked">
+                        <h2 class="details-section-title"><i class="fas fa-lock"></i> Contact Information</h2>
+                        <p style="color:#666;text-align:center;padding:30px;">
+                            <i class="fas fa-lock" style="font-size:48px;margin-bottom:15px;display:block;"></i>
+                            Contact information is locked. Please login or upgrade your membership to view contact details.
+                        </p>
+                        <div style="text-align:center;">
+                            <a th:href="@{/login}" class="btn btn-primary" th:if="${!isLoggedIn}">Login to View Contact</a>
+                            <button class="btn btn-primary btn-contact" type="button" th:attr="data-profile-id=${profile.id}" th:if="${isLoggedIn}">Request Contact Details</button>
+                        </div>
+                    </div>
+
+                    <!-- Profile Meta -->
+                    <div class="details-section">
+                        <h2 class="details-section-title">Profile Information</h2>
+                        <div class="details-grid">
+                            <div class="detail-item"><span class="detail-label">Profile Created</span><span class="detail-value" th:text="${profile.createdAt != null} ? ${#temporals.format(profile.createdAt, 'dd MMM yyyy')} : 'N/A'">01 Jan 2024</span></div>
+                            <div class="detail-item"><span class="detail-label">Last Active</span><span class="detail-value" th:text="${profile.lastActive}">Today</span></div>
+                            <div class="detail-item"><span class="detail-label">Profile Views</span><span class="detail-value" th:text="|${profile.viewCount} views|">150 views</span></div>
+                            <div class="detail-item">
+                                <span class="detail-label">Verification Status</span>
+                                <span class="detail-value">
+                                    <span th:if="${profile.verified}" style="color:var(--verified-badge);"><i class="fas fa-check-circle"></i> Verified</span>
+                                    <span th:unless="${profile.verified}" style="color:#999;"><i class="fas fa-times-circle"></i> Not Verified</span>
+                                </span>
+                            </div>
+                            <!-- ✅ Proposed by Pastor — shown in Profile Information section -->
+                            <div class="detail-item"
+                                 th:if="${profile.proposedByPastorName != null and !#strings.isEmpty(profile.proposedByPastorName)}">
+                                <span class="detail-label">Proposed By</span>
+                                <span class="detail-value">
+                                    <i class="fas fa-church" style="color:#c0392b; margin-right:5px;"></i>
+                                    Pastor <span th:text="${profile.proposedByPastorName}">Pastor Name</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<div id="ss-warning">⚠️ Screenshots are not allowed on this page.</div>
+
+<script th:src="@{/js/screenshot-protection.js}"></script>
+
+<script>
+    (function () {
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.btn-contact').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var s = document.getElementById('contact-section') || document.getElementById('contact-section-locked');
+                    if (s) s.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            });
+        });
+
+        function openLightbox(src) {
+            var lb  = document.getElementById('photoLightbox');
+            var img = document.getElementById('lightboxImg');
+            lb.classList.add('active');
+            img.src = src;
+        }
+
+        function closeLightbox() {
+            var lb  = document.getElementById('photoLightbox');
+            var img = document.getElementById('lightboxImg');
+            lb.classList.remove('active');
+            img.src = '';
+        }
+
+        document.getElementById('photoLightbox').addEventListener('click', function (e) {
+            if (e.target === this) closeLightbox();
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeLightbox();
+        });
+
+        window.openLightbox  = openLightbox;
+        window.closeLightbox = closeLightbox;
+    })();
+</script>
+
+<script th:src="@{/js/shortlist.js}"></script>
+
+</body>
+</html>

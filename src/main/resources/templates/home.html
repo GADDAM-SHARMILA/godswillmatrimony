@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+    <link rel="stylesheet" th:href="@{/css/carousel-fix.css}">
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <script src="http://localhost:35729/livereload.js"></script>
+    <style>
+        /* ✅ Pastor tag on home page profile cards */
+        .pastor-tag-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.72rem;
+            color: #7a2a40;
+            background: #f2d8e1;
+            border: 1px solid #d4a0b0;
+            border-radius: 12px;
+            padding: 2px 8px;
+            margin: 3px 0 5px 0;
+            font-weight: 600;
+        }
+        .pastor-tag-home i {
+            color: #a0405a;
+            font-size: 0.68rem;
+        }
+        @media (max-width: 1024px) {
+    .image-carousel-section .carousel-container {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .image-carousel-section .carousel-wrapper,
+    .image-carousel-section .carousel-register-form {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .image-carousel-section .carousel-wrapper {
+        order: 1;
+    }
+
+    .image-carousel-section .carousel-register-form {
+        order: 2;
+        box-sizing: border-box;
+        padding: 18px 16px;
+    }
+
+    .phone-row {
+        display: flex;
+        gap: 6px;
+        width: 100%;
+    }
+
+    .phone-row select {
+        flex: 0 0 78px;
+        min-width: 78px;
+        max-width: 78px;
+    }
+
+    .phone-row input[type="tel"] {
+        flex: 1;
+        min-width: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .image-carousel-section .carousel-register-form {
+        padding: 16px 14px;
+    }
+
+    .phone-row select {
+        flex: 0 0 72px;
+        min-width: 72px;
+        max-width: 72px;
+    }
+}
+    </style>
+</head>
+
+<body th:attr="data-logged-in=${session.user != null}">
+
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<section class="image-carousel-section"
+         th:if="${carouselImages != null and !#lists.isEmpty(carouselImages)}">
+
+    <div class="carousel-container">
+        <div class="carousel-wrapper">
+            <div class="carousel-track">
+
+                <div th:each="image, iter : ${carouselImages}"
+                     th:class="${iter.first} ? 'carousel-slide active' : 'carousel-slide'">
+
+                    <img th:src="@{${image.imageUrl}}"
+                         th:alt="${image.title}"
+                         th:style="|object-position: ${#strings.isEmpty(image.objectPosition)} ? 'center center' : '${image.objectPosition}'; object-fit: cover;|"
+                         loading="lazy">
+
+                    <div class="carousel-overlay"></div>
+
+                    <div class="carousel-logo-overlay">
+                        <img th:src="@{/images/logo_1.png}" alt="GVM Logo">
+                        <span>GOD'S WILL MATRIMONY</span>
+                    </div>
+
+                    <div class="carousel-caption">
+                        <h3 th:text="${image.title}">Title</h3>
+                        <p th:text="${image.description}">Description</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <button class="carousel-btn prev" type="button" onclick="moveSlide(-1)">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="carousel-btn next" type="button" onclick="moveSlide(1)">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+
+            <div class="carousel-indicators">
+                <span th:each="image, iter : ${carouselImages}"
+                      th:onclick="|currentSlide(${iter.index})|"
+                      th:class="${iter.first} ? 'indicator active' : 'indicator'"></span>
+            </div>
+
+        </div>
+
+        <div class="carousel-register-form" id="sharedRegisterForm" th:unless="${session.user != null}">
+            <h4>&#x1F491; Register Free</h4>
+
+            <select name="profileFor" id="profileForSelect" onchange="toggleGenderOption(this)">
+                <option value="">&#x1F464; Profile For</option>
+                <option value="Myself">Myself</option>
+                <option value="Daughter">Daughter</option>
+                <option value="Son">Son</option>
+                <option value="Sister">Sister</option>
+                <option value="Brother">Brother</option>
+                <option value="Relative">Relative</option>
+                <option value="Friend">Friend</option>
+            </select>
+
+            <div class="gender-row" id="genderRow" style="display:none;">
+                <label class="gender-label">Gender</label>
+                <div class="gender-options">
+                    <label class="gender-opt">
+                        <input type="radio" name="carouselGender" value="Male"> &#x1F468; Male
+                    </label>
+                    <label class="gender-opt">
+                        <input type="radio" name="carouselGender" value="Female"> &#x1F469; Female
+                    </label>
+                </div>
+            </div>
+
+            <input type="text" name="carouselName" id="carouselName" placeholder="Enter Name" />
+
+            <div class="phone-row">
+                <select name="carouselPhoneCode" id="carouselPhoneCode">
+                    <option value="+91">&#x1F1EE;&#x1F1F3; +91</option>
+                    <option value="+1">&#x1F1FA;&#x1F1F8; +1</option>
+                    <option value="+44">&#x1F1EC;&#x1F1E7; +44</option>
+                    <option value="+61">&#x1F1E6;&#x1F1FA; +61</option>
+                    <option value="+971">&#x1F1E6;&#x1F1EA; +971</option>
+                    <option value="+65">&#x1F1F8;&#x1F1EC; +65</option>
+                    <option value="+60">&#x1F1F2;&#x1F1FE; +60</option>
+                    <option value="+94">&#x1F1F1;&#x1F1F0; +94</option>
+                </select>
+                <input type="tel" name="carouselPhone" id="carouselPhone" placeholder="Mobile Number" />
+            </div>
+
+            <button type="button" class="btn-carousel-register" onclick="carouselRegister()">
+                Register Free &rarr;
+            </button>
+
+            <p class="terms-note">
+                By clicking Register Free, you agree to our
+                <a th:href="@{/terms-and-conditions}">Terms</a> &amp;
+                <a th:href="@{/privacy-policy}">Privacy Policy</a>
+            </p>
+        </div>
+
+    </div>
+</section>
+
+<div class="container">
+    <div class="main-layout">
+
+        <th:block th:replace="~{fragments/sidebar :: sidebar}"></th:block>
+
+        <main>
+            <section class="profile-grid-section">
+                <div class="section-header">
+                    <h2>Featured Profiles</h2>
+                    <a th:if="${isPremium
+                                or (session.user != null
+                                    and session.user.role != null
+                                    and session.user.role.equalsIgnoreCase('ADMIN'))}"
+                       th:href="@{/profiles}" class="view-all-link">
+                        View All <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <!-- ── ADMIN: always sees profiles, no lock ── -->
+                <div th:if="${session.user != null
+                              and session.user.role != null
+                              and session.user.role.equalsIgnoreCase('ADMIN')}">
+                    <div class="profile-grid">
+                        <div class="card profile-card" th:each="profile : ${profiles}">
+                            <div class="profile-card-image">
+                                <img th:src="${#strings.isEmpty(profile.imageUrl)} ? @{/images/default-avatar.png} : ${profile.imageUrl}"
+                                     th:alt="|${profile.firstName} ${profile.lastName}|">
+                                <img th:src="@{/images/logo_1.png}" alt=""
+                                     class="profile-card-logo">
+                            </div>
+                            <div class="profile-card-content">
+                                <h3 th:text="|${profile.firstName} ${profile.lastName}, ${profile.calculatedAge}|">Name, 28</h3>
+                                <p th:text="${profile.location}">Location</p>
+                                <!-- ✅ Pastor proposed tag for Admin view -->
+                                <div th:if="${profile.proposedByPastorName != null and !#strings.isEmpty(profile.proposedByPastorName)}">
+                                    <span class="pastor-tag-home">
+                                        <i class="fas fa-church"></i>
+                                        Proposed by Pastor <span th:text="${profile.proposedByPastorName}">Pastor Name</span>
+                                    </span>
+                                </div>
+                                <a th:href="@{/profile/{id}(id=${profile.id})}" class="btn btn-primary">View Profile</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── PREMIUM USERS (non-admin) ── -->
+                <div th:if="${isPremium
+                              and (session.user == null
+                                   or session.user.role == null
+                                   or !session.user.role.equalsIgnoreCase('ADMIN'))}">
+                    <div class="profile-grid">
+                        <div class="card profile-card" th:each="profile : ${profiles}">
+                            <div class="profile-card-image">
+                                <img th:src="${#strings.isEmpty(profile.imageUrl)} ? @{/images/default-avatar.png} : ${profile.imageUrl}"
+                                     th:alt="|${profile.firstName} ${profile.lastName}|">
+                                <img th:src="@{/images/logo_1.png}" alt=""
+                                     class="profile-card-logo">
+                            </div>
+                            <div class="profile-card-content">
+                                <h3 th:text="|${profile.firstName} ${profile.lastName}, ${profile.calculatedAge}|">Name, 28</h3>
+                                <p th:text="${profile.location}">Location</p>
+                                <!-- ✅ Pastor proposed tag for Premium view -->
+                                <div th:if="${profile.proposedByPastorName != null and !#strings.isEmpty(profile.proposedByPastorName)}">
+                                    <span class="pastor-tag-home">
+                                        <i class="fas fa-church"></i>
+                                        Proposed by Pastor <span th:text="${profile.proposedByPastorName}">Pastor Name</span>
+                                    </span>
+                                </div>
+                                <a th:href="@{/profile/{id}(id=${profile.id})}" class="btn btn-primary">View Profile</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── FREE / NOT LOGGED IN: show upgrade lock ── -->
+                <div th:if="${!isPremium
+                              and (session.user == null
+                                   or session.user.role == null
+                                   or !session.user.role.equalsIgnoreCase('ADMIN'))}"
+                     class="premium-lock-box">
+                    <div class="premium-message">
+                        <i class="fas fa-lock"></i>
+                        <h3>Premium Members Only</h3>
+                        <p>Upgrade to premium membership to view featured profiles and unlock full profile details.</p>
+                        <a th:if="${session.user != null}" th:href="@{/premium-plans}" class="btn btn-primary">Upgrade Now</a>
+                        <a th:unless="${session.user != null}" th:href="@{/login}" class="btn btn-primary">Upgrade Now</a>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+    </div>
+</div>
+
+<section class="success-stories-section">
+    <div class="container">
+        <div class="section-header"><h2>Success Stories</h2></div>
+        <div class="success-stories-grid">
+            <div class="card success-story-card" th:each="story : ${successStories}">
+                <div class="success-story-image">
+                    <img th:src="@{/success-story/image/{id}(id=${story.id})}"
+                         th:alt="${story.coupleName}"
+                         onerror="this.onerror=null;this.src='/images/default-couple.jpg';">
+                </div>
+                <div class="success-story-content">
+                    <h3 th:text="${story.coupleName}">Rahul &amp; Priya</h3>
+                    <p th:text="${story.story}">Story details...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<script>
+    let currentSlideIndex = 0;
+    let autoSlideInterval;
+    let totalSlides = 0;
+
+    function showSlide(index) {
+        const slides     = document.querySelectorAll('.carousel-slide');
+        const indicators = document.querySelectorAll('.indicator');
+        totalSlides = slides.length;
+        if (totalSlides === 0) return;
+
+        if (index >= totalSlides)  currentSlideIndex = 0;
+        else if (index < 0)        currentSlideIndex = totalSlides - 1;
+        else                       currentSlideIndex = index;
+
+        slides.forEach((slide, i) => slide.classList.toggle('active', i === currentSlideIndex));
+        indicators.forEach((ind, i) => { if (ind) ind.classList.toggle('active', i === currentSlideIndex); });
+    }
+
+    function moveSlide(direction) {
+        stopAutoSlide();
+        showSlide(currentSlideIndex + direction);
+        startAutoSlide();
+    }
+
+    function currentSlide(index) {
+        stopAutoSlide();
+        showSlide(index);
+        startAutoSlide();
+    }
+
+    function startAutoSlide() {
+        if (totalSlides <= 1) return;
+        autoSlideInterval = setInterval(() => showSlide(currentSlideIndex + 1), 7000);
+    }
+
+    function stopAutoSlide() {
+        clearInterval(autoSlideInterval);
+    }
+
+    function toggleGenderOption(select) {
+        const showGender = ['Myself', 'Friend', 'Relative'];
+        const genderRow  = document.getElementById('genderRow');
+        if (!genderRow) return;
+        const show = showGender.includes(select.value);
+        genderRow.style.display = show ? 'block' : 'none';
+        if (!show) {
+            document.querySelectorAll('input[name="carouselGender"]')
+                    .forEach(r => r.checked = false);
+        }
+    }
+
+    function carouselRegister() {
+        const profile   = document.getElementById('profileForSelect').value;
+        const name      = document.getElementById('carouselName').value.trim();
+        const phone     = document.getElementById('carouselPhone').value.trim();
+        const phoneCode = document.getElementById('carouselPhoneCode').value;
+
+        if (!profile) { alert('Please select Profile For');       return; }
+        if (!name)    { alert('Please enter your name');          return; }
+        if (!phone)   { alert('Please enter your mobile number'); return; }
+
+        window.location.href =
+            `/register?profileFor=${encodeURIComponent(profile)}&name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phoneCode + phone)}`;
+    }
+
+    function showStoriesOnScroll() {
+        const stories       = document.querySelectorAll('.success-story-card');
+        const triggerBottom = window.innerHeight * 0.9;
+        stories.forEach(story => {
+            if (story.getBoundingClientRect().top < triggerBottom) story.classList.add('visible');
+        });
+    }
+
+    function lockImages() {
+        var PROTECTED = [
+            '.profile-card-image img',
+            '.profile-card-logo',
+            '.carousel-slide img',
+            '.carousel-logo-overlay img',
+            '.success-story-image img'
+        ].join(',');
+
+        document.querySelectorAll(PROTECTED).forEach(function (img) {
+            img.addEventListener('contextmenu', function (e) {
+                e.preventDefault(); e.stopPropagation(); return false;
+            }, true);
+            img.addEventListener('dragstart', function (e) {
+                e.preventDefault(); e.stopPropagation(); return false;
+            }, true);
+            img.removeAttribute('download');
+        });
+
+        var CONTAINERS = [
+            '.profile-card-image',
+            '.carousel-slide',
+            '.success-story-image'
+        ].join(',');
+
+        document.querySelectorAll(CONTAINERS).forEach(function (el) {
+            el.addEventListener('contextmenu', function (e) {
+                e.preventDefault(); return false;
+            }, true);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        totalSlides = document.querySelectorAll('.carousel-slide').length;
+        if (totalSlides > 0) { showSlide(0); startAutoSlide(); }
+        showStoriesOnScroll();
+        lockImages();
+    });
+
+    window.addEventListener('scroll', showStoriesOnScroll);
+    window.addEventListener('resize', function () {
+        if (totalSlides > 0) showSlide(currentSlideIndex);
+    });
+</script>
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/69b14b6bbe53e11c396ec50f/1jje8t7rf';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+</script>
+<!--End of Tawk.to Script-->
+
+</body>
+</html>

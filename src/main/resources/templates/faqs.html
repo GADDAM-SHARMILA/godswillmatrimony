@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Matrimony</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+    <link rel="stylesheet" th:href="@{/css/fragments.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lato:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Lato', sans-serif; }
+        h1, .category-title { font-family: 'Playfair Display', serif; }
+        .faq-content { transition: max-height 0.3s ease, opacity 0.3s ease; }
+        .faq-btn .icon { transition: transform 0.3s ease; }
+        .faq-btn.open .icon { transform: rotate(45deg); }
+    </style>
+</head>
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+<body class="bg-rose-50">
+
+<section class="py-16">
+    <div class="max-w-4xl mx-auto px-6">
+
+        <!-- Page Heading -->
+        <h1 class="text-4xl font-bold text-center mb-4 text-rose-800">
+            Frequently Asked Questions
+        </h1>
+        <p class="text-center text-gray-500 mb-12">Find answers to common questions about Godswill Matrimony</p>
+
+        <!-- Category: Profile & Photos -->
+        <div class="mb-10">
+            <h2 class="category-title text-xl font-semibold text-rose-700 mb-4 border-b-2 border-rose-200 pb-2">👤 Profile &amp; Photos</h2>
+            <div class="space-y-4">
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        How can I delete my profile?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                        To delete your profile,<strong>Contact Admin admin@godswillmatrimony.in</strong>                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        I have deleted my profile. Can I reactivate the same?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                        Yes! <strong>Contact Admin admin@godswillmatrimony.in</strong>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        How to edit my profile?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                        Log in to your account and navigate to <strong>My Profile</strong>. Click the <strong>Edit</strong> button next to any section (Personal Details, Family, Preferences, etc.) to make changes. Once done, click <strong>Save</strong> to update your profile. Your changes will be visible to other members shortly after.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        I want to change my registered Phone Number / Email ID?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                        To change your registered Phone Number or Email ID, go to <strong>Settings &gt; Account Details</strong>. You'll need to verify your new contact information via OTP or a verification link before the change takes effect. For security reasons, this process requires your current password as well.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        How can I change my password?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                        Go to <strong>My profile -> Change Password</strong>. Enter your current password followed by your new password and confirm it. If you've forgotten your password, use the <strong>Forgot Password</strong> link on the login page to reset it via your registered email or phone number.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        I did not register on godswillmatrimony.in — how was my profile created?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                        Sometimes profiles are created on behalf of a user by a family member or a trusted third party. If you did not authorise this or do not recognise this profile, please contact us immediately at <strong>support@godswillmatrimony.in</strong> with your details and we will investigate and take appropriate action, including removal if required.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        I want to change my display name on my Profile
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                        Your display name can be updated from <strong>My Profile &gt; Edit &gt; Personal Details</strong>. Update your name and click Save. Note that your display name is visible to all members who view your profile, so please ensure it is accurate and appropriate.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        How can I add my photos?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                        Go to <strong>My Profile &gt; Edit &gt; Photos</strong> and click <strong>Add Photos</strong>. You can upload photos from your device. We recommend uploading clear, recent photos for better visibility and trust. Photos are reviewed before being published to ensure they meet our community guidelines.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        Is it necessary to add additional photos to my profile?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                        While it's not mandatory, we strongly recommend adding multiple photos. Profiles with photos receive significantly more interest and responses. A profile photo helps build trust and makes a strong first impression on potential matches.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Category: Contact & Members -->
+        <div class="mb-10">
+            <h2 class="category-title text-xl font-semibold text-rose-700 mb-4 border-b-2 border-rose-200 pb-2">💬 Contact &amp; Members</h2>
+            <div class="space-y-4">
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        How do I contact my Matches?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                         Premium members have access to view the contact details .
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        I found my Match but the contact details are hidden. How do I contact them?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                        Contact details are visible only to <strong>Premium Members</strong>. If you're on a free plan, you can upgrade to a paid membership to unlock contact details.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        Do we have a chat feature on Godswill Matrimony?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                        Yes! <strong>Coming soon !</strong>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Category: Registration & Login -->
+        <div class="mb-10">
+            <h2 class="category-title text-xl font-semibold text-rose-700 mb-4 border-b-2 border-rose-200 pb-2">📝 Registration &amp; Login</h2>
+            <div class="space-y-4">
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        How can I register on Godswillmatrimony.in?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                        Click the <strong>Sign Up / Register</strong> button on the homepage. Fill in your basic details such as name, date of birth, gender, email, and phone number. You'll receive a verification OTP to confirm your account. Once verified, you can complete your profile with more details and photos.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        Do I have to register on Godswillmatrimony.in?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                        Registration is required to access member profiles, send interests, and use the messaging features. While you may be able to view limited information without registering, creating a free account gives you access to the platform's core features and allows potential matches to find you.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        Do we have any guidelines to create a profile?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                        Yes. We ask that all profiles be genuine and represent the user accurately. Key guidelines include: use your real name and accurate information, upload clear and appropriate photos (no group photos or obscured faces), avoid sharing sensitive financial information, and ensure your profile reflects your true personality and intentions. Profiles that violate our guidelines may be removed.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Category: Membership & Payments -->
+        <div class="mb-10">
+            <h2 class="category-title text-xl font-semibold text-rose-700 mb-4 border-b-2 border-rose-200 pb-2">💳 Membership &amp; Payments</h2>
+            <div class="space-y-4">
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        What are the benefits of premium membership?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                        Premium members enjoy a range of exclusive benefits including: viewing full contact details of matches, unlimited messaging, priority profile visibility in search results, advanced search filters, the ability to see who viewed your profile, and access to dedicated customer support. Premium membership significantly increases your chances of finding a compatible match.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        What are all the different plans and types of membership?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                        We offer several membership plans to suit your needs: <strong>Free</strong> (basic profile creation and limited browsing), <strong>Silver</strong> (3-month plan with contact viewing and messaging), <strong>Gold</strong> (6-month plan with all Silver benefits plus priority listing), and <strong>Platinum</strong> (12-month plan with all features plus dedicated relationship manager). Visit our <strong>Membership</strong> page for current pricing details.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        I want to purchase a membership. How can I pay?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                        We accept multiple payment methods including Credit/Debit Cards, Net Banking, UPI (Google Pay, PhonePe, Paytm), and popular digital wallets. All transactions are secured with SSL encryption. To purchase, go to <strong>Membership &gt; Choose Plan &gt; Pay Now</strong> and select your preferred payment method.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        Payment deducted but membership not received?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                        Occasionally, there may be a delay in processing due to bank or network issues. Please wait up to 30 minutes and refresh your account. If your membership is still not active, please contact our support team at <strong>contact@godswillmatrimony.in</strong> with your transaction ID and payment screenshot. We'll resolve it promptly.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        Offers and Discounts?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                        We regularly run seasonal offers and promotional discounts on our membership plans. To stay updated, subscribe to our newsletter or check the <strong>Offers</strong> section on the website. You can also follow our social media pages for exclusive promo codes and limited-time deals.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Category: Search & Preferences -->
+        <div class="mb-10">
+            <h2 class="category-title text-xl font-semibold text-rose-700 mb-4 border-b-2 border-rose-200 pb-2">🔍 Search &amp; Preferences</h2>
+            <div class="space-y-4">
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        I am unable to see the photo of the user?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                       You can also upgrade to a Premium plan which allows you to request photo access directly from members if you are in free plan.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        I am unable to see the complete details of the user?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                        Full profile details including contact information are available only to Premium Members. Free accounts can view basic profile information. Upgrade your membership to access complete profiles and contact details of all members on the platform.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        What is meant by Shortlist?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                        Shortlisting is a way to save profiles you're interested in for later review. When you shortlist a member, it adds them to your <strong>Shortlisted Profiles</strong> section for easy access. It also notifies the other member that you've shown interest in their profile, prompting them to view yours.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        How can I see someone has shortlisted my profile?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                        Coming Soon !
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Category: Privacy & Safety -->
+        <div class="mb-10">
+            <h2 class="category-title text-xl font-semibold text-rose-700 mb-4 border-b-2 border-rose-200 pb-2">🔒 Privacy &amp; Safety</h2>
+            <div class="space-y-4">
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        Is my profile safe on Godswill Matrimony portal?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                        Absolutely. We take your privacy and safety very seriously. All data is encrypted using industry-standard SSL technology. We never share your personal information with third parties without your consent. Our platform is regularly audited for security vulnerabilities to ensure your data remains protected at all times.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        Is there any way to control who can view my profile?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                        Yes! You have full control over your profile visibility. Go to <strong>Settings &gt; Privacy</strong> to manage who can see your profile, photos, and contact details. You can restrict visibility to members matching your preferences, hide your profile from specific members, or make your profile completely private while you're not actively searching.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-rose-100">
+                    <button class="w-full text-left p-5 font-medium flex justify-between items-center faq-btn">
+                        I have come across a suspicious profile. What should I do?
+                        <span class="icon text-rose-500 text-xl font-light">+</span>
+                    </button>
+                    <div class="px-5 pb-5 hidden text-gray-600 faq-content">
+                        If you encounter a suspicious or fake profile, please report it immediately by clicking the <strong>Report Profile</strong> button on the member's profile page. Our safety team reviews all reports within 24–48 hours and takes appropriate action. You can also block the member to prevent further contact. Your report helps keep our community safe for everyone.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Contact Us -->
+        <div class="bg-rose-700 rounded-xl p-8 text-center text-white">
+            <h2 class="category-title text-2xl font-bold mb-2">Still have questions?</h2>
+            <p class="text-rose-200 mb-6">Our support team is here to help you</p>
+            <a href="mailto:contact@godswillmatrimony.in"
+               class="inline-block bg-white text-rose-700 font-semibold px-8 py-3 rounded-full hover:bg-rose-50 transition">
+                ✉️ Write to Us
+            </a>
+        </div>
+
+    </div>
+</section>
+
+<!-- Accordion Script -->
+<script>
+    const buttons = document.querySelectorAll(".faq-btn");
+
+    buttons.forEach(button => {
+        button.addEventListener("click", () => {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector(".icon");
+
+            // Close all others
+            buttons.forEach(otherBtn => {
+                if (otherBtn !== button) {
+                    otherBtn.nextElementSibling.classList.add("hidden");
+                    otherBtn.querySelector(".icon").textContent = "+";
+                    otherBtn.classList.remove("open");
+                }
+            });
+
+            content.classList.toggle("hidden");
+            button.classList.toggle("open");
+
+            if (content.classList.contains("hidden")) {
+                icon.textContent = "+";
+            } else {
+                icon.textContent = "+";
+            }
+        });
+    });
+</script>
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/69b14b6bbe53e11c396ec50f/1jje8t7rf';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+</script>
+<!--End of Tawk.to Script-->
+
+</body>
+</html>

@@ -1,0 +1,470 @@
+/* ============================================================
+   admin_pp.css  —  Admin Panel Styles  |  Palette: #F2D8E1
+   Covers: All Profiles, Pending Approval, Create User
+   ============================================================ */
+
+/* ── Reset & Base ── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #fdf0f4;
+    font-family: 'Segoe UI', sans-serif;
+    color: #3b1427;
+}
+
+/* ══════════════════════════════════════════
+   SHARED LAYOUT
+══════════════════════════════════════════ */
+
+.container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.admin-wrapper {
+    max-width: 820px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+}
+
+/* ── Page Header ── */
+.admin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+.admin-header h1 {
+    margin: 0;
+    font-size: 1.6rem;
+    color: #5C1F3A;
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+.page-header h1 {
+    font-size: 1.5rem;
+    color: #5C1F3A;
+}
+
+/* ── Back Button ── */
+.btn-back {
+    text-decoration: none;
+    font-size: 0.85rem;
+    color: #9B4D6B;
+    border: 1px solid #F2D8E1;
+    padding: 0.4rem 0.9rem;
+    border-radius: 6px;
+    transition: background 0.15s;
+    background: #fff;
+}
+.btn-back:hover { background: #F2D8E1; }
+
+/* ── Alerts ── */
+.alert {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+.alert-error   { background: #fee2e2; color: #991b1b; }
+.alert-success { background: #d1fae5; color: #065f46; }
+
+/* ── Info Note ── */
+.info-note {
+    background: #fff8fa;
+    border-left: 4px solid #F2D8E1;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    font-size: 0.82rem;
+    color: #9B4D6B;
+    margin-bottom: 1.25rem;
+}
+
+/* ── Empty State ── */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #D4849F;
+    font-size: 1rem;
+}
+
+/* ══════════════════════════════════════════
+   NAV TABS
+══════════════════════════════════════════ */
+
+.admin-nav-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #F2D8E1;
+    padding-bottom: 0.5rem;
+}
+.admin-nav-tabs a {
+    padding: 0.45rem 1.1rem;
+    border-radius: 6px 6px 0 0;
+    text-decoration: none;
+    font-weight: 500;
+    color: #9B4D6B;
+    transition: background 0.2s, color 0.2s;
+}
+.admin-nav-tabs a:hover  { background: #fce8ee; color: #5C1F3A; }
+.admin-nav-tabs a.active { background: #F2D8E1; color: #5C1F3A; }
+
+/* ══════════════════════════════════════════
+   STATS BAR
+══════════════════════════════════════════ */
+
+.stats-bar {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+.stat-badge {
+    background: #fff;
+    border: 1px solid #F2D8E1;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #5C1F3A;
+}
+.stat-badge span {
+    color: #9B4D6B;
+    font-size: 1.1rem;
+}
+
+/* ══════════════════════════════════════════
+   SEARCH BAR
+══════════════════════════════════════════ */
+
+.search-bar {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+.search-bar input {
+    flex: 1;
+    padding: 0.55rem 1rem;
+    border: 1px solid #F2D8E1;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: #3b1427;
+    background: #fff;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+.search-bar input:focus {
+    outline: none;
+    border-color: #D4849F;
+    box-shadow: 0 0 0 3px rgba(242,216,225,0.5);
+}
+
+/* ══════════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════════ */
+
+.btn {
+    display: inline-block;
+    padding: 0.38rem 0.85rem;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    text-align: center;
+    transition: opacity 0.15s, transform 0.1s;
+}
+.btn:hover  { opacity: 0.85; }
+.btn:active { transform: scale(0.97); }
+
+.btn-view      { background: #fce8ee; color: #5C1F3A; border: 1px solid #F2D8E1; }
+.btn-edit      { background: #fef9c3; color: #854d0e; }
+.btn-approve   { background: #d1fae5; color: #065f46; }
+.btn-reject    { background: #fee2e2; color: #991b1b; }
+.btn-delete    { background: #fff;    color: #9B4D6B; border: 1px solid #F2D8E1; }
+.btn-secondary { background: #fce8ee; color: #5C1F3A; border: 1px solid #F2D8E1; }
+.btn-create    { background: #9B4D6B; color: #fff; padding: 0.5rem 1.2rem; font-size: 0.9rem; }
+
+/* ── Step Nav Buttons (Create form) ── */
+.btn-prev   { background: #fff; color: #9B4D6B; border: 1px solid #F2D8E1; }
+.btn-next   { background: #F2D8E1; color: #5C1F3A; margin-left: auto; }
+.btn-submit { background: #9B4D6B; color: #fff; margin-left: auto; }
+
+/* ══════════════════════════════════════════
+   BADGES
+══════════════════════════════════════════ */
+
+.badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    font-weight: 600;
+}
+.badge-verified { background: #d1fae5; color: #065f46; }
+.badge-pending  { background: #fef3c7; color: #92400e; }
+.badge-inactive { background: #fee2e2; color: #991b1b; }
+.badge-male     { background: #dbeafe; color: #1e40af; }
+.badge-female   { background: #fce7f3; color: #9d174d; }
+
+/* ══════════════════════════════════════════
+   ALL PROFILES — PROFILE CARDS
+══════════════════════════════════════════ */
+
+.profile-card-admin {
+    background: #fff;
+    border: 1px solid #F2D8E1;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    box-shadow: 0 1px 4px rgba(242,216,225,0.4);
+    transition: box-shadow 0.2s;
+}
+.profile-card-admin:hover {
+    box-shadow: 0 4px 16px rgba(242,216,225,0.7);
+}
+
+.profile-card-img {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #F2D8E1;
+    flex-shrink: 0;
+}
+
+.profile-card-body { flex: 1; min-width: 0; }
+
+.profile-card-name {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #5C1F3A;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+}
+
+.profile-card-meta {
+    font-size: 0.82rem;
+    color: #9B4D6B;
+    margin-top: 0.2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+}
+.profile-card-meta span { white-space: nowrap; }
+
+.profile-card-ids {
+    font-size: 0.75rem;
+    color: #D4849F;
+    margin-top: 0.2rem;
+}
+
+.profile-card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════════
+   PENDING APPROVAL — PENDING CARDS
+══════════════════════════════════════════ */
+
+.pending-profile-card {
+    background: #fff;
+    border: 1px solid #F2D8E1;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 4px rgba(242,216,225,0.4);
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+}
+.pending-profile-card:hover {
+    box-shadow: 0 4px 16px rgba(242,216,225,0.7);
+}
+
+.pending-profile-inner {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    padding: 1rem 1.25rem;
+}
+
+.pending-profile-image {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #F2D8E1;
+    flex-shrink: 0;
+}
+
+.pending-profile-info { flex: 1; min-width: 0; }
+
+.pending-profile-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #5C1F3A;
+    margin-bottom: 0.2rem;
+}
+
+.pending-profile-location {
+    font-size: 0.83rem;
+    color: #9B4D6B;
+    margin-bottom: 0.15rem;
+}
+
+.pending-profile-ids {
+    font-size: 0.75rem;
+    color: #D4849F;
+    margin-bottom: 0.15rem;
+}
+
+.pending-profile-contact {
+    font-size: 0.78rem;
+    color: #9B4D6B;
+}
+
+.pending-profile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex-shrink: 0;
+}
+.pending-profile-actions form { margin: 0; }
+
+/* ══════════════════════════════════════════
+   CREATE USER — MULTI-STEP FORM
+══════════════════════════════════════════ */
+
+/* Steps Indicator */
+.steps {
+    display: flex;
+    gap: 0;
+    margin-bottom: 2rem;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #F2D8E1;
+}
+.step-tab {
+    flex: 1;
+    text-align: center;
+    padding: 0.7rem 0.5rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    background: #fff;
+    color: #D4849F;
+    cursor: pointer;
+    border-right: 1px solid #F2D8E1;
+    transition: background 0.2s, color 0.2s;
+}
+.step-tab:last-child { border-right: none; }
+.step-tab.active { background: #F2D8E1; color: #5C1F3A; }
+.step-tab.done   { background: #fce8ee; color: #9B4D6B; }
+
+/* Card */
+.card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #F2D8E1;
+    padding: 1.75rem;
+    box-shadow: 0 1px 6px rgba(242,216,225,0.4);
+    margin-bottom: 1rem;
+}
+.card h2 {
+    font-size: 1.05rem;
+    color: #5C1F3A;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid #F2D8E1;
+}
+
+/* Form Sections */
+.form-section        { display: none; }
+.form-section.active { display: block; }
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.form-row.single { grid-template-columns: 1fr; }
+
+.form-group                { display: flex; flex-direction: column; gap: 0.3rem; }
+.form-group label          { font-size: 0.83rem; font-weight: 600; color: #5C1F3A; }
+.form-group .hint          { font-size: 0.75rem; color: #D4849F; }
+
+/* Inputs */
+input[type=text], input[type=email], input[type=tel],
+input[type=password], input[type=date], input[type=number],
+select, textarea {
+    width: 100%;
+    padding: 0.55rem 0.85rem;
+    border: 1px solid #F2D8E1;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    background: #fff;
+    color: #3b1427;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #D4849F;
+    box-shadow: 0 0 0 3px rgba(242,216,225,0.5);
+}
+input.is-invalid, select.is-invalid { border-color: #ef4444; }
+textarea { resize: vertical; min-height: 90px; }
+
+/* Password Toggle */
+.pw-wrap            { position: relative; }
+.pw-wrap input      { padding-right: 2.5rem; }
+.pw-toggle {
+    position: absolute;
+    right: 0.7rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #D4849F;
+    font-size: 1rem;
+    padding: 0;
+}
+
+/* Form Navigation */
+.form-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+
+@media (max-width: 600px) {
+    .form-row                { grid-template-columns: 1fr; }
+    .profile-card-admin      { flex-wrap: wrap; }
+    .profile-card-actions    { flex-direction: row; flex-wrap: wrap; width: 100%; }
+    .pending-profile-inner   { flex-wrap: wrap; }
+    .pending-profile-actions { flex-direction: row; flex-wrap: wrap; width: 100%; }
+    .admin-header            { flex-direction: column; align-items: flex-start; }
+}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
+    <title>About Us - Matrimony</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+</head>
+
+<body>
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+<!-- Hero Section -->
+<section class="bg-gradient-to-r from-pink-100 to-purple-100 py-16">
+    <div class="max-w-6xl mx-auto px-6 text-center">
+        <h1 class="text-4xl font-bold mb-4">About Our Matrimony</h1>
+        <p class="text-lg text-gray-600">
+            Connecting hearts and building lifelong relationships with trust and tradition.
+        </p>
+    </div>
+</section>
+
+<!-- About Content -->
+<section class="py-16">
+    <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
+
+        <div>
+            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9"
+                 class="rounded-xl shadow-lg w-full" alt="About Us">
+        </div>
+
+        <div>
+            <h2 class="text-3xl font-semibold mb-4">Who We Are</h2>
+            <p class="text-gray-600 mb-4">
+                We are a trusted matrimony platform helping thousands of families
+                find their perfect life partner. Our system ensures verified profiles,
+                privacy protection, and genuine matchmaking.
+            </p>
+
+            <h2 class="text-2xl font-semibold mb-3 mt-6">Our Mission</h2>
+            <p class="text-gray-600">
+                To create meaningful connections by combining technology with tradition.
+            </p>
+        </div>
+
+    </div>
+</section>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+</body>
+</html>

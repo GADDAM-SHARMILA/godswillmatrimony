@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - God's Will Matrimony</title>
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+    <link rel="stylesheet" th:href="@{/css/tc_pp.css}">
+</head>
+<body>
+
+<header class="header">
+    <div class="container navbar">
+        <div class="logo-text-container">
+            <span class="brand-name">GOD'S WILL MATRIMONY</span>
+            <span class="brand-tagline">God's Will | God's Way | God's Time</span>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="policy-content">
+        <h1>Privacy Policy</h1>
+
+        <div class="highlight-card">
+            <h3>Data Protection Guarantee</h3>
+            <p>All data is 100% secure and safe. Even the <strong>God's Will Matrimony team cannot view</strong> your sensitive private information.</p>
+        </div>
+
+        <h2>1. High-Level Encryption</h2>
+        <p>Your data is encrypted and protected using <strong>256-bit industrial-grade protection</strong>. This ensures that your personal details remain unreadable to any unauthorized entities.</p>
+
+        <h2>2. Information Use</h2>
+        <p>We collect information solely to facilitate matches within the community. This includes name, religious details, and contact info. We do not sell or rent this information to third-party marketing firms.</p>
+
+        <h2>3. Cookie Policy</h2>
+        <p>We use cookies to improve your browsing experience, remember your login state, and provide personalized partner recommendations.</p>
+
+        <h2>4. Data Retention</h2>
+        <p>Your personal data is retained only as long as your account remains active. Upon account deletion, all associated data is <strong>permanently and irreversibly removed</strong> from our servers within 30 days.</p>
+
+        <h2>5. Third-Party Access</h2>
+        <p>We do not share, sell, or disclose your personal information to any third parties without your explicit consent, except where required by law or necessary to provide our core services.</p>
+
+        <h2>6. Profile Visibility</h2>
+        <p>Your profile is only visible to registered and verified members of the platform. You can control your profile visibility settings from your account dashboard at any time.</p>
+
+        <h2>7. Communication Privacy</h2>
+        <p>All messages exchanged between members are <strong>end-to-end encrypted</strong>. Our team does not monitor or read private conversations unless flagged for safety review by a member.</p>
+
+        <h2>8. Your Rights</h2>
+        <p>You have the right to access, correct, or delete your personal data at any time. To exercise these rights, please contact our support team through the platform's official support channel.</p>
+
+        <h2>9. Security Measures</h2>
+        <p>We implement strict technical and organizational measures to protect your data against unauthorized access, alteration, disclosure, or destruction.</p>
+
+        <div class="safety-alert">
+            <h3>Important Security Reminder</h3>
+            <ul>
+                <li>Never share your password or OTP with anyone, including our team.</li>
+                <li>Always log out from shared or public devices.</li>
+                <li>Report any suspicious account activity to the Admin immediately.</li>
+                <li>Regularly update your password for added security.</li>
+            </ul>
+        </div>
+
+        <h2>10. Policy Updates</h2>
+        <p>We may update this Privacy Policy from time to time. Any significant changes will be notified to you via email or an in-app notification. Continued use of the platform implies acceptance of the updated policy.</p>
+
+        <h2>11. Contact Us</h2>
+        <p>If you have any questions or concerns about this Privacy Policy or how your data is handled, please reach out to our Admin through the platform's official support channel.</p>
+    </div>
+</div>
+
+<!-- WATERMARK OVERLAY -->
+<div id="watermark-overlay"></div>
+
+<script>
+    const overlay = document.getElementById('watermark-overlay');
+    overlay.style.cssText = `
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        pointer-events: none;
+        overflow: hidden;
+    `;
+
+    const text = "GOD'S WILL MATRIMONY";
+    const itemW = 420, itemH = 120;
+    const cols = Math.ceil(window.innerWidth / itemW) + 2;
+    const rows = Math.ceil(window.innerHeight / itemH) + 2;
+
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+            const el = document.createElement('div');
+            el.textContent = text;
+            el.style.cssText = `
+                position: absolute;
+                left: ${c * itemW - 60}px;
+                top: ${r * itemH - 40}px;
+                font-size: 22px;
+                font-weight: 900;
+                font-family: 'Segoe UI', sans-serif;
+                color: rgba(168, 85, 112, 0.13);
+                letter-spacing: 5px;
+                text-transform: uppercase;
+                white-space: nowrap;
+                transform: rotate(-28deg);
+                user-select: none;
+            `;
+            overlay.appendChild(el);
+        }
+    }
+</script>
+
+</body>
+</html>

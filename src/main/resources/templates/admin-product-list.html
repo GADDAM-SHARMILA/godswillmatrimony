@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
+    <title>Admin - All Products</title>
+    <link rel="stylesheet" th:href="@{/css/admin_pp.css}">
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ── Category badge ── */
+        .badge-bride  { background: #f2d8e1; color: #7a2a40; border: 1px solid #d4a0b0; }
+        .badge-groom  { background: #dce8f5; color: #1a3a5a; border: 1px solid #90b8d8; }
+        .badge-both   { background: #e8f5e2; color: #2a5a1a; border: 1px solid #90c878; }
+
+        /* ── Product card ── */
+        .product-card-admin {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: #fff;
+            border: 1px solid #e8d5dc;
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 0.9rem;
+            box-shadow: 0 2px 8px rgba(122,42,64,.05);
+            transition: box-shadow .2s;
+        }
+        .product-card-admin:hover { box-shadow: 0 4px 16px rgba(122,42,64,.12); }
+
+        /* ── Product thumbnail ── */
+        .product-thumb {
+            width: 72px; height: 72px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid #e8d5dc;
+            flex-shrink: 0;
+            background: #f7edf0;
+        }
+
+        /* ── Body ── */
+        .product-card-body { flex: 1; min-width: 0; }
+        .product-card-name {
+            font-size: 0.97rem;
+            font-weight: 700;
+            color: #3a0d1e;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 3px;
+        }
+        .product-card-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 14px;
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 4px;
+        }
+        .product-card-meta span { display: flex; align-items: center; gap: 4px; }
+
+        /* ── Price display ── */
+        .price-original  { font-weight: 700; color: #3a0d1e; }
+        .price-discounted { font-weight: 700; color: #2e7d32; }
+        .price-struck     { text-decoration: line-through; color: #aaa; font-size: 0.78rem; }
+
+        /* ── Actions ── */
+        .product-card-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .btn-edit {
+            background: #f7edf0;
+            color: #7a2a40;
+            border: 1.5px solid #dbbfc9;
+            border-radius: 7px;
+            padding: 6px 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            transition: background .2s;
+            white-space: nowrap;
+        }
+        .btn-edit:hover { background: #f2d8e1; }
+
+        .btn-delete {
+            background: #fdecea;
+            color: #b71c1c;
+            border: 1.5px solid #f5b5b5;
+            border-radius: 7px;
+            padding: 6px 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .2s;
+            white-space: nowrap;
+        }
+        .btn-delete:hover { background: #fcc; }
+
+        /* ── Stock badge ── */
+        .stock-ok  { color: #2e7d32; font-weight: 600; }
+        .stock-low { color: #e65100; font-weight: 600; }
+        .stock-out { color: #b71c1c; font-weight: 600; }
+
+        /* ── Inactive overlay ── */
+        .product-card-admin.inactive { opacity: .55; }
+
+        /* ── Filter tabs ── */
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+        }
+        .filter-tab {
+            padding: 6px 18px;
+            border-radius: 20px;
+            border: 1.5px solid #dbbfc9;
+            background: #fdf7f9;
+            color: #7a2a40;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .2s;
+        }
+        .filter-tab.active, .filter-tab:hover {
+            background: #7a2a40;
+            color: #fff;
+            border-color: #7a2a40;
+        }
+    </style>
+</head>
+
+<body th:attr="data-logged-in=${session.user != null}">
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<div class="container" style="max-width: 900px; margin: 2rem auto; padding: 0 1rem;">
+
+    <!-- Header -->
+    <div class="admin-header">
+        <h1>📦 All Products</h1>
+        <a class="btn btn-create" th:href="@{/admin/products/add}">+ Add New Product</a>
+    </div>
+
+    <!-- Nav Tabs -->
+    <div class="admin-nav-tabs">
+        <a th:href="@{/admin/profiles/all}">All Profiles</a>
+        <a th:href="@{/admin/products/list}" class="active">All Products</a>
+    </div>
+
+    <!-- Alerts -->
+    <div class="alert alert-error"   th:if="${error}"   th:text="${error}"></div>
+    <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="stat-badge">Total: <span th:text="${products != null ? products.size() : 0}">0</span></div>
+        <div class="stat-badge">Women:
+            <span th:text="${products != null ? #lists.size(products.?[category != null and category.equalsIgnoreCase('bride')]) : 0}">0</span>
+        </div>
+        <div class="stat-badge">Men:
+            <span th:text="${products != null ? #lists.size(products.?[category != null and category.equalsIgnoreCase('groom')]) : 0}">0</span>
+        </div>
+        <div class="stat-badge">Active:
+            <span th:text="${products != null ? #lists.size(products.?[active]) : 0}">0</span>
+        </div>
+    </div>
+
+    <!-- Search -->
+    <div class="search-bar">
+        <input type="text" id="productSearch"
+               placeholder="🔍 Search by name, category, brand..."
+               oninput="filterProducts(this.value)"/>
+    </div>
+
+    <!-- Category Filter Tabs -->
+    <div class="filter-tabs">
+        <button class="filter-tab active" onclick="setFilter('all', this)">All</button>
+        <button class="filter-tab" onclick="setFilter('bride', this)">👰 Women (Bride)</button>
+        <button class="filter-tab" onclick="setFilter('groom', this)">🤵 Men (Groom)</button>
+        <button class="filter-tab" onclick="setFilter('both', this)">👫 Both</button>
+        <button class="filter-tab" onclick="setFilter('inactive', this)">🚫 Inactive</button>
+    </div>
+
+    <!-- Empty state -->
+    <div class="empty-state" th:if="${products == null or products.isEmpty()}">
+        <p>No products found. <a th:href="@{/admin/products/add}" style="color:#7a2a40;font-weight:600;">Add your first product →</a></p>
+    </div>
+
+    <!-- Product Cards -->
+    <div id="productList">
+        <div class="product-card-admin"
+             th:each="p : ${products}"
+             th:classappend="${!p.active} ? 'inactive'"
+             th:attr="data-search=${#strings.toLowerCase(
+                 (p.name ?: '') + ' ' +
+                 (p.category ?: '') + ' ' +
+                 (p.brand ?: '') + ' ' +
+                 (p.subCategory ?: '') + ' ' +
+                 (p.tags ?: '')
+             )},
+             data-category=${#strings.toLowerCase(p.category ?: 'both')},
+             data-active=${p.active}">
+
+            <!-- Thumbnail -->
+            <img class="product-thumb"
+                 th:src="${#strings.isEmpty(p.imageUrl)} ? @{/images/default-avatar.jpg} : @{${p.imageUrl}}"
+                 onerror="this.src='/images/box.jpg'"
+                 alt="product"/>
+
+            <!-- Info -->
+            <div class="product-card-body">
+                <div class="product-card-name">
+                    <span th:text="${p.name}">Product Name</span>
+
+                    <!-- Category badge -->
+                    <span class="badge"
+                          th:classappend="${#strings.equalsIgnoreCase(p.category,'bride')} ? 'badge-bride' :
+                                          (${#strings.equalsIgnoreCase(p.category,'groom')} ? 'badge-groom' : 'badge-both')"
+                          th:text="${#strings.equalsIgnoreCase(p.category,'bride')} ? '👰 Women' :
+                                    (${#strings.equalsIgnoreCase(p.category,'groom')} ? '🤵 Men' : '👫 Both')">
+                    </span>
+
+                    <!-- Status badges -->
+                    <span class="badge badge-inactive" th:if="${!p.active}">Inactive</span>
+                    <span class="badge badge-verified"
+                          th:if="${p.featured}"
+                          style="background:#fff8dc;color:#8a6500;border-color:#d4af37;">⭐ Featured</span>
+                </div>
+
+                <div class="product-card-meta">
+                    <!-- Price -->
+                    <span th:if="${p.discountedPrice != null and p.discountedPrice > 0}">
+                        💰
+                        <span class="price-struck" th:text="'₹' + ${#numbers.formatInteger(p.originalPrice, 1, 'COMMA')}"></span>
+                        <span class="price-discounted" th:text="'₹' + ${#numbers.formatInteger(p.discountedPrice, 1, 'COMMA')}"></span>
+                    </span>
+                    <span th:if="${p.discountedPrice == null or p.discountedPrice == 0}">
+                        💰 <span class="price-original" th:text="'₹' + ${#numbers.formatInteger(p.originalPrice, 1, 'COMMA')}"></span>
+                    </span>
+
+                    <!-- Stock -->
+                    <span th:classappend="${p.stock == 0} ? 'stock-out' : (${p.stock < 5} ? 'stock-low' : 'stock-ok')"
+                          th:text="${p.stock == 0} ? '❌ Out of Stock' : |📦 Stock: ${p.stock}|">
+                    </span>
+
+                    <!-- Brand -->
+                    <span th:if="${p.brand != null and !#strings.isEmpty(p.brand)}"
+                          th:text="'🏷 ' + ${p.brand}"></span>
+
+                    <!-- SubCategory -->
+                    <span th:if="${p.subCategory != null and !#strings.isEmpty(p.subCategory)}"
+                          th:text="'📂 ' + ${p.subCategory}"></span>
+
+                    <!-- Delivery -->
+                    <span th:if="${p.deliveryDays != null}"
+                          th:text="'🚚 ' + ${p.deliveryDays} + ' days'"></span>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="product-card-actions">
+                <a class="btn-edit"
+                   th:href="@{/admin/products/edit/{id}(id=${p.id})}">
+                    <i class="fas fa-pen"></i> Edit
+                </a>
+                <button class="btn-delete"
+                        th:attr="data-id=${p.id}, data-name=${p.name}"
+                        onclick="confirmDelete(this)">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<script>
+    let currentFilter = 'all';
+
+    function filterProducts(value) {
+        applyFilters(value, currentFilter);
+    }
+
+    function setFilter(category, btn) {
+        currentFilter = category;
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        applyFilters(document.getElementById('productSearch').value, category);
+    }
+
+    function applyFilters(searchVal, category) {
+        const q = searchVal.toLowerCase().trim();
+        document.querySelectorAll('#productList .product-card-admin').forEach(card => {
+            const searchData = card.getAttribute('data-search') || '';
+            const cat        = card.getAttribute('data-category') || '';
+            const isActive   = card.getAttribute('data-active') === 'true';
+
+            const matchSearch   = !q || searchData.includes(q);
+            const matchCategory = category === 'all'
+                || (category === 'inactive' && !isActive)
+                || (category !== 'inactive' && cat === category);
+
+            card.style.display = (matchSearch && matchCategory) ? '' : 'none';
+        });
+    }
+
+    function confirmDelete(btn) {
+        const id   = btn.getAttribute('data-id');
+        const name = btn.getAttribute('data-name');
+        if (!confirm('Delete "' + name + '"? This cannot be undone.')) return;
+
+        fetch('/api/admin/products/' + id, { method: 'DELETE' })
+            .then(r => r.text())
+            .then(() => {
+                // Remove card from DOM entirely
+                const card = btn.closest('.product-card-admin');
+                card.style.transition = 'opacity .3s, transform .3s';
+                card.style.opacity = '0';
+                card.style.transform = 'translateX(30px)';
+                setTimeout(() => card.remove(), 300);
+            })
+            .catch(() => alert('Failed to delete product.'));
+    }
+</script>
+</body>
+</html>

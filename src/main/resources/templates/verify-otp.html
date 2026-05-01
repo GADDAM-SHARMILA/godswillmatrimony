@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
+    <title>Verify OTP - Matrimony</title>
+    <link rel="stylesheet" th:href="@{/css/otp.css}">
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+</head>
+
+<body>
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+<div class="otp-container">
+    <div class="otp-box">
+        <div class="otp-header">
+            <h2>Verify Your Account</h2>
+            <p>Verification code has been sent to your email</p>
+        </div>
+
+        <!-- Flash messages from controller -->
+        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+        <div th:if="${error}"   class="alert alert-error"   th:text="${error}"></div>
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+        <!-- JS-driven alert container (for resend responses) -->
+        <div id="alertContainer"></div>
+
+        <div class="verification-info">
+            <strong>📧 Email:</strong>
+            <span th:text="${email != null ? email : 'N/A'}"></span>
+        </div>
+
+        <!--
+            ✅ FIXED:
+            - Removed hidden userId / email inputs — these are now read from the server session.
+            - Only emailOtp is submitted.
+        -->
+        <form id="otpForm" method="post" th:action="@{/verify-otp}">
+
+            <div class="otp-input-group">
+                <label for="emailOtp">📧 Email OTP *</label>
+
+                <input type="text"
+                       id="emailOtp"
+                       name="emailOtp"
+                       placeholder="Enter 6-digit OTP"
+                       maxlength="6"
+                       minlength="6"
+                       inputmode="numeric"
+                       autocomplete="one-time-code"
+                       pattern="[0-9]{6}"
+                       required
+                       autofocus>
+
+                <div class="help-text">Check your email inbox (and spam folder) for the OTP code</div>
+            </div>
+
+            <button type="submit" class="btn-verify" id="verifyBtn">Verify OTP</button>
+        </form>
+
+        <div class="resend-section">
+            <p>Didn't receive the OTP?</p>
+            <!--
+                ✅ Pass the email from Thymeleaf into a data attribute
+                   so the JS resend function can read it without a hidden field.
+            -->
+            <button type="button"
+                    class="btn-resend"
+                    id="resendEmailBtn"
+                    th:data-email="${email}">
+                Resend Email OTP
+            </button>
+            <div class="timer">
+                <span id="resend-timer"></span>
+            </div>
+        </div>
+
+        <!-- Back to register link in case session truly expired -->
+        <div style="text-align:center; margin-top: 20px;">
+            <a th:href="@{/register}" style="font-size: 0.85rem; color: #c0697a;">
+                ← Back to Register
+            </a>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<script>
+    let resendTimer = 0;
+
+    // ✅ Read email from button's data attribute (set by Thymeleaf)
+    function getEmailValue() {
+        const btn = document.getElementById('resendEmailBtn');
+        return btn ? (btn.getAttribute('data-email') || '').trim() : '';
+    }
+
+    function showAlert(message, type) {
+        const alertContainer = document.getElementById('alertContainer');
+        if (!alertContainer) return;
+
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-' + (type || 'info');
+        alert.textContent = message;
+
+        alertContainer.innerHTML = '';
+        alertContainer.appendChild(alert);
+        alert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        setTimeout(() => {
+            if (alert && alert.parentNode) alert.parentNode.removeChild(alert);
+        }, 5000);
+    }
+
+    // ✅ Digits-only input, max 6 chars
+    (function initOtpInput() {
+        const otp = document.getElementById('emailOtp');
+        if (!otp) return;
+        otp.setAttribute('pattern', '[0-9]{6}');
+        otp.addEventListener('input', function () {
+            this.value = (this.value || '').replace(/[^0-9]/g, '').slice(0, 6);
+        });
+    })();
+
+    function startResendTimer() {
+        resendTimer = 60;
+        updateTimer();
+    }
+
+    function updateTimer() {
+        const timerEl = document.getElementById('resend-timer');
+        const btn     = document.getElementById('resendEmailBtn');
+
+        if (resendTimer > 0) {
+            if (timerEl) timerEl.textContent = '⏳ Resend OTP in ' + resendTimer + ' seconds';
+            if (btn) btn.disabled = true;
+            resendTimer--;
+            setTimeout(updateTimer, 1000);
+        } else {
+            if (timerEl) timerEl.textContent = '';
+            if (btn) btn.disabled = false;
+        }
+    }
+
+    async function resendEmailOtp() {
+        if (resendTimer > 0) {
+            showAlert('⏳ Please wait ' + resendTimer + ' seconds before requesting again', 'info');
+            return;
+        }
+
+        const email = getEmailValue();
+        if (!email) {
+            showAlert('❌ Email not found. Please go back and register again.', 'error');
+            return;
+        }
+
+        const btn = document.getElementById('resendEmailBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="loading"></span>Sending...';
+
+        try {
+            const response = await fetch('/resend-otp?email=' + encodeURIComponent(email), {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+
+            const ct = (response.headers.get('content-type') || '').toLowerCase();
+            let data;
+
+            if (ct.includes('application/json')) {
+                data = await response.json();
+            } else {
+                const text = await response.text();
+                data = { status: response.ok ? 'success' : 'error', message: text };
+            }
+
+            btn.innerHTML = 'Resend Email OTP';
+
+            if (!response.ok) {
+                btn.disabled = false;
+                showAlert('❌ ' + (data.message || 'Failed to resend OTP'), 'error');
+                return;
+            }
+
+            showAlert('✅ ' + (data.message || 'OTP sent successfully!'), 'success');
+            startResendTimer();
+
+        } catch (error) {
+            btn.disabled = false;
+            btn.innerHTML = 'Resend Email OTP';
+            showAlert('❌ Network error while resending OTP', 'error');
+        }
+    }
+
+    // Bind resend click
+    document.getElementById('resendEmailBtn')?.addEventListener('click', resendEmailOtp);
+
+    // Show loading state on submit
+    document.getElementById('otpForm')?.addEventListener('submit', function () {
+        const verifyBtn = document.getElementById('verifyBtn');
+        if (verifyBtn) {
+            verifyBtn.disabled = true;
+            verifyBtn.innerHTML = '<span class="loading"></span>Verifying...';
+        }
+    });
+
+    // Auto-start timer on page load (OTP was just sent)
+    document.addEventListener('DOMContentLoaded', function () {
+        startResendTimer();
+    });
+</script>
+
+</body>
+</html>

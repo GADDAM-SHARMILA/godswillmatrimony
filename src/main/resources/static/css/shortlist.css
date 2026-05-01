@@ -1,0 +1,520 @@
+/* ============================================================
+   shortlist.css — My Shortlist Page
+   Color Palette: #F2D8E1 (blush pink) + White
+   Location: static/css/shortlist.css
+   ============================================================ */
+
+/* ── CSS Variables ───────────────────────────────────────── */
+:root {
+    --pink:           #F2D8E1;
+    --pink-dark:      #e8c2d0;
+    --pink-light:     #faeef3;
+    --accent:         #c9718f;
+    --accent-dark:    #a85570;
+    --white:          #ffffff;
+    --text-dark:      #2c1a2e;
+    --text-mid:       #5a3a4a;
+    --text-soft:      #a07080;
+    --border:         rgba(180, 110, 140, 0.28);
+    --border-focus:   rgba(180, 110, 140, 0.60);
+    --shadow-sm:      0 2px 10px rgba(193, 100, 135, 0.10);
+    --shadow-md:      0 6px 24px rgba(193, 100, 135, 0.16);
+    --shadow-lg:      0 16px 48px rgba(193, 100, 135, 0.22);
+    --radius:         16px;
+    --radius-sm:      10px;
+    --transition:     all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Body ────────────────────────────────────────────────── */
+body {
+    background: linear-gradient(160deg, #fdf4f7 0%, #f5e8ef 50%, #faeef3 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+    color: var(--text-dark);
+}
+
+/* ── Container ───────────────────────────────────────────── */
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* ============================================================
+   SHORTLIST PAGE
+   ============================================================ */
+
+/* ── Page Wrapper ────────────────────────────────────────── */
+.shortlist-container {
+    padding: 40px 0 64px;
+}
+
+/* ── Page Header ─────────────────────────────────────────── */
+.shortlist-header {
+    background: linear-gradient(135deg, var(--pink) 0%, var(--pink-light) 100%);
+    border: 1.5px solid var(--pink-dark);
+    border-radius: var(--radius);
+    padding: 40px 36px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 36px;
+    animation: fadeInDown 0.6s ease both;
+}
+
+.shortlist-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 10% 50%, rgba(210, 150, 185, 0.35) 0%, transparent 40%),
+        radial-gradient(ellipse at 90% 50%, rgba(210, 150, 185, 0.28) 0%, transparent 40%);
+    pointer-events: none;
+}
+
+/* Animated top bar */
+.shortlist-header::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--pink-dark), var(--accent), var(--pink-dark));
+    background-size: 200% 100%;
+    animation: barSlide 3s linear infinite;
+}
+
+.shortlist-header .container { position: relative; z-index: 1; }
+
+.shortlist-header h1 {
+    font-size: 2.3rem;
+    font-weight: 900;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+    letter-spacing: -0.3px;
+    animation: fadeInDown 0.6s ease both;
+}
+
+.shortlist-header h1 i {
+    color: var(--accent);
+    margin-right: 10px;
+}
+
+.shortlist-count {
+    font-size: 0.95rem;
+    color: var(--text-soft);
+    margin-bottom: 0;
+    animation: fadeInDown 0.6s 0.1s ease both;
+}
+
+.shortlist-count strong {
+    color: var(--accent-dark);
+    font-weight: 800;
+}
+
+/* ── Empty State ─────────────────────────────────────────── */
+.empty-shortlist {
+    text-align: center;
+    padding: 72px 24px;
+    background: var(--white);
+    border: 1.5px dashed var(--pink-dark);
+    border-radius: var(--radius);
+    animation: fadeInUp 0.5s ease both;
+}
+
+.empty-shortlist i {
+    font-size: 4rem;
+    color: var(--pink-dark);
+    display: block;
+    margin-bottom: 18px;
+}
+
+.empty-shortlist h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--text-mid);
+    margin-bottom: 10px;
+}
+
+.empty-shortlist p {
+    font-size: 0.95rem;
+    color: var(--text-soft);
+    margin-bottom: 28px;
+}
+
+/* ── Profiles Grid ───────────────────────────────────────── */
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 28px;
+    margin-bottom: 36px;
+}
+
+/* ── Individual Profile Card ─────────────────────────────── */
+.profile-card {
+    background: var(--white);
+    border: 1.5px solid var(--pink-dark);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    animation: fadeInUp 0.5s ease both;
+    position: relative;
+}
+
+/* Staggered card animations */
+.profile-card:nth-child(1) { animation-delay: 0.05s; }
+.profile-card:nth-child(2) { animation-delay: 0.10s; }
+.profile-card:nth-child(3) { animation-delay: 0.15s; }
+.profile-card:nth-child(4) { animation-delay: 0.20s; }
+.profile-card:nth-child(5) { animation-delay: 0.25s; }
+.profile-card:nth-child(6) { animation-delay: 0.30s; }
+
+.profile-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, var(--pink-light), var(--white));
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    z-index: 0;
+    border-radius: var(--radius);
+    pointer-events: none;
+}
+
+.profile-card:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--accent);
+}
+
+.profile-card:hover::before { opacity: 1; }
+.profile-card > * { position: relative; z-index: 1; }
+
+/* ── Profile Card Image ──────────────────────────────────── */
+.profile-card-image {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: var(--pink-light);
+    flex-shrink: 0;
+    position: relative;
+}
+
+.profile-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.profile-card:hover .profile-card-image img {
+    transform: scale(1.07);
+}
+
+/* ── Verified Badge ──────────────────────────────────────── */
+.profile-verified {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 2;
+}
+
+.verified-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1.5px solid var(--accent);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent-dark);
+    backdrop-filter: blur(4px);
+}
+
+/* ── Remove Button ───────────────────────────────────────── */
+.remove-from-shortlist {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1.5px solid var(--border);
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    color: var(--text-mid);
+    font-size: 0.85rem;
+    backdrop-filter: blur(4px);
+    padding: 0;
+}
+
+.remove-from-shortlist:hover {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: var(--white);
+    transform: scale(1.12);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.35);
+}
+
+.remove-from-shortlist:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ── Loading Spinner ─────────────────────────────────────── */
+.loading {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: var(--white);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+/* ── Profile Card Content ────────────────────────────────── */
+.profile-card-content {
+    padding: 20px 20px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+}
+
+.profile-card-content h3 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin: 0;
+    line-height: 1.3;
+}
+
+/* ── Profile Info Items ──────────────────────────────────── */
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.profile-info-item {
+    font-size: 0.85rem;
+    color: var(--text-mid);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    line-height: 1.4;
+}
+
+.profile-info-item::before {
+    content: '•';
+    color: var(--accent);
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+/* ── Profile Card Actions ────────────────────────────────── */
+.profile-card-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid var(--pink-light);
+    flex-wrap: wrap;
+}
+
+/* ── Buttons ─────────────────────────────────────────────── */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1.5px solid var(--border);
+    transition: var(--transition);
+    font-family: inherit;
+    white-space: nowrap;
+    flex: 1;
+}
+
+.btn-primary {
+    background: #F2D8E1;
+    color: var(--text-dark);
+    border-color: var(--border);
+}
+
+.btn-primary:hover {
+    background: var(--white);
+    color: var(--accent-dark);
+    border-color: var(--border-focus);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(193, 100, 135, 0.22);
+}
+
+.btn-outline {
+    background: var(--white);
+    color: var(--text-dark);
+    border-color: var(--border);
+}
+
+.btn-outline:hover {
+    background: #F2D8E1;
+    color: var(--accent-dark);
+    border-color: var(--border-focus);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 14px rgba(193, 100, 135, 0.16);
+}
+
+/* ── Pagination ──────────────────────────────────────────── */
+.pagination-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 36px;
+    flex-wrap: wrap;
+    animation: fadeInUp 0.5s 0.3s ease both;
+}
+
+.pagination-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 22px;
+    background: var(--white);
+    border: 1.5px solid var(--pink-dark);
+    border-radius: var(--radius-sm);
+    font-size: 0.90rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    text-decoration: none;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.pagination-btn:hover {
+    background: #F2D8E1;
+    color: var(--accent-dark);
+    border-color: var(--border-focus);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 14px rgba(193, 100, 135, 0.18);
+}
+
+.pagination-info {
+    font-size: 0.88rem;
+    color: var(--text-soft);
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.70);
+    border: 1.5px solid var(--pink-dark);
+    border-radius: 20px;
+    padding: 6px 20px;
+}
+
+.pagination-info strong {
+    color: var(--accent-dark);
+    font-weight: 800;
+}
+
+/* ============================================================
+   KEYFRAMES
+   ============================================================ */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-18px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes barSlide {
+    0%   { background-position: -300% 0; }
+    100% { background-position: 300% 0; }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ── Notification Animations ─────────────────────────────── */
+@keyframes slideIn {
+    from { transform: translateX(400px); opacity: 0; }
+    to   { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to   { transform: translateX(400px); opacity: 0; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: scale(1); }
+    to   { opacity: 0; transform: scale(0.95); }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+    .profile-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .shortlist-header {
+        padding: 28px 20px 24px;
+    }
+
+    .shortlist-header h1 {
+        font-size: 1.7rem;
+    }
+
+    .profile-card-actions {
+        flex-direction: column;
+    }
+
+    .pagination-container {
+        gap: 10px;
+    }
+
+    .pagination-btn {
+        padding: 9px 16px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .shortlist-container {
+        padding: 24px 0 40px;
+    }
+
+    .shortlist-header h1 {
+        font-size: 1.4rem;
+    }
+
+    .profile-card-image {
+        height: 180px;
+    }
+
+    .empty-shortlist {
+        padding: 48px 16px;
+    }
+
+    .empty-shortlist i {
+        font-size: 3rem;
+    }
+}

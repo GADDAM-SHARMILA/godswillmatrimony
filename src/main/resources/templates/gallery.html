@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery - Matrimony</title>
+    <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" th:href="@{/css/fragments.css}">
+</head>
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
+<body class="bg-gray-50">
+
+<section class="py-16">
+    <div class="max-w-6xl mx-auto px-6 text-center">
+        <h1 class="text-4xl font-bold mb-10">Success Stories Gallery</h1>
+
+        <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+
+            <img src="https://images.unsplash.com/photo-1520857014576-2c4f4c972b57"
+                 class="rounded-lg shadow-lg hover:scale-105 transition duration-300">
+
+            <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb"
+                 class="rounded-lg shadow-lg hover:scale-105 transition duration-300">
+
+            <img src="https://images.unsplash.com/photo-1529634894015-28c9e9f2a59f"
+                 class="rounded-lg shadow-lg hover:scale-105 transition duration-300">
+
+            <img src="https://images.unsplash.com/photo-1492724441997-5dc865305da7"
+                 class="rounded-lg shadow-lg hover:scale-105 transition duration-300">
+
+            <img src="https://images.unsplash.com/photo-1519741497674-611481863552"
+                 class="rounded-lg shadow-lg hover:scale-105 transition duration-300">
+
+            <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc"
+                 class="rounded-lg shadow-lg hover:scale-105 transition duration-300">
+
+        </div>
+    </div>
+</section>
+
+</body>
+</html>
