@@ -79,7 +79,11 @@ public class HomeController {
     public String termsAndConditions() { return "terms-and-conditions"; }
 
     @GetMapping("/about")
-    public String aboutus() { return "about"; }
+    public String aboutus(Model model) {
+        model.addAttribute("activePage", "about");
+        model.addAttribute("pageTitle", "About Us - God's Will Matrimony");
+        return "about";
+    }
 
     @GetMapping("/associate")
     public String ouraccociates() { return "associate"; }

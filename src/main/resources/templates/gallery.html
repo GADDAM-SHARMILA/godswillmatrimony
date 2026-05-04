@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
     <title>Gallery - Matrimony</title>
     <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -38,6 +37,7 @@
         </div>
     </div>
 </section>
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
 
 </body>
 </html>

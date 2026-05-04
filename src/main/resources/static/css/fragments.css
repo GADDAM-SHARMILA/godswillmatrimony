@@ -26,6 +26,7 @@
     --transition:    all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+
 /* ============================================================
    NAVBAR  —  GVM_Background.png with F2D8E1 tint overlay
    ============================================================ */
@@ -551,76 +552,138 @@
     from { opacity: 0; transform: translateX(-18px); }
     to   { opacity: 1; transform: translateX(0); }
 }
-
 /* ============================================================
    RESPONSIVE — MOBILE NAVBAR FIX
    ============================================================ */
 @media (max-width: 900px) {
-
-    /* ── Show hamburger button ── */
     .mobile-menu-toggle {
         display: flex;
         align-items: center;
         justify-content: center;
     }
 
-    /* ── Dropdown menu: fixed to viewport so sticky header
-         doesn't clip it; layered below toggle button ── */
-    .nav-links {
-        position: fixed;          /* FIX: was 'absolute', caused clipping */
-        top: 82px;                /* matches .navbar height */
-        left: 0;
-        right: 0;
-        z-index: 999;             /* FIX: stacks above page content */
+    .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            z-index: 9998;
 
-        background: #f8e8ef;
-        border-top: 2px solid var(--pink-dark);
-        border-bottom: 2px solid var(--pink-dark);
-        box-shadow: var(--shadow-md);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
 
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0;
-        padding: 0 16px;
+        .menu-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
 
-        /* Hidden state */
-        max-height: 0;
-        overflow: hidden;
-        opacity: 0;
-        pointer-events: none;
-        transition:
-            max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-            opacity    0.3s ease,
-            padding    0.3s ease;
-    }
+        /* 🔥 DRAWER */
+        .nav-links {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            max-width: 100%;
 
-    /* ── Open state (JS toggles .active) ── */
-    .nav-links.active {
-        max-height: 85vh;         /* FIX: allows scroll if many links */
-        overflow-y: auto;         /* FIX: scrollable on small phones */
-        opacity: 1;
-        pointer-events: auto;
-        padding: 12px 16px 20px;
-    }
+            background: #f8e8ef;
+            z-index: 9999;
 
-    /* ── Each link stretches full width ── */
-    .nav-links li {
-        width: 100%;
-    }
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
 
-    .nav-links li a {
-        padding: 12px 14px;       /* slightly taller tap targets */
-        border-radius: var(--radius-sm);
-        width: 100%;
-        box-sizing: border-box;
-        font-size: 0.97rem;
-    }
+            padding: 0;
+            gap: 0;
+
+            transform: translateX(-100%);
+            transition: transform 0.35s ease;
+
+            box-shadow: 4px 0 20px rgba(0,0,0,0.2);
+            overflow-y: auto;
+        }
+
+        .nav-links.active {
+            transform: translateX(0);
+        }
+
+        /* 🔥 HEADER (profile section) */
+        .drawer-header {
+            background: linear-gradient(135deg, #e85d75, #c0392b);
+            color: white;
+            padding: 20px;
+            font-weight: 600;
+        }
+
+        .drawer-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .drawer-header p {
+            margin: 4px 0 0;
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        .drawer-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10000;
+        }
+
+
+        /* 🔥 MENU ITEMS */
+        .nav-links li {
+            width: 100%;
+        }
+
+        .nav-links li a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            padding: 14px 18px;
+            font-size: 1rem;
+            font-weight: 500;
+
+            border-bottom: 1px solid #f1f1f1;
+            background: #F2D8E1;
+            color: #333;
+
+            transition: all 0.25s ease;
+        }
+
+        .nav-links li a:hover {
+            background: #ffffff;
+            padding-left: 22px;
+        }
 
     /* Offset navbar height for desktop top values */
     .navbar { height: 68px; }
+      .nav-links {
+            top: 0 !important;
+            height: 100vh !important;
+            padding-top: 0 !important;
+        }
+        .nav-links li a.active {
+            background: #F2D8E1 !important;
+            color: var(--text-dark) !important;
+            border: 1.5px solid rgba(180, 110, 140, 0.45) !important;
+            font-weight: 700 !important;
+            box-shadow: inset 0 1px 4px rgba(170, 90, 120, 0.15);
+        }
 
     /* Sync dropdown top with actual mobile header height */
-    .nav-links { top: 68px; }
+
 
     .brand-name    { font-size: 1rem; }
     .brand-tagline { display: none; }
@@ -638,7 +701,7 @@
     .brand-name      { font-size: 0.85rem; }
 
     /* Sync dropdown top with 60px header on very small screens */
-    .nav-links       { top: 60px; }
+
 }
 
 /* ── SVG icons inside social links ── */
@@ -766,3 +829,4 @@
         margin: 0;
     }
 }
+

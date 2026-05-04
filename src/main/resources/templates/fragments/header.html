@@ -188,13 +188,29 @@
                 font-size: 0.55rem !important;
             }
         }
+/* 🔥 MOBILE-ONLY - HIDE ON DESKTOP (TOP PRIORITY) */
+.mobile-only {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
+}
 
+@media (max-width: 900px) {
+    .mobile-only {
+        display: block !important;
+        visibility: visible !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+}
     </style>
 </head>
 
 <body>
 
 <header class="main-header" th:fragment="navbar">
+    <div class="menu-overlay" id="menuOverlay"></div>
     <div class="container">
         <nav class="navbar">
 
@@ -225,6 +241,13 @@
 
             <!-- Nav links -->
             <ul class="nav-links" id="navLinks">
+
+                <div class="drawer-close mobile-only" id="drawerClose">✕</div>
+                <div class="drawer-header mobile-only">
+                    <h3>Welcome</h3>
+                    <p th:if="${session.user != null}" th:text="${session.user.name}"></p>
+                    <p th:if="${session.user == null}">Guest User</p>
+                </div>
                 <li>
                     <a th:href="@{/}" th:classappend="${activePage == 'home'} ? ' active' : ''">
                         Home
@@ -334,11 +357,14 @@
     <script>
         (function () {
             function initMobileMenu() {
+                var overlay = document.getElementById('menuOverlay');
                 var toggleBtn = document.getElementById('mobileMenuToggle');
                 var navLinks  = document.getElementById('navLinks');
                 var iconOpen  = document.getElementById('menuIconOpen');
                 var iconClose = document.getElementById('menuIconClose');
                 var fallback  = document.getElementById('menuFallback');
+                var drawerClose = document.getElementById('drawerClose');
+
 
                 if (!toggleBtn || !navLinks) return;
 
@@ -348,26 +374,32 @@
                     }
                 }
 
-                function openMenu() {
-                    navLinks.classList.add('active');
-                    toggleBtn.setAttribute('aria-expanded', 'true');
-                    if (iconOpen)  iconOpen.style.display  = 'none';
-                    if (iconClose) iconClose.style.display = 'inline';
-                    if (fallback)  fallback.textContent    = '\u2715';
-                }
+               function openMenu() {
+    navLinks.classList.add('active');
+    if (overlay) overlay.classList.add('active');
 
-                function closeMenu() {
-                    navLinks.classList.remove('active');
-                    toggleBtn.setAttribute('aria-expanded', 'false');
-                    if (iconOpen)  iconOpen.style.display  = 'inline';
-                    if (iconClose) iconClose.style.display = 'none';
-                    if (fallback)  fallback.textContent    = '\u2630';
-                }
+    document.body.classList.add('drawer-open'); // 🔥 ADD THIS
+    document.body.style.overflow = 'hidden';
+}
+
+function closeMenu() {
+    navLinks.classList.remove('active');
+    if (overlay) overlay.classList.remove('active');
+
+    document.body.classList.remove('drawer-open'); // 🔥 ADD THIS
+    document.body.style.overflow = '';
+}
 
                 toggleBtn.addEventListener('click', function (e) {
                     e.stopPropagation();
                     navLinks.classList.contains('active') ? closeMenu() : openMenu();
                 });
+                if (overlay) {
+    overlay.addEventListener('click', closeMenu);
+}
+if (drawerClose) {
+    drawerClose.addEventListener('click', closeMenu);
+}
 
                 navLinks.querySelectorAll('a').forEach(function (link) {
                     link.addEventListener('click', closeMenu);
@@ -396,6 +428,7 @@
                 syncTaglineWidth();
             }
         })();
+
 
     </script>
 
