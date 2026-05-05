@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <th:block th:replace="~{fragments/header :: head}"/>
     <title th:text="${pageTitle}">Catering Menu</title>
     <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
-    <th:block th:replace="~{fragments/header :: head}"/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
@@ -42,7 +40,7 @@
 
         html { scroll-behavior: smooth; }
 
-        body {
+        .catering-page {
             font-family: var(--font-body);
             background: #f7eef2;
             color: var(--text-dark);
@@ -795,7 +793,7 @@
 </head>
 <body>
 <div th:replace="~{fragments/header :: navbar}"></div>
-
+<div class="catering-page">
 <!-- ═══════════════════════ HERO ═══════════════════════ -->
 <div class="catering-hero">
     <div class="hero-canvas"></div>
@@ -973,7 +971,7 @@
 <button class="scroll-top" id="scrollTopBtn" title="Back to top">
     <i class="fas fa-chevron-up" style="font-size:.85rem;"></i>
 </button>
-
+</div>
 <div th:replace="~{fragments/footer :: footer}"></div>
 
 <script>
