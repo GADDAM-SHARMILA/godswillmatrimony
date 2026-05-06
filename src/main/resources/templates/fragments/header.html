@@ -205,10 +205,20 @@
     }
 }
     </style>
+    <script>
+        if (navigator.userAgent.includes("wv")) {
+          document.write(`
+            <style>
+              .main-header {
+                display: none !important;
+              }
+            </style>
+          `);
+        }
+    </script>
 </head>
 
 <body>
-
 <header class="main-header" th:fragment="navbar">
     <div class="menu-overlay" id="menuOverlay"></div>
     <div class="container">
