@@ -2,6 +2,19 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <link rel="stylesheet" th:href="@{/css/fragments.css}">
+    <script>
+        if (navigator.userAgent.includes("wv")) {
+          document.write(`
+            <style>
+              .footer {
+                display: none !important;
+              }
+            </style>
+          `);
+        }
+    </script>
+
+</head>
 </head>
 <body>
 
