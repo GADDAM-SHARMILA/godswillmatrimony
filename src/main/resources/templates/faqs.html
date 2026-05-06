@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="~{fragments/header :: head}"></th:block>
     <title>FAQ - Matrimony</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" type="image/png" th:href="@{/images/logo_1.png}">
@@ -16,8 +15,8 @@
         .faq-btn.open .icon { transform: rotate(45deg); }
     </style>
 </head>
-<th:block th:replace="~{fragments/header :: navbar}"></th:block>
 <body class="bg-rose-50">
+<th:block th:replace="~{fragments/header :: navbar}"></th:block>
 
 <section class="py-16">
     <div class="max-w-4xl mx-auto px-6">
